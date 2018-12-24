@@ -1,0 +1,44 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>ここに問題文が掲載される予定</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>提出</b></div>
+            <div class="panel-body">
+                <form href="#" method="POST">
+                    <div class="alert alert-danger">
+                        <p><b>提出前に確認してください</b></p>
+                        <ul>
+                            <li>余計なコードは入っていませんか？(デバッグに使用したものなど)</li>
+                            <li>提出要項が守られていますか？</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">提出コード</label>
+                        <textarea class="form-control" name="submit_code" id="submit_code" rows="10"></textarea>
+                    </div>
+                    <button class="btn btn-primary">提出</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

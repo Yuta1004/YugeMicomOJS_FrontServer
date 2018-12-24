@@ -91,7 +91,8 @@ def problem_view(problem_id):
                            session=session["user_id"],
                            problem_list=get_all_problem())
 
-    return problem_id
+    return render_template("problem.html",
+                           session=session["user_id"])
 
 if __name__ == '__main__':
     app.run(port=11000)
