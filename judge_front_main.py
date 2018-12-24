@@ -28,7 +28,7 @@ def register_user():
     if register(user_id, user_name, password, password_conf):
         return "Register Successful"
     else:
-        return render_template("register.html")
+        return render_template("register.html", inp_failed="Failed")
 
 
 if __name__ == '__main__':

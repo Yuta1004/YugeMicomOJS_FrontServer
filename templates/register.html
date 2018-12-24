@@ -22,6 +22,18 @@
     <!--メインコンテンツ-->
     <div class="container">
         <h1>ユーザ登録</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if inp_failed == "Failed" %}
+            <div class="alert alert-danger">
+                <p><b>ユーザ登録に失敗しました</b></p>
+                <ul>
+                    <li>確認用のパスワードが間違っていないか確認してください</li>
+                    <li>IDを別のものに変更してみてください</li>
+                </ul>
+            </div>
+        {% endif %}
+
         <form action="#" method="post">
             <div class="form-group">
                 <label class="control-label">ユーザ名(半角英数)</label>
