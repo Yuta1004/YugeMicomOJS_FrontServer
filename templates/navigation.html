@@ -18,7 +18,11 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/yuge_micom_ojs/login">ログイン / 新規登録</a></li>
+                {% if session is none %}
+                    <li><a href="/yuge_micom_ojs/login">ログイン / 新規登録</a></li>
+                {% else  %}
+                    <li><a href="/yuge_micom_ojs/dashboard">ユーザページ</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
