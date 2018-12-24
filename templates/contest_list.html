@@ -20,13 +20,23 @@
                         <th>終了時間<th>
                     </tr>
                 </thead>
+
+                <tbody>
+                    {% for contest in future_contest %}
+                        <tr>
+                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
+                            <th>{{ contest.start_time }}</th>
+                            <th>{{ contest.end_time }}</th>
+                        <tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
 
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">開始中のコンテスト一覧</div>
+            <div class="panel-heading">開催中のコンテスト一覧</div>
                 <table class="table table-striped">
                 <thead>
                     <tr>
@@ -35,6 +45,16 @@
                         <th>終了時間<th>
                     </tr>
                 </thead>
+
+                <tbody>
+                    {% for contest in now_contest %}
+                        <tr>
+                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
+                            <th>{{ contest.start_time }}</th>
+                            <th>{{ contest.end_time }}</th>
+                        <tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
@@ -50,6 +70,16 @@
                         <th>終了時間<th>
                     </tr>
                 </thead>
+
+                <tbody>
+                    {% for contest in past_contest %}
+                        <tr>
+                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
+                            <th>{{ contest.start_time }}</th>
+                            <th>{{ contest.end_time }}</th>
+                        <tr>
+                    {% endfor %}
+                </tbody>
 
         </div>
     </div>

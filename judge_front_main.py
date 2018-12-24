@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
 from problem import get_all_problem
+from contest import get_3type_divided_contest
 
 # Flask
 app = Flask(__name__)
@@ -70,10 +71,15 @@ def logout_user():
     return redirect(base_url)
 
 
-@app.route(base_url + "/contest")
+@app.route(base_url + "/contest/")
 def contest_view():
+    past_contest, now_contest, future_contest = get_3type_divided_contest()
+
     return render_template("contest_list.html",
-                           session=session["user_id"])
+                           session=session["user_id"],
+                           past_contest=past_contest,
+                           now_contest=now_contest,
+                           future_contest=future_contest)
 
 
 @app.route(base_url + "/problem/")
