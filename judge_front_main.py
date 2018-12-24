@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register
 
@@ -34,8 +34,10 @@ def register_user():
     password = request.form["password"]
     password_conf = request.form["password_conf"]
 
+    # ユーザ登録
     if register(user_id, user_name, password, password_conf):
-        return "Register Successful"
+        session["user_id"] = user_id
+        return redirect("/yuge_micom_ojs")
     else:
         return render_template("register.html",
                                inp_failed="Failed",
