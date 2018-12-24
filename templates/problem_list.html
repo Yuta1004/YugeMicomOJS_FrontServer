@@ -16,7 +16,6 @@
                 <thead>
                     <tr>
                         <th>問題名</th>
-                        <th>コンテスト</th>
                         <th>配点</th>
                         <th>ジャッジステータス<th>
                     </tr>
@@ -25,7 +24,6 @@
                     {% for problem in problem_list %}
                         <tr>
                             <th><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></th>
-                            <th>{{ problem.contest_id }}</th>
                             <th>{{ problem.scoring }}</th>
                             <th>AC</th>
                     {% endfor %}
