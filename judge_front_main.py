@@ -63,5 +63,10 @@ def login_user():
                                session=session["user_id"])
 
 
+@app.route(base_url + "/logout")
+def logout_user():
+    session["user_id"] = None
+    return redirect(base_url)
+
 if __name__ == '__main__':
     app.run(port=11000)
