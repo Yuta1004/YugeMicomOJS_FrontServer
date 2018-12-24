@@ -31,5 +31,12 @@ def register_user():
         return render_template("register.html", inp_failed="Failed")
 
 
+@app.route(base_url + "/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    return "None"
+
 if __name__ == '__main__':
     app.run(port=11000)

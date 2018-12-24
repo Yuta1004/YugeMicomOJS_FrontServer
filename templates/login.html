@@ -1,0 +1,47 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS Register{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>ログイン</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if login_failed == "Failed" %}
+            <div class="alert alert-danger">
+                <p><b>ログインに失敗しました</b></p>
+                <ul>
+                    <li>ユーザIDが間違っていないか確認してください</li>
+                    <li>パスワードが間違っていないか確認してください</li>
+                    <li>アンダーバーは使用できません</li>
+                    <li>未登録の場合はページ下部リンクよりユーザ登録を行ってください</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="#" method="post">
+            <div class="form-group">
+                <label class="control-label">ユーザ名</label>
+                <input class="form-control" type="text" name="user_id" id="user_id">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">パスワード</b></label>
+                <input class="form-control" type="password" name="password" id="password">
+            </div>
+
+            <button class="btn btn-primary">ログイン</button>
+        </form>
+
+        <br><br>
+        <p>未登録の場合は<a href="/yuge_micom_ojs/register">ユーザ登録</a>を行ってください</p>
+    </div>
+</body>
+
+{% endblock %}
