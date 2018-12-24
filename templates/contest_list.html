@@ -1,0 +1,58 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">開始予定のコンテスト一覧</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>コンテスト名</th>
+                        <th>開始時間</th>
+                        <th>終了時間<th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">開始中のコンテスト一覧</div>
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>コンテスト名</th>
+                        <th>開始時間</th>
+                        <th>終了時間<th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">過去のコンテスト一覧</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>コンテスト名</th>
+                        <th>開始時間</th>
+                        <th>終了時間<th>
+                    </tr>
+                </thead>
+
+        </div>
+    </div>
+</body>
+
+{% endblock %}

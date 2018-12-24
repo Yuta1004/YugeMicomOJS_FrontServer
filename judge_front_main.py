@@ -68,5 +68,11 @@ def logout_user():
     session["user_id"] = None
     return redirect(base_url)
 
+
+@app.route(base_url + "/contest")
+def contest_view():
+    return render_template("contest_list.html",
+                           session=session["user_id"])
+
 if __name__ == '__main__':
     app.run(port=11000)
