@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
+from problem import get_all_problem
 
 # Flask
 app = Flask(__name__)
@@ -75,10 +76,11 @@ def contest_view():
                            session=session["user_id"])
 
 
-@app.route(base_url + "/problem")
+@app.route(base_url + "/problem/")
 def problem_view():
     return render_template("problem_list.html",
-                           session=session["user_id"])
+                           session=session["user_id"],
+                           problem_list=get_all_problem())
 
 if __name__ == '__main__':
     app.run(port=11000)

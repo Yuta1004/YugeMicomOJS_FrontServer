@@ -21,6 +21,15 @@
                         <th>ジャッジステータス<th>
                     </tr>
                 </thead>
+                <tbody>
+                    {% for problem in problem_list %}
+                        <tr>
+                            <th><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></th>
+                            <th>{{ problem.contest_id }}</th>
+                            <th>{{ problem.scoring }}</th>
+                            <th>AC</th>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
