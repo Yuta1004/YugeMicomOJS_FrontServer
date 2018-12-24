@@ -28,9 +28,18 @@ def register(user_id, user_name, password, password_conf):
     connect = sqlite3.connect("DB/user.db")
     cur = connect.cursor()
 
+    # 入力チェック
     if password != password_conf:
         return False
 
+    print(user_id, user_id.encode('utf-8').isalnum())
+    if not user_id.encode('utf-8').isalnum():
+        return False
+
+    if user_id == "" or user_name == "" or password == "" or len(password) < 8:
+        return False
+
+    # ユーザ重複チェック
     user_search_result = cur.execute("SELECT * FROM auth_info WHERE id=?",
                                      (user_id, ))
     if len(user_search_result.fetchall()) > 0:
