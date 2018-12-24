@@ -10,3 +10,9 @@
 - name : TEXT NOT NULL
 - start_time : TEXT NOT NULL
 - end_time : TEXT NOT NULL
+
+# problem
+## problem
+- id : TEXT PRIMARY KEY
+- name : TEXT NOT NULL
+- contest_id : TEXT
