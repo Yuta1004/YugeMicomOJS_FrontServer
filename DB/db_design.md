@@ -16,3 +16,4 @@
 - id : TEXT PRIMARY KEY
 - name : TEXT NOT NULL
 - contest_id : TEXT
+- scoring : NUMBER NOT NULL
