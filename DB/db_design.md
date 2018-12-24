@@ -15,5 +15,5 @@
 ## problem
 - id : TEXT PRIMARY KEY
 - name : TEXT NOT NULL
-- contest_id : TEXT
 - scoring : NUMBER NOT NULL
+- open_time : TEXT NOT NULL
