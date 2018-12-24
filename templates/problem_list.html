@@ -17,7 +17,9 @@
                     <tr>
                         <th>問題名</th>
                         <th>配点</th>
-                        <th>ジャッジステータス<th>
+                        {% if session is not none %}
+                            <th>ジャッジステータス<th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -25,7 +27,9 @@
                         <tr>
                             <th><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></th>
                             <th>{{ problem.scoring }}</th>
-                            <th>AC</th>
+                            {% if session is not none %}
+                                <th>AC</th>
+                            {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
