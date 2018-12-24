@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
+from login_process import register
 
 # Flask
 app = Flask(__name__)
@@ -24,7 +25,10 @@ def register_user():
     password = request.form["password"]
     password_conf = request.form["password_conf"]
 
-    return ""
+    if register(user_id, user_name, password, password_conf):
+        return "Register Successful"
+    else:
+        return render_template("register.html")
 
 
 if __name__ == '__main__':
