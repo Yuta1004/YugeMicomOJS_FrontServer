@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
-from login_process import register
+from login_process import register, login
 
 # Flask
 app = Flask(__name__)
@@ -45,12 +45,23 @@ def register_user():
 
 
 @app.route(base_url + "/login", methods=["GET", "POST"])
-def login():
+def login_user():
     if request.method == "GET":
         return render_template("login.html",
                                session=session["user_id"])
 
-    return "None"
+    user_id = request.form["user_id"]
+    password = request.form["password"]
+
+    # 認証
+    if login(user_id, password):
+        session["user_id"] = user_id
+        return redirect(base_url)
+    else:
+        return render_template("login.html",
+                               login_failed="Failed",
+                               session=session["user_id"])
+
 
 if __name__ == '__main__':
     app.run(port=11000)
