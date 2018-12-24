@@ -74,5 +74,11 @@ def contest_view():
     return render_template("contest_list.html",
                            session=session["user_id"])
 
+
+@app.route(base_url + "/problem")
+def problem_view():
+    return render_template("problem_list.html",
+                           session=session["user_id"])
+
 if __name__ == '__main__':
     app.run(port=11000)
