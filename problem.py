@@ -1,6 +1,6 @@
 import sqlite3
 
-class Problem:
+class ProblemInfo:
     def __init__(self, _id, name, contest_id, scoring):
         self.id = _id
         self.name = name
@@ -16,7 +16,7 @@ def get_all_problem():
 
     all_problem = []
     for problem in cur.fetchall():
-        all_problem.append(Problem(problem[0],
+        all_problem.append(ProblemInfo(problem[0],
                                    problem[1],
                                    problem[2],
                                    problem[3]))
