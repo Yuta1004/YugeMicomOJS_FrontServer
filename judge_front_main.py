@@ -7,7 +7,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Other
-base_url = "/judge_system"
+base_url = "/yuge_micom_ojs"
 
 #Routes
 @app.route(base_url + "/")
