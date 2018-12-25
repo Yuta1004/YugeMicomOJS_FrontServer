@@ -11,9 +11,16 @@
 - start_time : TEXT NOT NULL
 - end_time : TEXT NOT NULL
 
-# problem
+# problem.db
 ## problem
 - id : TEXT PRIMARY KEY
 - name : TEXT NOT NULL
 - scoring : NUMBER NOT NULL
 - open_time : TEXT NOT NULL
+
+# submission.db
+## submission
+- id : TEXT PRIMARY KEY
+- user_id : TEXT NOT NULL
+- problem_id : TEXT NOT NULL
+- date : TEXT NOT NULL
