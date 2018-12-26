@@ -94,5 +94,12 @@ def problem_view(problem_id):
     return render_template("problem.html",
                            session=session["user_id"])
 
+
+@app.route(base_url + "/submission/<path:user_id>")
+def submission_view(user_id):
+    return render_template("submission.html",
+                           session=session["user_id"])
+
+
 if __name__ == '__main__':
     app.run(port=11000)
