@@ -28,3 +28,39 @@ def get_all_problem():
     all_problem = [problem for problem in all_problem if problem.open_time <= now]
 
     return all_problem
+
+
+class SubmissionInfo:
+    def __init__(self, submission_id, user_id, problem_id, date):
+        self.id = submission_id
+        self.user_id = user_id
+        self.problem_id = problem_id
+        self.date = date
+
+
+def get_submission_data(user_id, problem_id):
+    connect = sqlite3.connect("DB/submission.db")
+    cur = connect.cursor()
+
+    # user_id/problem_idに"all"が指定された場合には条件から除外する
+    if user_id != "all" and problem_id != "all":
+        cur.execute("SELECT * FROM submission WHERE user_id=? AND problem_id=?",
+                    (user_id, problem_id))
+    elif user_id != "all":
+        cur.execute("SELECT * FROM submission WHERE user_id=?",
+                    (user_id, ))
+    elif problem_id != "all":
+        cur.execute("SELECT * FROM submission WHERE problem_id=?",
+                    (problem_id, ))
+    else:
+        cur.execute("SELECT * FROM submission")
+
+    submission_data = []
+    for data in cur.fetchall():
+        submission_data.append(SubmissionInfo(data[0],
+                                              data[1],
+                                              data[2],
+                                              data[3]))
+
+    return submission_data
+
