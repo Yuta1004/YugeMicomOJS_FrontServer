@@ -21,7 +21,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/yuge_micom_ojs/submission_list/all">全員の提出状況</a></li>
                         {% if session is not none%}
-                            <li><a href={{ "/yuge_micom_ojs/submission_list/" + session }}>各ユーザの提出状況</a></li>
+                        <li><a href={{ "/yuge_micom_ojs/submission_list/" + session }}>{{ session + "の提出状況" }}</a></li>
                         {% endif %}
                     </ul>
                 </li>
