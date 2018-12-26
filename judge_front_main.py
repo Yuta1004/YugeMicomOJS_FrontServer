@@ -71,6 +71,15 @@ def logout_user():
     return redirect(base_url)
 
 
+@app.route(base_url + "/user_settings")
+def user_settings():
+    if session["user_id"] is None:
+        return redirect(base_url)
+
+    return render_template("user_settings.html",
+                           session=session["user_id"])
+
+
 @app.route(base_url + "/contest_list")
 def contest_list_view():
     now_page = request.args.get("page", 1, type=int)
