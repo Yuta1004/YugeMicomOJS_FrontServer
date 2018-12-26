@@ -18,7 +18,9 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">提出状況<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/yuge_micom_ojs/submission/all">全員の提出状況</a></li>
-                        <li><a href={{ "/yuge_micom_ojs/submission/" + session}}>各ユーザの提出状況</a></li>
+                        {% if session is not none%}
+                            <li><a href={{ "/yuge_micom_ojs/submission/" + session }}>各ユーザの提出状況</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="/yuge_micom_ojs/contest/all">コンテスト一覧</a></li>
