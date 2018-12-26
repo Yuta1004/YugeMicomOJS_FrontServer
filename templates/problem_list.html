@@ -12,30 +12,63 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">問題一覧</div>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>問題名</th>
-                        <th>配点</th>
-                        {% if session is not none %}
-                            <th>ジャッジステータス</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for problem in problem_list %}
+            <div class="panel-body">
+                <!-- テーブルの外側の罫線だけ表示 -->
+                <style type="text/css">
+                    table { border: 1px solid #DDD; }
+                    td { border-width: 0; }
+                </style>
+
+                {% if problem_list[(now_page-1)*15: now_page*15] | length == 0 %}
+                    <div class="alert alert-danger">
+                        <p><b>データエラー</b></p>
+                        <ul>
+                            <li>URLが正しいか確認してください</li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
-                            <td>{{ problem.scoring }}</td>
+                            <th>問題名</th>
+                            <th>配点</th>
                             {% if session is not none %}
-                                <td>AC</td>
+                                <th>ジャッジステータス</th>
                             {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for problem in problem_list[(now_page-1)*15: now_page*15] %}
+                            <tr>
+                                <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
+                                <td>{{ problem.scoring }}</td>
+                                {% if session is not none %}
+                                    <td>AC</td>
+                                {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <nav>
+                    <div style="text-align:center">
+	                    <ul class="pagination">
+                            {% set start = [1, now_page-3] | max %}
+                            {% set end = [now_page+4, (problem_list | length)//15+2] | min %}
+                            {% for num in range(start, end) %}
+                                {% if num == now_page %}
+                                    <li class="active"><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                {% else %}
+                                    <li><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </div>
     </div>
-
 </body>
 
 {% endblock %}

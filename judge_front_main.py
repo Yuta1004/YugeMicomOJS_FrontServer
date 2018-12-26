@@ -87,9 +87,12 @@ def contest_view(contest_id):
 @app.route(base_url + "/problem/<path:problem_id>")
 def problem_view(problem_id):
     if problem_id == "all":
+        now_page = request.args.get("page", 1, type=int)
+
         return render_template("problem_list.html",
-                           session=session["user_id"],
-                           problem_list=get_all_problem())
+                                session=session["user_id"],
+                                now_page=now_page,
+                                problem_list=get_all_problem())
 
     return render_template("problem.html",
                            session=session["user_id"])
