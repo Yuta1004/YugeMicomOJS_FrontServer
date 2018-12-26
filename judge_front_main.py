@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
-from user import get_user_data
+from user import get_user_data, update_user_data
 from problem import get_all_problem, get_submission_data
 from contest import get_3type_divided_contest
 
@@ -72,17 +72,27 @@ def logout_user():
     return redirect(base_url)
 
 
-@app.route(base_url + "/user_settings")
+@app.route(base_url + "/user_settings", methods=["POST", "GET"])
 def user_settings():
     if session["user_id"] is None:
         return redirect(base_url)
 
+    update_succeeded = None
+
+    # データ更新(POST)
+    if request.method == "POST":
+        user_name = request.form["name"]
+        open_code = int(request.form["open_code"])
+        update_succeeded = update_user_data(session["user_id"], user_name, open_code)
+
+    # 設定ページに必要な情報取得
     user_info = get_user_data(session["user_id"])
     if user_info is None:
         return redirect(base_url)
 
     return render_template("user_settings.html",
                            user=user_info,
+                           update_succeeded=update_succeeded,
                            session=session["user_id"])
 
 

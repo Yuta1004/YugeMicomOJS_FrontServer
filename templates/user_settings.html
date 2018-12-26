@@ -13,6 +13,23 @@
         <div class="panel panel-default">
             <div class="panel-heading">設定</div>
             <div class="panel-body">
+                <!--更新成功時に表示-->
+                {% if update_succeeded is not none%}
+                    {% if update_succeeded %}
+                        <div class="alert alert-success">
+                            <p><b>正常に更新されました</b></p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <p><b>更新に失敗しました</b></p>
+                            <ul>
+                                <li>全て入力してください</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+
                 <form action="#" method="POST">
                     <!--ユーザID-->
                     <div class="form-group">
@@ -23,7 +40,7 @@
                     <!--ユーザ名-->
                     <div class="form-group">
                         <label class="control-label">ニックネーム</label>
-                        <input class="form-control" type="text" value={{ user.name }}>
+                        <input class="form-control" type="text" id="name" name="name" value={{ user.name }}>
                     </div>
 
                     <!--コードを公開するか-->
@@ -31,11 +48,11 @@
                         <label class="control-label">提出コードの公開</label>
                         <div class="radio">
                             {% if user.open_code %}
-                                <label><input type="radio" name="radio" checked="checked">する</label>
-                                <label><input type="radio" name="radio">しない</label>
+                                <label><input type="radio" id="open_code" name="open_code" checked="checked" value="1">する</label>
+                                <label><input type="radio" id="open_code" name="open_code" value="0">しない</label>
                             {% else %}
-                                <label><input type="radio" name="radio">する</label>
-                                <label><input type="radio" name="radio" checked="checked">しない</label>
+                                <label><input type="radio" id="open_code" name="open_code" value="1">する</label>
+                                <label><input type="radio" id="open_code" name="open_code" checked="checked" value="0">しない</label>
                             {% endif %}
                         </div>
                     </div>
