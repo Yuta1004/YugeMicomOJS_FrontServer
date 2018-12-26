@@ -19,6 +19,9 @@ def before_request():
     if "user_id" not in session.keys():
         session["user_id"] = None
 
+    if ("/login" not in request.url) and ("/register" not in request.url) and session["user_id"] is None:
+        return redirect(base_url + "/login")
+
 
 @app.route(base_url + "/")
 def index():
