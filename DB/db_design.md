@@ -4,6 +4,10 @@
 - name : TEXT NOT NULL
 - password : TEXT NOT NULL
 
+## settings
+- id : TEXT PRIMARY KEY
+- open_code : NUMBER NOT NULL DEFAULT 0
+
 # contest.db
 ## contest
 - id : TEXT PRIMARY KEY
