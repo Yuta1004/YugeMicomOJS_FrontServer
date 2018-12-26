@@ -31,13 +31,17 @@ def update_user_data(user_id, user_name, open_code):
     connect = sqlite3.connect("DB/user.db")
     cur = connect.cursor()
 
+    if user_name == "":
+        return False
+
+    # 更新処理
     cur.execute("UPDATE auth_info SET name = ? WHERE id = ?",
                 (user_name, user_id))
-    connect.commit()
-
     cur.execute("UPDATE settings SET open_code = ? WHERE id = ?",
                 (open_code, user_id))
     connect.commit()
 
     cur.close()
     connect.close()
+
+    return True
