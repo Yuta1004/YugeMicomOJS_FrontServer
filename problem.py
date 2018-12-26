@@ -1,5 +1,7 @@
 import sqlite3
 from datetime import datetime
+import markdown
+import os
 
 class ProblemInfo:
     def __init__(self, _id, name, scoring, open_time):
@@ -75,4 +77,15 @@ def get_submission_data(user_id, problem_id):
     connect.close()
 
     return submission_data
+
+
+def get_problem_body(problem_id):
+    if not os.path.exists("Problem/" + problem_id + ".md"):
+        return None
+
+    problem_body = ""
+    with open("Problem/" + problem_id + ".md") as f:
+        problem_body = f.read()
+
+    return markdown.markdown(problem_body)
 
