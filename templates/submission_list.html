@@ -37,7 +37,7 @@
                             <th>提出日時</th>
                             <th>提出ユーザ</th>
                             <th>詳細</th>
-                        <tr>
+                        </tr>
                     </thead>
 
                     {% for data in submission_data[(now_page-1)*15: now_page*15] %}
@@ -47,7 +47,7 @@
                                 <td>{{ data.date }}</td>
                                 <td>{{ data.user_id}}</td>
                                 <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
-                            </td>
+                            </tr>
                         </tbody>
                     {% endfor %}
                 </table>
