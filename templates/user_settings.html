@@ -13,7 +13,33 @@
         <div class="panel panel-default">
             <div class="panel-heading">設定</div>
             <div class="panel-body">
-                <p>ユーザについての設定が行えます</p>
+                <form action="#" method="POST">
+                    <!--ユーザID-->
+                    <div class="form-group">
+                        <label class="control-label">ユーザID</label>
+                        <p>::ユーザID::</p>
+                    </div>
+
+                    <!--ユーザ名-->
+                    <div class="form-group">
+                        <label class="control-label">ニックネーム</label>
+                        <input class="form-control" type="text">
+                    </div>
+
+                    <!--コードを公開するか-->
+                    <div class="form-group">
+                        <label class="control-label">提出コードの公開</label>
+                        <div class="radio">
+                            <label><input type="radio" name="radio">する</label>
+                            <label><input type="radio" name="radio">しない</label>
+                        </div>
+                    </div>
+
+                    <!--パスワード変更-->
+                    <br><p>パスワードの変更は<a href="/yuge_micom_ojs/change_password">こちら</a>から行ってください</p><br>
+
+                    <button class="btn btn-primary">更新</button>
+                </form>
             </div>
         </div>
     </div>
