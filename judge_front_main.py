@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
-from user import get_user_data, update_user_data
+from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_submission_data
 from contest import get_3type_divided_contest
 
@@ -98,6 +98,27 @@ def user_settings():
                            update_succeeded=update_succeeded,
                            session=session["user_id"])
 
+
+@app.route(base_url + "/change_password", methods=["POST", "GET"])
+def change_password_route():
+    if session["user_id"] is None:
+        return redirect(base_url)
+
+    change_succeeded = None
+
+    # パスワード更新
+    if request.method == "POST":
+        old_password = request.form["old_password"]
+        new_password = request.form["new_password"]
+        new_password_conf = request.form["new_password_conf"]
+        change_succeeded = change_password(session["user_id"],
+                                           old_password,
+                                           new_password,
+                                           new_password_conf)
+
+    return render_template("change_password.html",
+                           session=session["user_id"],
+                           change_succeeded=change_succeeded)
 
 @app.route(base_url + "/contest_list")
 def contest_list_view():
