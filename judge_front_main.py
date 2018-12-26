@@ -84,28 +84,30 @@ def contest_view(contest_id):
     return contest_id
 
 
+@app.route(base_url + "/problem_list")
+def problem_list_view():
+    now_page = request.args.get("page", 1, type=int)
+
+    return render_template("problem_list.html",
+                            session=session["user_id"],
+                            now_page=now_page,
+                            problem_list=get_all_problem())
+
+
 @app.route(base_url + "/problem/<path:problem_id>")
 def problem_view(problem_id):
-    if problem_id == "all":
-        now_page = request.args.get("page", 1, type=int)
-
-        return render_template("problem_list.html",
-                                session=session["user_id"],
-                                now_page=now_page,
-                                problem_list=get_all_problem())
-
     return render_template("problem.html",
                            session=session["user_id"])
 
 
-@app.route(base_url + "/submission/<path:user_id>")
+@app.route(base_url + "/submission_list/<path:user_id>")
 def submission_view(user_id):
     now_page = request.args.get("page", 1, type=int)
 
     return render_template("submission_list.html",
                            session=session["user_id"],
                            now_page=now_page,
-                           submission_data=get_submission_data("all", "all"))
+                           submission_data=get_submission_data(user_id, "all"))
 
 
 if __name__ == '__main__':
