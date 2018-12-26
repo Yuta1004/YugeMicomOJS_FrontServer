@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, Markup
+from flask import Flask, render_template, request, session, redirect, url_for, Markup, abort
 from flask_bootstrap import Bootstrap
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
@@ -168,6 +168,11 @@ def submission_view(user_id):
                            now_page=now_page,
                            submission_data=get_submission_data(user_id, "all"))
 
+
+@app.errorhandler(404)
+def error_404_notfound(error):
+    return render_template("404.html",
+                           session=session["user_id"])
 
 if __name__ == '__main__':
     app.run(port=11000)
