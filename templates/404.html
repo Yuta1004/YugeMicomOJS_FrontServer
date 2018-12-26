@@ -1,0 +1,23 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <font size="20" color="#F33">404 Not Found</font><br>
+                <p>指定されたURLは存在しません</p>
+                <p>トップページは<a href="/yuge_micom_ojs">こちら</a>から</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}
