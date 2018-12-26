@@ -1,6 +1,7 @@
 <!--ナビゲーションバー-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
+        <!--ヘッダー タイトルとか書く-->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav_target">
                 <span class="icon-bar"></span>
@@ -11,6 +12,7 @@
         </div>
 
         <div class="collapse navbar-collapse">
+            <!--左詰のメニュー-->
             <ul class="nav navbar-nav">
                 <li><a href="/yuge_micom_ojs">ホーム</a></li>
                 <li><a href="/yuge_micom_ojs/problem/all">問題一覧</a></li>
@@ -27,6 +29,7 @@
                 <li><a href="/yuge_micom_ojs/ranking">ユーザランキング</a></li>
             </ul>
 
+            <!--右詰のメニュー-->
             <ul class="nav navbar-nav navbar-right">
                 {% if session is none %}
                     <li><a href="/yuge_micom_ojs/login">ログイン / 新規登録</a></li>

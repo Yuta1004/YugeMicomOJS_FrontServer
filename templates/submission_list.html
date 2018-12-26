@@ -19,6 +19,7 @@
                     td { border-width: 0; }
                 </style>
 
+                <!--now_pageの値が正常なものでない場合に警告を出す-->
                 {% if submission_data[(now_page-1)*15: now_page*15] | length == 0 %}
                     <div class="alert alert-danger">
                         <p><b>データエラー</b></p>
@@ -28,6 +29,7 @@
                     </div>
                 {% endif %}
 
+                <!--提出一覧をテーブルで表示-->
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -50,6 +52,7 @@
                     {% endfor %}
                 </table>
 
+                <!--ページャー-->
                 <nav>
                     <div style="text-align:center">
 	                    <ul class="pagination">
