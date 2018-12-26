@@ -18,7 +18,6 @@
 - scoring : NUMBER NOT NULL
 - open_time : TEXT NOT NULL
 
-# submission.db
 ## submission
 - id : TEXT PRIMARY KEY
 - user_id : TEXT NOT NULL

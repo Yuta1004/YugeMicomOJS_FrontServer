@@ -31,36 +31,42 @@ def get_all_problem():
 
 
 class SubmissionInfo:
-    def __init__(self, submission_id, user_id, problem_id, date):
+    def __init__(self, submission_id, problem_id, problem_name, user_id, date):
         self.id = submission_id
-        self.user_id = user_id
         self.problem_id = problem_id
+        self.problem_name = problem_name
+        self.user_id = user_id
         self.date = date
 
 
 def get_submission_data(user_id, problem_id):
-    connect = sqlite3.connect("DB/submission.db")
+    connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
+
+    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date \
+                FROM submission \
+                INNER JOIN problem ON submission.problem_id = problem.id"
 
     # user_id/problem_idに"all"が指定された場合には条件から除外する
     if user_id != "all" and problem_id != "all":
-        cur.execute("SELECT * FROM submission WHERE user_id=? AND problem_id=?",
+        cur.execute(sql_base  + " WHERE user_id=? AND problem_id=?",
                     (user_id, problem_id))
     elif user_id != "all":
-        cur.execute("SELECT * FROM submission WHERE user_id=?",
+        cur.execute(sql_base + " WHERE user_id=?",
                     (user_id, ))
     elif problem_id != "all":
-        cur.execute("SELECT * FROM submission WHERE problem_id=?",
+        cur.execute(sql_base + " WHERE problem_id=?",
                     (problem_id, ))
     else:
-        cur.execute("SELECT * FROM submission")
+        cur.execute(sql_base)
 
     submission_data = []
     for data in cur.fetchall():
         submission_data.append(SubmissionInfo(data[0],
                                               data[1],
                                               data[2],
-                                              data[3]))
+                                              data[3],
+                                              data[4]))
 
     return submission_data
 
