@@ -40,16 +40,16 @@
                         </tr>
                     </thead>
 
-                    {% for data in submission_data[(now_page-1)*15: now_page*15] %}
-                        <tbody>
+                    <tbody>
+                        {% for data in submission_data[(now_page-1)*15: now_page*15] %}
                             <tr>
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
                                 <td>{{ data.date }}</td>
-                                <td>{{ data.user_id}}</td>
+                                <td>{{ data.user_id }}</td>
                                 <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
                             </tr>
-                        </tbody>
-                    {% endfor %}
+                        {% endfor %}
+                    </tbody>
                 </table>
 
                 <!--ページャー-->
