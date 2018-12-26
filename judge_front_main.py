@@ -74,12 +74,14 @@ def logout_user():
 @app.route(base_url + "/contest/<path:contest_id>")
 def contest_view(contest_id):
     if contest_id == "all":
+        now_page = request.args.get("page", 1, type=int)
         past_contest, now_contest, future_contest = get_3type_divided_contest()
         return render_template("contest_list.html",
-                           session=session["user_id"],
-                           past_contest=past_contest,
-                           now_contest=now_contest,
-                           future_contest=future_contest)
+                                session=session["user_id"],
+                                past_contest=past_contest,
+                                now_contest=now_contest,
+                                now_page=now_page,
+                                future_contest=future_contest)
 
     return contest_id
 
