@@ -17,21 +17,26 @@
                     <!--ユーザID-->
                     <div class="form-group">
                         <label class="control-label">ユーザID</label>
-                        <p>::ユーザID::</p>
+                        <p>{{ user.id }}</p>
                     </div>
 
                     <!--ユーザ名-->
                     <div class="form-group">
                         <label class="control-label">ニックネーム</label>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" value={{ user.name }}>
                     </div>
 
                     <!--コードを公開するか-->
                     <div class="form-group">
                         <label class="control-label">提出コードの公開</label>
                         <div class="radio">
-                            <label><input type="radio" name="radio">する</label>
-                            <label><input type="radio" name="radio">しない</label>
+                            {% if user.open_code %}
+                                <label><input type="radio" name="radio" checked="checked">する</label>
+                                <label><input type="radio" name="radio">しない</label>
+                            {% else %}
+                                <label><input type="radio" name="radio">する</label>
+                                <label><input type="rasio" name="radio" checked="checked">しない</label>
+                            {% endif %}
                         </div>
                     </div>
 
