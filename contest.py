@@ -22,6 +22,9 @@ def get_all_contest():
                                        datetime.strptime(contest[2], time_format),
                                        datetime.strptime(contest[3], time_format)))
 
+    cur.close()
+    connect.close()
+
     return all_contest
 
 

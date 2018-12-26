@@ -20,6 +20,9 @@ def get_user_data(user_id):
     if len(result) != 1:
         return None
 
+    cur.close()
+    connect.close()
+
     result = result[0]
     return UserInfo(result[0], result[1], True if result[2] == 1 else False)
 

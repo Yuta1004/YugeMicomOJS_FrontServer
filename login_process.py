@@ -21,6 +21,9 @@ def login(user_id, password):
                 (user_id, ))
     registed_pass = cur.fetchone()[0]
 
+    cur.close()
+    connect.close()
+
     return bcrypt.checkpw(password.encode(), registed_pass.encode())
 
 

@@ -27,6 +27,9 @@ def get_all_problem():
     now = datetime.now()
     all_problem = [problem for problem in all_problem if problem.open_time <= now]
 
+    cur.close()
+    connect.close()
+
     return all_problem
 
 
@@ -67,6 +70,9 @@ def get_submission_data(user_id, problem_id):
                                               data[2],
                                               data[3],
                                               data[4]))
+
+    cur.close()
+    connect.close()
 
     return submission_data
 
