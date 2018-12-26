@@ -1,4 +1,6 @@
 import sqlite3
+import bcrypt
+from login_process import login
 
 class UserInfo:
     def __init__(self, _id, name, open_code):
@@ -45,3 +47,30 @@ def update_user_data(user_id, user_name, open_code):
     connect.close()
 
     return True
+
+
+def change_password(user_id, old_pass, new_pass, new_pass_conf):
+    if new_pass != new_pass_conf or not login(user_id, old_pass):
+        return False
+
+    connect = sqlite3.connect("DB/user.db")
+    cur = connect.cursor()
+
+    # 半角英数8文字以上
+    if len(new_pass) < 8 or not new_pass.encode('utf-8').isalnum():
+        return False
+
+    # ソルト生成 -> パスワードのHASH化
+    gen_salt = bcrypt.gensalt(rounds=12, prefix=b'2a')
+    hash_password = bcrypt.hashpw(new_pass.encode(), gen_salt)
+
+    # パスワード変更
+    cur.execute("UPDATE auth_info SET password = ? WHERE id = ?",
+                (hash_password.decode(), user_id))
+    connect.commit()
+
+    cur.close()
+    connect.close()
+
+    return True
+
