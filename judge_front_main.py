@@ -97,7 +97,7 @@ def problem_view(problem_id):
 
 @app.route(base_url + "/submission/<path:user_id>")
 def submission_view(user_id):
-    return render_template("submission.html",
+    return render_template("submission_list.html",
                            session=session["user_id"],
                            submission_data=get_submission_data("all", "all"))
 
