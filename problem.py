@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-import markdown
+import markdown2
 import os
 
 class ProblemInfo:
@@ -87,5 +87,5 @@ def get_problem_body(problem_id):
     with open("Problem/" + problem_id + ".md") as f:
         problem_body = f.read()
 
-    return markdown.markdown(problem_body)
+    return markdown2.markdown(problem_body, extras=['fenced-code-blocks'])
 
