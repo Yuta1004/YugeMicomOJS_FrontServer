@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
-from user import get_user_info
+from user import get_user_data
 from problem import get_all_problem, get_submission_data
 from contest import get_3type_divided_contest
 
@@ -77,7 +77,7 @@ def user_settings():
     if session["user_id"] is None:
         return redirect(base_url)
 
-    user_info = get_user_info(session["user_id"])
+    user_info = get_user_data(session["user_id"])
     if user_info is None:
         return redirect(base_url)
 

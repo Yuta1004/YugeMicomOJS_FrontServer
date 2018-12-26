@@ -7,7 +7,7 @@ class UserInfo:
         self.open_code = open_code
 
 
-def get_user_info(user_id):
+def get_user_data(user_id):
     connect = sqlite3.connect("DB/user.db")
     cur = connect.cursor()
 
