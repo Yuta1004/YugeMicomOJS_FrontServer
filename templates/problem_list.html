@@ -25,10 +25,10 @@
                 <tbody>
                     {% for problem in problem_list %}
                         <tr>
-                            <th><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></th>
-                            <th>{{ problem.scoring }}</th>
+                            <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
+                            <td>{{ problem.scoring }}</td>
                             {% if session is not none %}
-                                <th>AC</th>
+                                <td>AC</td>
                             {% endif %}
                     {% endfor %}
                 </tbody>

@@ -24,9 +24,9 @@
                 <tbody>
                     {% for contest in future_contest %}
                         <tr>
-                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
-                            <th>{{ contest.start_time }}</th>
-                            <th>{{ contest.end_time }}</th>
+                            <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></td>
+                            <td>{{ contest.start_time }}</td>
+                            <td>{{ contest.end_time }}</td>
                         <tr>
                     {% endfor %}
                 </tbody>
@@ -49,9 +49,9 @@
                 <tbody>
                     {% for contest in now_contest %}
                         <tr>
-                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
-                            <th>{{ contest.start_time }}</th>
-                            <th>{{ contest.end_time }}</th>
+                            <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></td>
+                            <td>{{ contest.start_time }}</td>
+                            <td>{{ contest.end_time }}</td>
                         <tr>
                     {% endfor %}
                 </tbody>
@@ -61,7 +61,7 @@
 
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading" style="overflow:hidden">過去のコンテスト一覧</div>
+            <div class="panel-heading">過去のコンテスト一覧</div>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -74,13 +74,13 @@
                 <tbody>
                     {% for contest in past_contest %}
                         <tr>
-                            <th><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></th>
-                            <th>{{ contest.start_time }}</th>
-                            <th>{{ contest.end_time }}</th>
+                            <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></td>
+                            <td>{{ contest.start_time }}</td>
+                            <td>{{ contest.end_time }}</td>
                         <tr>
                     {% endfor %}
                 </tbody>
-
+            </table>
         </div>
     </div>
 </body>
