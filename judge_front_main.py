@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, Markup
 from flask_bootstrap import Bootstrap
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
-from problem import get_all_problem, get_submission_data
+from problem import get_all_problem, get_submission_data, get_problem_body
 from contest import get_3type_divided_contest
 
 # Flask
@@ -150,8 +150,13 @@ def problem_list_view():
 
 @app.route(base_url + "/problem/<path:problem_id>")
 def problem_view(problem_id):
+    problem_body = get_problem_body(problem_id)
+    if problem_body is None:
+        return abort(404)
+
     return render_template("problem.html",
-                           session=session["user_id"])
+                           session=session["user_id"],
+                           problem_body=Markup(problem_body))
 
 
 @app.route(base_url + "/submission_list/<path:user_id>")
