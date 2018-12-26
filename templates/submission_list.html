@@ -19,6 +19,15 @@
                     td { border-width: 0; }
                 </style>
 
+                {% if submission_data[(now_page-1)*15: now_page*15] | length == 0 %}
+                    <div class="alert alert-danger">
+                        <p><b>データエラー</b></p>
+                        <ul>
+                            <li>URLが正しいか確認してください</li>
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -29,7 +38,7 @@
                         <tr>
                     </thead>
 
-                    {% for data in submission_data %}
+                    {% for data in submission_data[(now_page-1)*15: now_page*15] %}
                         <tbody>
                             <tr>
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
@@ -44,11 +53,15 @@
                 <nav>
                     <div style="text-align:center">
 	                    <ul class="pagination">
-		                    <li><a href="#">1</a></li>
-		                    <li class="active"><a href="#">2</a></li>
-		                    <li><a href="#">3</a></li>
-		                    <li><a href="#">4</a></li>
-		                    <li><a href="#">5</a></li>
+                            {% set start = [1, now_page-3] | max %}
+                            {% set end = [now_page+4, (submission_data | length)//15+2] | min %}
+                            {% for num in range(start, end) %}
+                                {% if num == now_page %}
+                                    <li class="active"><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                {% else %}
+                                    <li><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </nav>
