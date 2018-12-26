@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from login_process import register, login
-from problem import get_all_problem
+from problem import get_all_problem, get_submission_data
 from contest import get_3type_divided_contest
 
 # Flask
@@ -98,7 +98,8 @@ def problem_view(problem_id):
 @app.route(base_url + "/submission/<path:user_id>")
 def submission_view(user_id):
     return render_template("submission.html",
-                           session=session["user_id"])
+                           session=session["user_id"],
+                           submission_data=get_submission_data("all", "all"))
 
 
 if __name__ == '__main__':
