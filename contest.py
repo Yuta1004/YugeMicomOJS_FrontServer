@@ -15,7 +15,7 @@ def get_all_contest():
     cur = connect.cursor()
 
     all_contest = []
-    time_format = "%Y/%m/%d/%H/%M"
+    time_format = "%Y-%m-%d %H:%M:%S"
     cur.execute("SELECT * FROM contest");
     for contest in cur.fetchall():
         all_contest.append(ContestInfo(contest[0],
