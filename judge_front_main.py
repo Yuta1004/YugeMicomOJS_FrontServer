@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_submission_data, get_problem_body
-from contest import get_3type_divided_contest
+from contest import get_3type_divided_contest, get_contest_problems, get_contest_data
 
 # Flask
 app = Flask(__name__)
@@ -135,7 +135,10 @@ def contest_list_view():
 
 @app.route(base_url + "/contest/<path:contest_id>")
 def contest_view(contest_id):
-    return contest_id
+    return render_template("contest.html",
+                           session=session["user_id"],
+                           contest_data=get_contest_data(contest_id),
+                           problem_list=get_contest_problems(contest_id))
 
 
 @app.route(base_url + "/problem_list")
