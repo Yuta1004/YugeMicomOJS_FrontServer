@@ -14,6 +14,7 @@
 - name : TEXT NOT NULL
 - start_time : TEXT NOT NULL
 - end_time : TEXT NOT NULL
+- problems : TEXT NOT NULL DEFAULT ""
 
 # problem.db
 ## problem
