@@ -36,6 +36,7 @@
                             <th>問題</th>
                             <th>提出日時</th>
                             <th>提出ユーザ</th>
+                            <th>ジャッジステータス</th>
                             <th>詳細</th>
                         </tr>
                     </thead>
@@ -46,6 +47,7 @@
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
                                 <td>{{ data.date }}</td>
                                 <td>{{ data.user_id }}</td>
+                                <td>{{ data.status }}</td>
                                 <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
                             </tr>
                         {% endfor %}
