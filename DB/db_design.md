@@ -27,7 +27,7 @@
 - id : TEXT PRIMARY KEY
 - user_id : TEXT NOT NULL
 - problem_id : TEXT NOT NULL
-- date : TEXT NOT NULL
+- date : DATETIME NOT NULL
 - status : NUMBER NOT NULL
 
 ## status
