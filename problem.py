@@ -15,19 +15,14 @@ def get_all_problem():
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
 
-    cur.execute("SELECT * FROM problem");
+    cur.execute("SELECT * FROM problem WHERE open_time <= datetime(\"now\", \"+9 hours\")");
 
     all_problem = []
-    time_format = "%Y/%m/%d/%H/%M" 
     for problem in cur.fetchall():
         all_problem.append(ProblemInfo(problem[0],
-                                   problem[1],
-                                   problem[2],
-                                   datetime.strptime(problem[3], time_format)))
-
-    # 公開しても良いものだけ抽出
-    now = datetime.now()
-    all_problem = [problem for problem in all_problem if problem.open_time <= now]
+                                       problem[1],
+                                       problem[2],
+                                       problem[3]))
 
     cur.close()
     connect.close()
