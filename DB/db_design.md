@@ -12,8 +12,8 @@
 ## contest
 - id : TEXT PRIMARY KEY
 - name : TEXT NOT NULL
-- start_time : TEXT NOT NULL
-- end_time : TEXT NOT NULL
+- start_time : DATETIME NOT NULL
+- end_time : DATETIME NOT NULL
 - problems : TEXT NOT NULL DEFAULT ""
 
 # problem.db
@@ -21,7 +21,7 @@
 - id : TEXT PRIMARY KEY
 - name : TEXT NOT NULL
 - scoring : NUMBER NOT NULL
-- open_time : TEXT NOT NULL
+- open_time : DATETIME NOT NULL
 
 ## submission
 - id : TEXT PRIMARY KEY
