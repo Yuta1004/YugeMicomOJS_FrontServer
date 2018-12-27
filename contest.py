@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+from problem import ProblemInfo
 
 class ContestInfo:
     def __init__(self, _id, name, start, end):
@@ -45,4 +46,32 @@ def get_3type_divided_contest():
             future_contest.append(contest)
 
     return past_contest, now_contest, future_contest
+
+
+def get_contest_problems(contest_id):
+    connect = sqlite3.connect("DB/problem.db")
+    cur = connect.cursor()
+
+    # contest.dbをアタッチ
+    cur.execute("ATTACH \"DB/contest.db\" AS contest")
+
+    # コンテストに含まれる問題一覧を取得するsql
+    sql = """
+          SELECT problem.id, problem.name, problem.scoring
+          FROM problem
+          WHERE(
+                SELECT contest.contest.problems
+                FROM contest.contest
+                WHERE contest.contest.id=?
+          ) LIKE (\"%\" || problem.id || \"%\")
+          """
+    result = cur.execute(sql, (contest_id, ))
+    problems = []
+    for elem in result.fetchall():
+        problems.append(ProblemInfo(elem[0], elem[1], elem[2], ""))
+
+    cur.close()
+    connect.close()
+
+    return problems
 
