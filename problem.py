@@ -46,19 +46,20 @@ def get_submission_data(user_id, problem_id):
     sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date \
                 FROM submission \
                 INNER JOIN problem ON submission.problem_id = problem.id"
+    sql_base_sort = " ORDER BY submission.date DESC"
 
     # user_id/problem_idに"all"が指定された場合には条件から除外する
     if user_id != "all" and problem_id != "all":
-        cur.execute(sql_base  + " WHERE user_id=? AND problem_id=? ORDER BY submission.date DESC",
+        cur.execute(sql_base  + " WHERE user_id=? AND problem_id=?" + sql_base_sort,
                     (user_id, problem_id))
     elif user_id != "all":
-        cur.execute(sql_base + " WHERE user_id=? ORDER BY submission.date DESC",
+        cur.execute(sql_base + " WHERE user_id=?" + sql_base_sort,
                     (user_id, ))
     elif problem_id != "all":
-        cur.execute(sql_base + " WHERE problem_id=? ORDER BY submission.date DESC",
+        cur.execute(sql_base + " WHERE problem_id=?" + sql_base_sort,
                     (problem_id, ))
     else:
-        cur.execute(sql_base + " ORDER BY submission.date DESC")
+        cur.execute(sql_base + sql_base_sort)
 
     submission_data = []
     for data in cur.fetchall():
