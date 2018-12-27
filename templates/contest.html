@@ -1,0 +1,72 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <font size="6">コンテスト名 </font>
+        0000/00/00 00:00 ~ 0000/00/00 00:00<br><br>
+
+        <!--タブ-->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#problems" data-toggle="tab">問題</a></li>
+            <li><a href="#ranking" data-toggle="tab">ランキング</a><li>
+        </ul>
+
+        <!--タブの要素-->
+        <div class ="tab-content">
+            <!--問題一覧-->
+            <div class="tab-pane active" id="problems">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!-- テーブルの外側の罫線だけ表示 -->
+                        <style type="text/css">
+                            table { border: 1px solid #DDD; }
+                            td { border-width: 0; }
+                        </style>
+
+                        <!--問題一覧をテーブルで表示-->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>問題名</th>
+                                    <th>配点</th>
+                                    {% if session is not none %}
+                                        <th>ジャッジステータス</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for problem in problem_list %}
+                                    <tr>
+                                        <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
+                                        <td>{{ problem.scoring }}</td>
+                                        {% if session is not none %}
+                                            <td>AC</td>
+                                        {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!--ランキング-->
+            <div class="tab-pane" id="ranking">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <p>ランキングが表示される予定</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}
