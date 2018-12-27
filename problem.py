@@ -45,7 +45,8 @@ def get_submission_data(user_id, problem_id):
 
     sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date \
                 FROM submission \
-                INNER JOIN problem ON submission.problem_id = problem.id"
+                INNER JOIN problem ON submission.problem_id = problem.id \
+                ORDER BY submission.date DESC"
 
     # user_id/problem_idに"all"が指定された場合には条件から除外する
     if user_id != "all" and problem_id != "all":
