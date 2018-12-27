@@ -48,6 +48,20 @@ def get_3type_divided_contest():
     return past_contest, now_contest, future_contest
 
 
+def get_contest_data(contest_id):
+    connect = sqlite3.connect("DB/contest.db")
+    cur = connect.cursor()
+
+    result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
+    result = result.fetchone()
+    contest_data = ContestInfo(result[0], result[1], result[2], result[3])
+
+    cur.close()
+    connect.close()
+
+    return contest_data
+
+
 def get_contest_problems(contest_id):
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
