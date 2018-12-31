@@ -2,12 +2,13 @@ import sqlite3
 
 
 class SubmissionInfo:
-    def __init__(self, submission_id, problem_id, problem_name, user_id, date, status):
+    def __init__(self, submission_id, problem_id, problem_name, user_id, date, lang, status):
         self.id = submission_id
         self.problem_id = problem_id
         self.problem_name = problem_name
         self.user_id = user_id
         self.date = date
+        self.lang = lang
         self.status = status
 
 
@@ -16,7 +17,7 @@ def get_submission_data(user_id, problem_id):
     cur = connect.cursor()
 
     # SQL
-    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, status.name \
+    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, submission.lang, status.name \
                 FROM submission, status \
                 INNER JOIN problem ON submission.problem_id = problem.id \
                 WHERE submission.status = status.id"
@@ -39,7 +40,7 @@ def get_submission_data(user_id, problem_id):
     submission_data = []
     for data in cur.fetchall():
         submission_data.append(SubmissionInfo(data[0], data[1], data[2],
-                                              data[3], data[4], data[5]))
+                                              data[3], data[4], data[5], data[6]))
 
     cur.close()
     connect.close()
