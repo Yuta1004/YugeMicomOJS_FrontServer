@@ -139,7 +139,7 @@ def contest_view(contest_id):
     return render_template("contest.html",
                            session=session["user_id"],
                            contest_data=get_contest_data(contest_id),
-                           problem_list=get_contest_problems(contest_id))
+                           problem_list=get_contest_problems(contest_id, session["user_id"]))
 
 
 @app.route(base_url + "/problem_list")

@@ -62,7 +62,7 @@ def get_contest_data(contest_id):
     return contest_data
 
 
-def get_contest_problems(contest_id):
+def get_contest_problems(contest_id, user_id):
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
 
@@ -71,18 +71,24 @@ def get_contest_problems(contest_id):
 
     # コンテストに含まれる問題一覧を取得するsql
     sql = """
-          SELECT problem.id, problem.name, problem.scoring
+          SELECT problem.id, problem.name, problem.scoring, IFNULL(submission.status_name, "未提出")
           FROM problem
+          LEFT OUTER JOIN (
+                SELECT submission.problem_id AS problem_id, max(submission.status), status.name AS status_name
+                FROM problem, submission, status
+                WHERE problem.id = submission.problem_id AND submission.user_id = ? AND submission.status = status.id
+                GROUP BY problem.id
+          ) submission ON problem.id = submission.problem_id
           WHERE(
                 SELECT contest.contest.problems
                 FROM contest.contest
                 WHERE contest.contest.id=?
           ) LIKE (\"%\" || problem.id || \"%\")
           """
-    result = cur.execute(sql, (contest_id, ))
+    result = cur.execute(sql, (user_id, contest_id))
     problems = []
     for elem in result.fetchall():
-        problems.append(ProblemInfo(elem[0], elem[1], elem[2], ""))
+        problems.append(ProblemInfo(elem[0], elem[1], elem[2], elem[3]))
 
     cur.close()
     connect.close()
