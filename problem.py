@@ -19,10 +19,8 @@ def get_all_problem():
 
     all_problem = []
     for problem in cur.fetchall():
-        all_problem.append(ProblemInfo(problem[0],
-                                       problem[1],
-                                       problem[2],
-                                       problem[3]))
+        all_problem.append(ProblemInfo(problem[0], problem[1],
+                                       problem[2], problem[3]))
 
     cur.close()
     connect.close()
@@ -67,12 +65,8 @@ def get_submission_data(user_id, problem_id):
 
     submission_data = []
     for data in cur.fetchall():
-        submission_data.append(SubmissionInfo(data[0],
-                                              data[1],
-                                              data[2],
-                                              data[3],
-                                              data[4],
-                                              data[5]))
+        submission_data.append(SubmissionInfo(data[0], data[1], data[2],
+                                              data[3], data[4], data[5]))
 
     cur.close()
     connect.close()
