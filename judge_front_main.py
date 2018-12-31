@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, session, redirect, url_for, M
 from flask_bootstrap import Bootstrap
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
-from problem import get_all_problem, get_submission_data, get_problem_body
+from problem import get_all_problem, get_problem_body
+from submission import get_submission_data, save_submission
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data
 
 # Flask
@@ -151,15 +152,24 @@ def problem_list_view():
                             problem_list=get_all_problem())
 
 
-@app.route(base_url + "/problem/<path:problem_id>")
+@app.route(base_url + "/problem/<path:problem_id>", methods=["GET", "POST"])
 def problem_view(problem_id):
+    # コード提出(POST)
+    if request.method == "POST":
+        save_submission(session["user_id"], problem_id,
+                        request.form["submission_lang"],
+                        request.form["submission_code"])
+
+        return redirect(base_url + "/submission_list/all")
+
+    # 問題ページ描画
     problem_body = get_problem_body(problem_id)
     if problem_body is None:
         return abort(404)
 
     return render_template("problem.html",
-                           session=session["user_id"],
-                           problem_body=Markup(problem_body))
+                            session=session["user_id"],
+                            problem_body=Markup(problem_body))
 
 
 @app.route(base_url + "/submission_list/<path:user_id>")
