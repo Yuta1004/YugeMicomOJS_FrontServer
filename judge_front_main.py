@@ -149,7 +149,7 @@ def problem_list_view():
     return render_template("problem_list.html",
                             session=session["user_id"],
                             now_page=now_page,
-                            problem_list=get_all_problem())
+                            problem_list=get_all_problem(session["user_id"]))
 
 
 @app.route(base_url + "/problem/<path:problem_id>", methods=["GET", "POST"])

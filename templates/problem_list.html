@@ -46,7 +46,7 @@
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
                                 <td>{{ problem.scoring }}</td>
                                 {% if session is not none %}
-                                    <td>AC</td>
+                                    <td>{{ problem.status }}</td>
                                 {% endif %}
                         {% endfor %}
                     </tbody>
