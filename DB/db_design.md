@@ -28,6 +28,7 @@
 - user_id : TEXT NOT NULL
 - problem_id : TEXT NOT NULL
 - date : DATETIME NOT NULL
+- lang : TEXT NOT NULL
 - status : NUMBER NOT NULL
 
 ## status
