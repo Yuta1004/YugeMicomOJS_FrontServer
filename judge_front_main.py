@@ -4,7 +4,7 @@ from login_process import register, login
 from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body
 from submission import get_submission_data, save_submission
-from contest import get_3type_divided_contest, get_contest_problems, get_contest_data
+from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
 
 # Flask
 app = Flask(__name__)
@@ -139,6 +139,7 @@ def contest_view(contest_id):
     return render_template("contest.html",
                            session=session["user_id"],
                            contest_data=get_contest_data(contest_id),
+                           ranking_list=get_ranking_data(contest_id),
                            problem_list=get_contest_problems(contest_id, session["user_id"]))
 
 

@@ -95,3 +95,37 @@ def get_contest_problems(contest_id, user_id):
 
     return problems
 
+
+class RankingInfo:
+    def __init__(self, user_id, score, submission_time):
+        self.user_id = user_id
+        self.score = score
+        self.submission_time = submission_time
+
+
+def get_ranking_data(contest_id):
+    connect = sqlite3.connect("DB/problem.db")
+    cur = connect.cursor()
+
+    cur.execute("ATTACH \"DB/contest.db\" AS contest")
+    sql = """
+          SELECT user_id, SUM(score), MAX(submission_time)
+          FROM (
+                SELECT submission.user_id AS user_id, MAX(problem.scoring * (status.name = \"AC\")) AS score,
+                       strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time) AS submission_time
+                FROM submission, problem, contest.contest AS contest
+                LEFT OUTER JOIN status ON submission.status = status.id
+                WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
+                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
+                GROUP BY problem.id, submission.id
+                ) submission_data
+          GROUP BY user_id
+          ORDER BY SUM(score) DESC, MAX(submission_time) ASC
+          """
+
+    ranking_list = []
+    for elem in cur.execute(sql, (contest_id, )).fetchall():
+        ranking_list.append(RankingInfo(elem[0], elem[1], elem[2]))
+
+    return ranking_list
+

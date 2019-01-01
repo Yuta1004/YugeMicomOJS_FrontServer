@@ -61,7 +61,31 @@
             <div class="tab-pane" id="ranking">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <p>ランキングが表示される予定</p>
+                        <!-- テーブルの外側の罫線だけ表示 -->
+                        <style type="text/css">
+                            table { border: 1px solid #DDD; }
+                            td { border-width: 0; }
+                        </style>
+
+                        <!--ランキングをテーブルで表示-->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>順位</th>
+                                    <th>ユーザ名</th>
+                                    <th>得点</th>
+                                    <th>経過時間</th>
+                                </tr>
+                            </thead>
+                            {% for elem in ranking_list %}
+                                <tbody>
+                                    <td>{{ loop.index0 + 1 }}</td>
+                                    <td>{{ elem.user_id }}</td>
+                                    <td>{{ elem.score }}</td>
+                                    <td>{{ elem.submission_time // 3600 }}:{{ elem.submission_time % 3600 // 60 }}:{{elem.submission_time % 60 }}</td>
+                                </tbody>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
             </div>
