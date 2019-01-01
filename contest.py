@@ -117,7 +117,7 @@ def get_ranking_data(contest_id):
                 LEFT OUTER JOIN status ON submission.status = status.id
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
                       submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
-                GROUP BY problem.id, submission.id
+                GROUP BY problem.id, submission.user_id
                 ) submission_data
           GROUP BY user_id
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
