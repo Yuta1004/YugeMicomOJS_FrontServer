@@ -49,11 +49,6 @@ def get_submission_data(user_id, problem_id):
     return submission_data
 
 
-# 提出言語IDと拡張子の対応表
-lang_to_ext = {
-    "Python3": ".py"
-}
-
 def save_submission(user_id, problem_id, lang, code):
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
@@ -61,7 +56,7 @@ def save_submission(user_id, problem_id, lang, code):
     submission_id = str(uuid.uuid4())
 
     # 提出コード保存
-    with open("Submission/" + submission_id + lang_to_ext[lang], "w", encoding="utf-8") as f:
+    with open("Submission/" + submission_id + ".txt", "w", encoding="utf-8") as f:
         f.write(code)
 
     # 提出記録
