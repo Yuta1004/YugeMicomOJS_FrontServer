@@ -191,7 +191,7 @@ def submission_view(user_id):
 
 
 # Routes(FileSend)
-@app.route(base_url + "/get_submission_code/<path:submission_id>", methods=["POST"])
+@app.route(base_url + "/get_submission_code/<path:submission_id>")
 def get_submission_code(submission_id):
     if "password" not in request.headers:
         return "HTTP HEADER ERROR"
@@ -199,7 +199,7 @@ def get_submission_code(submission_id):
     return get_code(submission_id, request.headers["password"])
 
 
-@app.route(base_url + "/get_iodata/<path:problem_id>", methods=["POST"])
+@app.route(base_url + "/get_iodata/<path:problem_id>")
 def get_iodata_route(problem_id):
     if "password" not in request.headers:
         return "HTTP HEADER ERROR"
