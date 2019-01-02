@@ -1,6 +1,7 @@
 import docker
 import os
 import sqlite3
+from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
 from configparser import ConfigParser
 
@@ -9,6 +10,9 @@ from configparser import ConfigParser
 config_file = ConfigParser()
 config_file.read("config.ini")
 
+# スレッドプール
+executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
+print("Thread Pool Init")
 
 def judge_code(submission_id, problem_id):
     client = docker.from_env()
@@ -50,4 +54,8 @@ def judge_code(submission_id, problem_id):
 
     cur.close()
     connect.close()
+
+
+def add_judge_job(submission_id, problem_id):
+    executor.submit(judge_code, submission_id, problem_id)
 
