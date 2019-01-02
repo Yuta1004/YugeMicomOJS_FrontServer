@@ -8,7 +8,7 @@ config_file.read("config.ini")
 
 
 def get_file_check(password, path):
-    if password != os.environ["system"]["password"]:
+    if password != config_file["system"]["password"]:
         return False
 
     if not os.path.exists(path):
