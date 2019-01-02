@@ -5,6 +5,7 @@ from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body
 from submission import get_submission_data, save_submission
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
+from file_read import get_code
 
 # Flask
 app = Flask(__name__)
@@ -20,7 +21,8 @@ def before_request():
     if "user_id" not in session.keys():
         session["user_id"] = None
 
-    if ("/login" not in request.url) and ("/register" not in request.url) and session["user_id"] is None:
+    if ("/login" not in request.url) and ("/register" not in request.url) and session["user_id"] is None and\
+            ("/get_submission_code" not in request.url):
         return redirect(base_url + "/login")
 
 
@@ -183,10 +185,21 @@ def submission_view(user_id):
                            submission_data=get_submission_data(user_id, "all"))
 
 
+# Routes(FileSend)
+@app.route(base_url + "/get_submission_code/<path:submission_id>", methods=["POST"])
+def get_submission_code(submission_id):
+    if "password" not in request.headers:
+        return "HTTP HEADER ERROR"
+
+    return get_code(submission_id, request.headers["password"])
+
+
+# ErrorHandler
 @app.errorhandler(404)
 def error_404_notfound(error):
     return render_template("404.html",
                            session=session["user_id"])
+
 
 if __name__ == '__main__':
     app.run(port=11000)
