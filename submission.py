@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+from judge import add_judge_job
 
 
 class SubmissionInfo:
@@ -66,4 +67,7 @@ def save_submission(user_id, problem_id, lang, code):
 
     cur.close()
     connect.close()
+
+    # 判定ジョブを追加
+    add_judge_job(submission_id, problem_id)
 

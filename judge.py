@@ -12,7 +12,6 @@ config_file.read("config.ini")
 
 # スレッドプール
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
-print("Thread Pool Init")
 
 def judge_code(submission_id, problem_id):
     client = docker.from_env()
