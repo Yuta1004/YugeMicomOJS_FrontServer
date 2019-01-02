@@ -14,6 +14,7 @@ bootstrap = Bootstrap(app)
 
 # Other
 base_url = "/yuge_micom_ojs"
+no_login_ok_url = ["/login", "/register", "/get_submission_code", "/get_iodata"]
 
 #Routes
 @app.before_request
@@ -21,10 +22,14 @@ def before_request():
     if "user_id" not in session.keys():
         session["user_id"] = None
 
-    if ("/login" not in request.url) and ("/register" not in request.url) and session["user_id"] is None and\
-            ("/get_submission_code" not in request.url) and ("/get_iodata" not in request.url):
-        return redirect(base_url + "/login")
+    # ログインが必要なURLかどうか判定
+    enough_login = True
+    for url in no_login_ok_url:
+        if url in request.url:
+            enough_login = False
 
+    if enough_login and session["user_id"] is None:
+        return redirect(base_url + "/login")
 
 @app.route(base_url + "/")
 def index():
