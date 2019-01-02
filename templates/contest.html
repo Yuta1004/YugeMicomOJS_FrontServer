@@ -77,14 +77,16 @@
                                     <th>経過時間</th>
                                 </tr>
                             </thead>
-                            {% for elem in ranking_list %}
-                                <tbody>
-                                    <td>{{ loop.index0 + 1 }}</td>
-                                    <td>{{ elem.user_id }}</td>
-                                    <td>{{ elem.score }}</td>
-                                    <td>{{ elem.submission_time // 3600 }}:{{ elem.submission_time % 3600 // 60 }}:{{elem.submission_time % 60 }}</td>
-                                </tbody>
-                            {% endfor %}
+                            <tbody>
+                                {% for elem in ranking_list %}
+                                    <tr>
+                                        <td>{{ loop.index0 + 1 }}</td>
+                                        <td>{{ elem.user_id }}</td>
+                                        <td>{{ elem.score }}</td>
+                                        <td>{{ elem.submission_time // 3600 }}:{{ elem.submission_time % 3600 // 60 }}:{{elem.submission_time % 60 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 </div>
