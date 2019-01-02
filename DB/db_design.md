@@ -30,6 +30,7 @@
 - date : DATETIME NOT NULL
 - lang : TEXT NOT NULL
 - status : NUMBER NOT NULL
+- detail : TEXT NOT NULL DEFAULT ""
 
 ## status
 - id : NUMBER PRIMARY KEY
