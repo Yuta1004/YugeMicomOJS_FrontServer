@@ -5,7 +5,7 @@ from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body
 from submission import get_submission_data, save_submission
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
-from file_read import get_code
+from file_read import get_code, get_iodata
 
 # Flask
 app = Flask(__name__)
@@ -22,7 +22,7 @@ def before_request():
         session["user_id"] = None
 
     if ("/login" not in request.url) and ("/register" not in request.url) and session["user_id"] is None and\
-            ("/get_submission_code" not in request.url):
+            ("/get_submission_code" not in request.url) and ("/get_iodata" not in request.url):
         return redirect(base_url + "/login")
 
 
@@ -192,6 +192,14 @@ def get_submission_code(submission_id):
         return "HTTP HEADER ERROR"
 
     return get_code(submission_id, request.headers["password"])
+
+
+@app.route(base_url + "/get_iodata/<path:problem_id>", methods=["POST"])
+def get_iodata_route(problem_id):
+    if "password" not in request.headers:
+        return "HTTP HEADER ERROR"
+
+    return get_iodata(problem_id, request.headers["password"])
 
 
 # ErrorHandler

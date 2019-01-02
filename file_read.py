@@ -19,3 +19,11 @@ def get_code(submission_id, password):
     with open("Submission/" + submission_id + ".txt", "r", encoding="utf-8") as f:
         return f.read()
 
+
+def get_iodata(problem_id, password):
+    if not get_file_check(password, "IOData/" + problem_id + ".json"):
+        return ""
+
+    with open("IOData/" + problem_id + ".json", "r", encoding="utf-8") as f:
+        return f.read()
+
