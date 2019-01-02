@@ -60,7 +60,7 @@ def save_submission(user_id, problem_id, lang, code):
         f.write(code)
 
     # 提出記録
-    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0)",
+    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0, \"\")",
                 (submission_id, user_id, problem_id, lang))
     connect.commit()
 
