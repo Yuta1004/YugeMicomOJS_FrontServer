@@ -1,8 +1,14 @@
 import os
+from configparser import ConfigParser
+
+
+# Config
+config_file = ConfigParser()
+config_file.read("config.ini")
 
 
 def get_file_check(password, path):
-    if password != os.environ["JUDGE_SYSTEM_PASSWORD"]:
+    if password != os.environ["system"]["password"]:
         return False
 
     if not os.path.exists(path):

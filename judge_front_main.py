@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, Markup, abort
 from flask_bootstrap import Bootstrap
+from configparser import ConfigParser
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body
@@ -7,9 +8,14 @@ from submission import get_submission_data, save_submission
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
 from file_read import get_code, get_iodata
 
+
+# Config
+config_file = ConfigParser()
+config_file.read("config.ini")
+
 # Flask
 app = Flask(__name__)
-app.config.from_pyfile("config.cfg")
+app.config["SECRET_KEY"] = config_file["system"]["password"]
 bootstrap = Bootstrap(app)
 
 # Other

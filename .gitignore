@@ -1,6 +1,6 @@
 __pycache__/
 *.db
-config.cfg
+config.ini
 *.md
 Submission/
 Problem/
