@@ -55,7 +55,7 @@ def register(user_id, user_name, password, password_conf):
     hash_password = bcrypt.hashpw(password.encode(), gen_salt)
 
     # ユーザ追加
-    cur.execute("INSERT INTO auth_info VALUES(?, ?, ?)",
+    cur.execute("INSERT INTO auth_info VALUES(?, ?, ?, admin)",
                 (user_id, user_name, hash_password.decode()))
     connect.commit()
 
