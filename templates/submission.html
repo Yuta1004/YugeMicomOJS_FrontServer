@@ -35,8 +35,22 @@
                         <label>提出言語</label>
                         <p>{{ submission_data.lang }}</p><br>
 
-                        <label>ジャッジステータス</label>
-                        <p>{{ submission_data.status }}</p>
+                        <label>ジャッジステータス</label><br>
+                        <!--ステータスによってラベルを変える-->
+                        {% set status = submission_data.status %}
+                        {% if status == "AC" %}
+                            <td><h3><span class="label label-success">{{ status }}</span></h3></td>
+                        {% elif status == "WJ" %}
+                            <td><h3><span class="label label-default">{{ status }}</span></h3></td>
+                        {% elif status == "IE" %}
+                            <td><h3><span class="label label-danger">{{ status }}</span></h3></td><br>
+                            <div class="alert alert-danger">
+                                <p><b>サーバエラーが発生しました</b></p>
+                                <p>システム運営者にリジャッジを申請してください</p>
+                            </ul>
+                        {% else %}
+                            <td><h3><span class="label label-warning">{{ status }}</span></h3></td>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -52,21 +66,33 @@
     <!--ジャッジ詳細-->
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">ジャッジ</div>
+            <div class="panel-heading">ジャッジ詳細</div>
             <div class="panel-body">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>テストケース</th>
-                            <th>ステータス</th>
-                            <th>実行詳細</th>
+                            <th class="col-xs-2">テストケース</th>
+                            <th class="col-xs-7"><div class="text-center">ステータス</div></th>
+                            <th class="col-xs-3">実行詳細</th>
                         </tr>
                     <thead>
                     <tbody>
                         {% for i in range(1, submission_data.detail|length + 1) %}
                             <tr>
                                 <td>TestCase {{ i }}</td>
-                                <td>{{ submission_data.detail[(i-1)|string].status }}</td>
+
+                                <!--ステータスによってラベルを変える-->
+                                {% set status = submission_data.detail[(i-1)|string].status %}
+                                {% if status == "AC" %}
+                                    <td><div class="text-center"><span class="label label-success">{{ status }}</span></div></td>
+                                {% elif status == "WJ" %}
+                                    <td><div class="text-center"><span class="label label-default">{{ status }}</span></div></td>
+                                {% elif status == "IE" %}
+                                    <td><div class="text-center"><span class="label label-danger">{{ status }}</span></div></td>
+                                {% else %}
+                                    <td><div class="text-center"><span class="label label-warning">{{ status }}</span></div></td>
+                                {% endif %}
+
                                 <td><a href="#" data-toggle="modal" data-target={{ "#code_detail_" + i|string }}>詳細</a></td>
                             </tr>
                         {% endfor %}
@@ -118,7 +144,7 @@
                 {% if open_code %}
                     <pre><code class="prettyprint linenums">{{ code }}</code></pre>
                 {% else %}
-                    <div class="alert alert-danger">
+                    <div class="alert alert-warning">
                         <p><b>このユーザはコードを公開していません</b></p>
                     </ul>
                 {% endif %}
