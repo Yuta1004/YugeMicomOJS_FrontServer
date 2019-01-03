@@ -35,8 +35,8 @@
                         <tr>
                             <th>提出時間</th>
                             <th>問題</th>
-                            <th>提出ユーザ</th>
-                            <th>ジャッジステータス</th>
+                            <th><div class="text-center">提出ユーザ</div></th>
+                            <th><div class="text-center">ジャッジステータス</div></th>
                             <th>言語</th>
                             <th>詳細</th>
                         </tr>
@@ -47,8 +47,19 @@
                             <tr>
                                 <td>{{ data.date }}</td>
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
-                                <td>{{ data.user_id }}</td>
-                                <td>{{ data.status }}</td>
+                                <td><div class="text-center">{{ data.user_id }}</div></td>
+
+                                <!--ステータスによってラベルを変える-->
+                                {% if data.status == "AC" %}
+                                    <td><div class="text-center"><span class="label label-success">{{ data.status }}</span></div></td>
+                                {% elif data.status == "WJ" %}
+                                    <td><div class="text-center"><span class="label label-default">{{ data.status }}</span></div></td>
+                                {% elif data.status == "IE" %}
+                                    <td><div class="text-center"><span class="label label-danger">{{ data.status }}</span></div></td>
+                                {% else %}
+                                    <td><div class="text-center"><span class="label label-warning">{{ data.status }}</span></div></td>
+                                {% endif %}
+
                                 <td>{{ data.lang }}</td>
                                 <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
                             </tr>
