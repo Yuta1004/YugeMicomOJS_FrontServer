@@ -1,6 +1,27 @@
 import sqlite3
 from datetime import datetime
 from problem import ProblemInfo
+import uuid
+
+
+def add_contest(contest_name, start_time, end_time, problems):
+    # 入力チェック
+    if contest_name == "" or start_time == "" or end_time == "" or problems is None:
+        return False
+
+    connect = sqlite3.connect("DB/contest.db")
+    cur = connect.cursor()
+
+    # コンテスト追加
+    contest_id = str(uuid.uuid4())
+    cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?)",
+                (contest_id, contest_name, start_time, end_time, ";".join(problems)))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    return True
+
 
 class ContestInfo:
     def __init__(self, _id, name, start, end):
