@@ -3,9 +3,10 @@ import bcrypt
 from login_process import login
 
 class UserInfo:
-    def __init__(self, _id, name, open_code):
+    def __init__(self, _id, name, position, open_code):
         self.id = _id
         self.name = name
+        self.position = position
         self.open_code = open_code
 
 
@@ -13,7 +14,7 @@ def get_user_data(user_id):
     connect = sqlite3.connect("DB/user.db")
     cur = connect.cursor()
 
-    sql = "SELECT auth_info.id, auth_info.name, settings.open_code \
+    sql = "SELECT auth_info.id, auth_info.name, auth_info.position, settings.open_code \
            FROM auth_info \
            INNER JOIN settings ON auth_info.id = settings.id \
            WHERE auth_info.id = ?"
@@ -26,7 +27,7 @@ def get_user_data(user_id):
     connect.close()
 
     result = result[0]
-    return UserInfo(result[0], result[1], True if result[2] == 1 else False)
+    return UserInfo(result[0], result[1], result[2], result[3] == 1)
 
 
 def update_user_data(user_id, user_name, open_code):
