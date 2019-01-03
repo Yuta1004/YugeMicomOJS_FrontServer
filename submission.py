@@ -52,6 +52,41 @@ def get_submission_data(user_id, problem_id):
     return submission_data
 
 
+class SubmissionDetail:
+    def __init__(self, status, err_msg):
+        self.status = status
+        self.err_msg = err_msg
+
+def get_data_for_submission_page(submission_id):
+    # 問題ID、ユーザID取得
+    connect = sqlite3.connect("DB/problem.db")
+    cur = connect.cursor()
+    fetch_result = cur.execute("SELECT problem_id, user_id FROM submission WHERE id = ?",
+                               (submission_id, )).fetchone()
+    problem_id = fetch_result[0]
+    user_id = fetch_result[1]
+    cur.close()
+    connect.close()
+
+    # 提出データ取得
+    submission_data = get_submission_data(user_id, problem_id)[0]
+
+    # 詳細情報パース
+    detail = submission_data.detail.split(";")
+    detail = [item.split("`") for item in detail]
+
+    detail_data = {}
+    for elem in detail[:-1]:
+        detail_data[elem[0]] = SubmissionDetail(elem[1],
+                                                elem[2].replace("$", "\n").replace("/tmp/judge/src", "/path/to/code"))
+    submission_data.detail = detail_data
+
+    # 提出コード取得
+    with open("Submission/" + submission_id + ".txt", "r", encoding="utf-8") as f:
+        submission_code = f.read()
+
+    return submission_data, submission_code
+
 def save_submission(user_id, problem_id, lang, code):
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
