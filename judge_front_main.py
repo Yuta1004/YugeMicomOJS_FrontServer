@@ -4,7 +4,7 @@ from configparser import ConfigParser
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body
-from submission import get_submission_data, save_submission
+from submission import get_submission_data, save_submission, get_data_for_submission_page
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
 from file_read import get_code, get_iodata
 
@@ -197,6 +197,17 @@ def submission_list_view(user_id):
                            session=session["user_id"],
                            now_page=now_page,
                            submission_data=get_submission_data(user_id, "all"))
+
+
+@app.route(base_url + "/submission/<path:submission_id>")
+def submission_view(submission_id):
+    submission_data, code, open_code = get_data_for_submission_page(submission_id)
+
+    return render_template("submission.html",
+                           session=session["user_id"],
+                           submission_data=submission_data,
+                           code=code,
+                           open_code=open_code)
 
 
 # Routes(FileSend)

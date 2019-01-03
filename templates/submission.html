@@ -1,0 +1,132 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<head>
+    <!--Code-Pretty-->
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">提出情報</div>
+            <div class="panel-body">
+                <!--2段組レイアウト-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>問題</label>
+                        <p><a href={{ "/yuge_micom_ojs/problem/" + submission_data.problem_id}}>{{ submission_data.problem_name }}</a></p><br>
+
+                        <label>提出ユーザ</label>
+                        <p>{{ submission_data.user_id }}</p><br>
+
+                        <label>提出日時</label>
+                        <p>{{ submission_data.date }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>提出言語</label>
+                        <p>{{ submission_data.lang }}</p><br>
+
+                        <label>ジャッジステータス</label>
+                        <p>{{ submission_data.status }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- テーブルの外側の罫線だけ表示 -->
+    <style type="text/css">
+        table { border: 1px solid #DDD; }
+        td { border-width: 0; }
+    </style>
+
+    <!--ジャッジ詳細-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">ジャッジ</div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>テストケース</th>
+                            <th>ステータス</th>
+                            <th>実行詳細</th>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        {% for i in range(1, submission_data.detail|length + 1) %}
+                            <tr>
+                                <td>TestCase {{ i }}</td>
+                                <td>{{ submission_data.detail[(i-1)|string].status }}</td>
+                                <td><a href="#" data-toggle="modal" data-target={{ "#code_detail_" + i|string }}>詳細</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!--実行詳細表示モーダル-->
+    {% for i in range(1, submission_data.detail|length + 1) %}
+        <div class="modal fade" id={{ "code_detail_" + i|string }} tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-label">{{ "実行詳細 (TestCase " + i|string + ")" }}</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <pre><code class="prettyprint">{{ submission_data.detail[(i-1)|string].err_msg }}</code></pre>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <!--コード表示用スタイル設定-->
+    <style type="text/css">
+        .prettyprint {
+            white-space: pre;
+            overflow: auto;
+        }
+        .prettyprint ol.linenums > li {
+            list-style-type: decimal;
+        }
+    </style>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">提出コード</div>
+            <div class="panel-body">
+                {% if open_code %}
+                    <pre><code class="prettyprint linenums">{{ code }}</code></pre>
+                {% else %}
+                    <div class="alert alert-danger">
+                        <p><b>このユーザはコードを公開していません</b></p>
+                    </ul>
+                {% endif %}
+            </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

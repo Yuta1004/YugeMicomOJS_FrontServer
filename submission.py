@@ -58,18 +58,25 @@ class SubmissionDetail:
         self.err_msg = err_msg
 
 def get_data_for_submission_page(submission_id):
-    # 問題ID、ユーザID取得
+    # 提出詳細取得
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
-    fetch_result = cur.execute("SELECT problem_id, user_id FROM submission WHERE id = ?",
-                               (submission_id, )).fetchone()
-    problem_id = fetch_result[0]
-    user_id = fetch_result[1]
+
+    sql = """
+          SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, submission.lang, status.name, submission.detail
+          FROM submission, status
+          INNER JOIN problem ON submission.problem_id = problem.id
+          WHERE submission.status = status.id AND submission.id = ?
+          """
+    fetch_result = cur.execute(sql, (submission_id, )).fetchone()
+    submission_data = SubmissionInfo(fetch_result[0], fetch_result[1],
+                                     fetch_result[2], fetch_result[3],
+                                     fetch_result[4], fetch_result[5],
+                                     fetch_result[6], fetch_result[7])
+
+    user_id = fetch_result[3]
     cur.close()
     connect.close()
-
-    # 提出データ取得
-    submission_data = get_submission_data(user_id, problem_id)[0]
 
     # 詳細情報パース
     detail = submission_data.detail.split(";")
@@ -85,7 +92,14 @@ def get_data_for_submission_page(submission_id):
     with open("Submission/" + submission_id + ".txt", "r", encoding="utf-8") as f:
         submission_code = f.read()
 
-    return submission_data, submission_code
+    # 提出コード公開設定取得
+    connect = sqlite3.connect("DB/user.db")
+    cur = connect.cursor()
+    open_code = cur.execute("SELECT open_code FROM settings WHERE id = ?", (user_id, )).fetchone()[0]
+    cur.close()
+    connect.close()
+
+    return submission_data, submission_code, open_code == 1
 
 def save_submission(user_id, problem_id, lang, code):
     connect = sqlite3.connect("DB/problem.db")
