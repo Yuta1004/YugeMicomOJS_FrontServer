@@ -44,7 +44,7 @@ class ProblemInfo:
         self.status = status
 
 
-def get_all_problem(user_id):
+def get_all_problem(user_id, refine_time=True):
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
 
@@ -61,6 +61,9 @@ def get_all_problem(user_id):
           ORDER BY problem.scoring ASC
           """
 
+    # 時間で絞り込みをかけるかどうか->実行
+    if not refine_time:
+        sql.replace("WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")", "")
     cur.execute(sql, (user_id, ));
 
     all_problem = []
