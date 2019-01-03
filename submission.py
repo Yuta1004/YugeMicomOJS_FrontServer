@@ -4,7 +4,7 @@ from judge import add_judge_job
 
 
 class SubmissionInfo:
-    def __init__(self, submission_id, problem_id, problem_name, user_id, date, lang, status):
+    def __init__(self, submission_id, problem_id, problem_name, user_id, date, lang, status, detail):
         self.id = submission_id
         self.problem_id = problem_id
         self.problem_name = problem_name
@@ -12,6 +12,7 @@ class SubmissionInfo:
         self.date = date
         self.lang = lang
         self.status = status
+        self.detail = detail
 
 
 def get_submission_data(user_id, problem_id):
@@ -19,7 +20,7 @@ def get_submission_data(user_id, problem_id):
     cur = connect.cursor()
 
     # SQL
-    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, submission.lang, status.name \
+    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, submission.lang, status.name, submission.detail \
                 FROM submission, status \
                 INNER JOIN problem ON submission.problem_id = problem.id \
                 WHERE submission.status = status.id"
@@ -42,7 +43,8 @@ def get_submission_data(user_id, problem_id):
     submission_data = []
     for data in cur.fetchall():
         submission_data.append(SubmissionInfo(data[0], data[1], data[2],
-                                              data[3], data[4], data[5], data[6]))
+                                              data[3], data[4], data[5],
+                                              data[6], data[7]))
 
     cur.close()
     connect.close()
