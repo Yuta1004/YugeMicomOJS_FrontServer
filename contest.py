@@ -127,5 +127,8 @@ def get_ranking_data(contest_id):
     for elem in cur.execute(sql, (contest_id, )).fetchall():
         ranking_list.append(RankingInfo(elem[0], elem[1], elem[2]))
 
+    cur.close()
+    connect.close()
+
     return ranking_list
 
