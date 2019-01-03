@@ -83,21 +83,35 @@
                                     <th>得点</th>
                                     <th>経過時間</th>
                                     {% for problem in problem_list %}
-                                        <th><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></th>
+                                        <th><div class="text-center"><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></div></th>
                                     {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
+                                <!--ランキングテーブル表示-->
                                 {% for elem in ranking_list %}
                                     <tr>
                                         <td>{{ loop.index0 + 1 }}</td>
-                                        <td>{{ elem.user_id }}</td>
+                                        <td><b>{{ elem.user_id }}</b></td>
                                         <td>{{ elem.score }}</td>
                                         <td>{{ elem.submission_time // 3600 }}:{{ elem.submission_time % 3600 // 60 }}:{{elem.submission_time % 60 }}</td>
-                                        <td><span class="label label-success">AC</span></td>
-                                        <td><span class="label label-success">AC</span></td>
-                                        <td><span class="label label-success">AC</span></td>
-                                        <td><span class="label label-success">AC</span></td>
+
+                                        <!--ユーザの提出状況を表示-->
+                                        {% for problem in problem_list %}
+                                            <!--ステータスによってラベルを変える-->
+                                            {% set problem_status = submission_data[elem.user_id][problem.id] %}
+                                            {% if problem_status == "AC" %}
+                                                <td><div class="text-center"><span class="label label-success">{{ problem_status }}</span></div></td>
+                                            {% elif problem_status == "WJ" %}
+                                                <td><div class="text-center"><span class="label label-default">{{ problem_status }}</span></div></td>
+                                            {% elif problem_status == "IE" %}
+                                                <td><div class="text-center"><span class="label label-danger">{{ problem_status }}</span></div></td>
+                                            {% elif problem_status|length == 0 %}
+                                                <td><div class="text-center"><span class="label label-default">未提出</span></div></td>
+                                            {% else %}
+                                                <td><div class="text-center"><span class="label label-warning">{{ problem_status }}</span></div></td>
+                                            {% endif %}
+                                        {% endfor %}
                                     </tr>
                                 {% endfor %}
                             </tbody>

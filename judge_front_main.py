@@ -149,10 +149,13 @@ def contest_list_view():
 
 @app.route(base_url + "/contest/<path:contest_id>")
 def contest_view(contest_id):
+    ranking_data, submission_data = get_ranking_data(contest_id)
+
     return render_template("contest.html",
                            session=session["user_id"],
                            contest_data=get_contest_data(contest_id),
-                           ranking_list=get_ranking_data(contest_id),
+                           ranking_list=ranking_data,
+                           submission_data=submission_data,
                            problem_list=get_contest_problems(contest_id, session["user_id"]))
 
 
@@ -187,7 +190,7 @@ def problem_view(problem_id):
 
 
 @app.route(base_url + "/submission_list/<path:user_id>")
-def submission_view(user_id):
+def submission_list_view(user_id):
     now_page = request.args.get("page", 1, type=int)
 
     return render_template("submission_list.html",
