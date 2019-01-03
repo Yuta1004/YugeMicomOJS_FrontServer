@@ -14,7 +14,7 @@
             <div class="panel-heading"><h3>Yuge Micom Online Judge Systemへようこそ</h3></div>
             <div class="panel-body">
                 <p>Yuge Micom Online Judge Systemは現在開発中です！</p>
-                <p>実装予定</p>
+                <p>実装済み</p>
                 <ul>
                     <li>ログインフォーム</li>
                     <li>各コンテストトップページ</li>
@@ -22,11 +22,74 @@
                     <li>提出ページ</li>
                     <li>ジャッジ結果確認ページ</li>
                     <li>ランキングページ</li>
-                    <li>ユーザページ</li>
                 </ul>
             </div>
         </div>
     </div>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3>ジャッジステータス解説</h3></div>
+            <div class="panel-body">
+                <p>YMOJSには7つのジャッジステータスが存在します</p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><div class="text-center">ジャッジステータス</div></th>
+                            <th>#</th>
+                            <th>解説</th>
+                            <th>得点</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-success">AC</span></div></td>
+                            <td>Accepted</td>
+                            <td>正答です。提出コードが要求通りに動作することが確認されました</td>
+                            <td>◎</td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-warning">WA</span></div></td>
+                            <td>Wrong Answer</td>
+                            <td>誤答です。提出コードの出力が正しくありません。</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-warning">TLE</span></div></td>
+                            <td>Time Limit Exceeded</td>
+                            <td>制限時間内に提出コードの実行が終了しませんでした。</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-warning">RE</span></div></td>
+                            <td>Runtime Error</td>
+                            <td>実行エラーです。提出コードの実行が正常に終了しませんでした。</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-warning">CE</span></div></td>
+                            <td>Compilation Error</td>
+                            <td>コンパイルエラーです。スクリプト言語の場合は文法エラーです。</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-danger">IE</span></div></td>
+                            <td>Internal Error</td>
+                            <td>サーバエラーです。システム運営者にリジャッジを申請してください。</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-default">WJ</span></div></td>
+                            <td>Waiting for Judge</td>
+                            <td>ジャッジ中です。</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 {% endblock %}
