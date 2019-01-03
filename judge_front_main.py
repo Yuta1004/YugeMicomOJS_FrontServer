@@ -5,7 +5,7 @@ from login_process import register, login
 from user import get_user_data, update_user_data, change_password
 from problem import get_all_problem, get_problem_body, add_problem
 from submission import get_submission_data, save_submission, get_data_for_submission_page
-from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
+from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data, add_contest
 from file_read import get_code, get_iodata
 
 
@@ -153,6 +153,27 @@ def add_problem_route():
     return render_template("add_problem.html",
                            session=session["user_id"],
                            add_failed=add_failed)
+
+
+@app.route(base_url + "/add_contest", methods=["GET", "POST"])
+def add_contest_route():
+    add_failed = None
+
+    # 問題追加
+    if request.method == "POST":
+        contest_name = request.form["contest_name"]
+        start_date = request.form["start_date"]
+        start_time = request.form["start_time"]
+        end_date = request.form["end_date"]
+        end_time = request.form["end_time"]
+        problems = request.form.getlist("problems")
+
+        add_failed = add_contest(contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
+
+    return render_template("add_contest.html",
+                           session=session["user_id"],
+                           add_failed=add_failed,
+                           problems=get_all_problem(session["user_id"], False))
 
 
 @app.route(base_url + "/contest_list")

@@ -1,0 +1,63 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS Register{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>コンテスト追加</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if addfailed is not none and add_failed %}
+            <div class="alert alert-success">
+                <p><b>コンテストが追加されました</b></p>
+            </div>
+        {% elif add_failed is not none %}
+            <div class="alert alert-danger">
+                <p><b>コンテスト追加に失敗しました</b></p>
+                <ul>
+                    <li>全て入力してください</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="#" method="post">
+            <div class="form-group">
+                <label class="control-label">コンテスト名</label>
+                <input class="form-control" type="text" name="contest_name" id="contest_name">
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">開始時間</b></label><br>
+                日付<input class="form-control" type="date" name="start_date" id="start_date"><br>
+                時間<input class="form-control" type="time" name="start_time" id="start_time">
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">終了時間</b></label><br>
+                日付<input class="form-control" type="date" name="end_date" id="end_date"><br>
+                時間<input class="form-control" type="time" name="end_time" id="end_time">
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">問題選択</label><br>
+                <select name="problems" id="problems" size="10" multiple>
+                    {% for problem in problems %}
+                        <option value={{ problem.id }}>{{ problem.name }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <button class="btn btn-primary">コンテスト追加</button>
+        </form>
+
+        <br><br>
+    </div>
+</body>
+
+{% endblock %}
