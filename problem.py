@@ -27,7 +27,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
         f.write(json.dumps(io_data))
 
     # DB追加
-    cur.execute("INSERT INTO problem VALUES(?, ?, ?, ?)",
+    cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?))",
                 (problem_id, problem_name, scoring, open_date + " " + open_time))
     connect.commit()
     cur.close()
