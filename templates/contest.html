@@ -15,8 +15,8 @@
 
         <!--タブ-->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#problems" data-toggle="tab">問題</a></li>
-            <li><a href="#ranking" data-toggle="tab">ランキング</a><li>
+            <li class="active"><a href="#problems" problem-toggle="tab">問題</a></li>
+            <li><a href="#ranking" problem-toggle="tab">ランキング</a><li>
         </ul>
 
         <!--タブの要素-->
@@ -37,9 +37,7 @@
                                 <tr>
                                     <th>問題名</th>
                                     <th>配点</th>
-                                    {% if session is not none %}
-                                        <th>ジャッジステータス</th>
-                                    {% endif %}
+                                    <th><div class="text-center">ジャッジステータス</div></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,8 +45,16 @@
                                     <tr>
                                         <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
                                         <td>{{ problem.scoring }}</td>
-                                        {% if session is not none %}
-                                            <td>{{ problem.status }}</td>
+
+                                        <!--ステータスによってラベルを変える-->
+                                        {% if problem.status == "AC" %}
+                                            <td><div class="text-center"><span class="label label-success">{{ problem.status }}</span></div></td>
+                                        {% elif problem.status == "WJ" or problem.status == "未提出" %}
+                                            <td><div class="text-center"><span class="label label-default">{{ problem.status }}</span></div></td>
+                                        {% elif problem.status == "IE" %}
+                                            <td><div class="text-center"><span class="label label-danger">{{ problem.status }}</span></div></td>
+                                        {% else %}
+                                            <td><div class="text-center"><span class="label label-warning">{{ problem.status }}</span></div></td>
                                         {% endif %}
                                 {% endfor %}
                             </tbody>
