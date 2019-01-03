@@ -1,0 +1,76 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS Register{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>問題追加</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if addfailed is not none and add_failed %}
+            <div class="alert alert-success">
+                <p><b>問題が追加されました</b></p>
+            </div>
+        {% elif add_failed is not none %}
+            <div class="alert alert-danger">
+                <p><b>問題追加に失敗しました</b></p>
+                <ul>
+                    <li>全て入力してください</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="#" method="post">
+            <div class="form-group">
+                <label class="control-label">問題名</label>
+                <input class="form-control" type="text" name="problem_name" id="problem_name">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">配点</b></label>
+                <input class="form-control" type="number" name="scoring" id="scoring">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">公開時間</b></label><br>
+                日付<input class="form-control" type="date" name="open_date" id="open_date"><br>
+                時間<input class="form-control" type="time" name="open_time" id="open_time">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">問題文(Markdown)</label>
+                <textarea class="form-control" name="problem_body" id="problem_body" rows="10"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">入出力データ(Json)</label>
+                <textarea class="form-control" name="io_data" id="io_data" rows="10">{
+    "test_case_size": 3,
+    "input": {
+        "0": ["1", "2", "3"],
+        "1": ["1", "2", "3"],
+        "2": ["1", "2", "3"]
+    },
+    "output": {
+        "0": ["6"],
+        "1": ["6"],
+        "2": ["6"]
+    }
+}</textarea>
+            </div>
+
+            <button class="btn btn-primary">問題追加</button>
+        </form>
+
+        <br><br>
+        <p>未登録の場合は<a href="/yuge_micom_ojs/register">ユーザ登録</a>を行ってください</p>
+    </div>
+</body>
+
+{% endblock %}

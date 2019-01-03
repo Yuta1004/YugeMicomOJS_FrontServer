@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from configparser import ConfigParser
 from login_process import register, login
 from user import get_user_data, update_user_data, change_password
-from problem import get_all_problem, get_problem_body
+from problem import get_all_problem, get_problem_body, add_problem
 from submission import get_submission_data, save_submission, get_data_for_submission_page
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
 from file_read import get_code, get_iodata
@@ -133,6 +133,27 @@ def change_password_route():
     return render_template("change_password.html",
                            session=session["user_id"],
                            change_succeeded=change_succeeded)
+
+
+@app.route(base_url + "/add_problem", methods=["GET", "POST"])
+def add_problem_route():
+    add_failed = None
+
+    # 問題追加
+    if request.method == "POST":
+        problem_name = request.form["problem_name"]
+        scoring = int(request.form["scoring"])
+        open_date = request.form["open_date"]
+        open_time = request.form["open_time"]
+        problem_body = request.form["problem_body"]
+        io_data = request.form["io_data"]
+
+        add_failed = add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data)
+
+    return render_template("add_problem.html",
+                           session=session["user_id"],
+                           add_failed=add_failed)
+
 
 @app.route(base_url + "/contest_list")
 def contest_list_view():
