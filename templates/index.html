@@ -31,7 +31,13 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h3>ジャッジステータス解説</h3></div>
             <div class="panel-body">
-                <p>YMOJSには7つのジャッジステータスが存在します</p>
+                <!-- テーブルの外側の罫線だけ表示 -->
+                <style type="text/css">
+                    table { border: 1px solid #DDD; }
+                    td { border-width: 0; }
+                </style>
+
+                <p>YMOJSには8つのジャッジステータスが存在します</p>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -84,6 +90,13 @@
                             <td>ジャッジ中です。</td>
                             <td></td>
                         </tr>
+                        <tr>
+                            <td><div class="text-center"><span class="label label-default">未提出</span></div></td>
+                            <td>未提出</td>
+                            <td>未提出です。</td>
+                            <td></td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
