@@ -33,7 +33,7 @@ def judge_code(submission_id, problem_id):
     for line in judge_result.decode().split("\n")[:-1]:
         judge_list.append(line.split("`")[1])
 
-    if judge_result.decode == "":
+    if judge_result.decode() == "":
         judge_list = ["IE"]
 
     # 全体の判定を決める
