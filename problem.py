@@ -63,7 +63,7 @@ def get_all_problem(user_id, refine_time=True):
 
     # 時間で絞り込みをかけるかどうか->実行
     if not refine_time:
-        sql.replace("WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")", "")
+        sql = sql.replace("WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")", "")
     cur.execute(sql, (user_id, ));
 
     all_problem = []
