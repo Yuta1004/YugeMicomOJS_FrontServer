@@ -108,6 +108,8 @@ def get_ranking_data(contest_id):
     cur = connect.cursor()
 
     cur.execute("ATTACH \"DB/contest.db\" AS contest")
+
+    # ランキングデータ取得
     sql = """
           SELECT user_id, SUM(score), MAX(submission_time)
           FROM (
@@ -122,13 +124,31 @@ def get_ranking_data(contest_id):
           GROUP BY user_id
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
           """
-
     ranking_list = []
     for elem in cur.execute(sql, (contest_id, )).fetchall():
         ranking_list.append(RankingInfo(elem[0], elem[1], elem[2]))
 
+    # 全員の提出状況を取得
+    sql = """
+          SELECT submission.user_id, submission.problem_id, MAX(submission.status), status.name
+          FROM submission, status, (
+                SELECT contest.contest.problems AS problems, contest.contest.start_time AS start_time, contest.contest.end_time AS end_time
+                FROM contest.contest
+                WHERE contest.contest.id = ?
+            ) AS contest
+          WHERE submission.status = status.id AND contest.problems LIKE (\"%\" || submission.problem_id || \"%\") AND
+                    contest.start_time <= submission.date AND submission.date <= contest.end_time
+          GROUP BY submission.problem_id, submission.user_id
+          """
+    submission_data = {}
+    for line in cur.execute(sql, (contest_id, )).fetchall():
+        if line[0] not in submission_data.keys():
+            submission_data[line[0]] = {}
+
+        submission_data[line[0]][line[1]] = line[3]
+
     cur.close()
     connect.close()
 
-    return ranking_list
+    return ranking_list, submission_data
 
