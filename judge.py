@@ -22,8 +22,6 @@ def judge_code(submission_id):
     cur.close()
     connect.close()
 
-    client = docker.from_env()
-
     image_name = config_file["docker"]["image_name"]
     env = {"LD_LIBRARY_PATH": "/usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64"}
     commands = [
@@ -34,6 +32,7 @@ def judge_code(submission_id):
         problem_id
     ]
 
+    client = docker.from_env()
     judge_result = client.containers.run(image_name, commands, remove=True, environment=env)
 
     # 判定取り出し
