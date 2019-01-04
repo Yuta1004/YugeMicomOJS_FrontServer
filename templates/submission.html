@@ -115,7 +115,13 @@
                     </div>
 
                     <div class="modal-body">
-                        <pre><code class="prettyprint">{{ submission_data.detail[(i-1)|string].err_msg }}</code></pre>
+                        {% if open_code %}
+                            <pre><code class="prettyprint">{{ submission_data.detail[(i-1)|string].err_msg }}</code></pre>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <b>実行詳細は非公開です</b>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="modal-footer">

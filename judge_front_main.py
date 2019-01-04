@@ -243,7 +243,7 @@ def submission_list_view(user_id):
 
 @app.route(base_url + "/submission/<path:submission_id>")
 def submission_view(submission_id):
-    submission_data, code, open_code = get_data_for_submission_page(submission_id)
+    submission_data, code, open_code = get_data_for_submission_page(session["user_id"], submission_id)
 
     return render_template("submission.html",
                            session=session["user_id"],
