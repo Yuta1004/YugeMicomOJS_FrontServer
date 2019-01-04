@@ -12,8 +12,11 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading"><b>問題文</b></div>
+            <link rel="stylesheet" href={{ url_for("static", filename="problem_markdown.css") }}>
             <div class="panel-body">
-                {{ problem_body }}
+                <div class="problem_body">
+                    {{ problem_body }}
+                </div>
             </div>
         </div>
     </div>
