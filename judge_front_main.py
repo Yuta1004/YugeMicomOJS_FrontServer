@@ -249,15 +249,20 @@ def submission_list_view(user_id):
                            submission_data=get_submission_data(user_id, "all"))
 
 
-@app.route(base_url + "/submission/<path:submission_id>")
+@app.route(base_url + "/submission/<path:submission_id>", methods=["POST"])
 def submission_view(submission_id):
+    # リジャッジ
+    if "rejudge" in request.form.keys() and is_admin(session["user_id"]):
+        add_judge_job(submission_id, )
+
     submission_data, code, open_code = get_data_for_submission_page(session["user_id"], submission_id)
 
     return render_template("submission.html",
                            session=session["user_id"],
                            submission_data=submission_data,
                            code=code,
-                           open_code=open_code)
+                           open_code=open_code,
+                           is_admin=is_admin(session["user_id"]))
 
 
 # Routes(FileSend)

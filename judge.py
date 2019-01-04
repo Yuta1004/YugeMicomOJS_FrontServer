@@ -13,7 +13,15 @@ config_file.read("config.ini")
 # スレッドプール
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
 
-def judge_code(submission_id, problem_id):
+def judge_code(submission_id):
+    # 問題ID取得
+    connect = sqlite3.connect("DB/problem.db")
+    cur = connect.cursor()
+    problem_id = cur.execute("SELECT problem_id FROM submission WHERE id = ?",
+                             (submission_id, )).fetchone()[0]
+    cur.close()
+    connect.close()
+
     client = docker.from_env()
 
     image_name = config_file["docker"]["image_name"]
@@ -55,6 +63,6 @@ def judge_code(submission_id, problem_id):
     connect.close()
 
 
-def add_judge_job(submission_id, problem_id):
-    executor.submit(judge_code, submission_id, problem_id)
+def add_judge_job(submission_id):
+    executor.submit(judge_code, submission_id)
 
