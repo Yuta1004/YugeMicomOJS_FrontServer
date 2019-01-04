@@ -75,3 +75,14 @@ def change_password(user_id, old_pass, new_pass, new_pass_conf):
 
     return True
 
+
+def is_admin(user_id):
+    connect = sqlite3.connect("DB/user.db")
+    cur = connect.cursor()
+
+    position = cur.execute("SELECT position FROM auth_info WHERE id = ?",
+                           (user_id, )).fetchone()[0]
+    cur.close()
+    connect.close()
+
+    return position == "admin"
