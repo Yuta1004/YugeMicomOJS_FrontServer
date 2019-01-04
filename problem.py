@@ -8,7 +8,7 @@ import json
 
 def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data):
     # 入力ミスならreturn
-    if problem_name == "" or scoring == 0 or open_date == "" or open_time == "" \
+    if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
             or problem_body == "" or io_data == "":
         return False
 
