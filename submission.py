@@ -126,5 +126,5 @@ def save_submission(user_id, problem_id, lang, code):
     connect.close()
 
     # 判定ジョブを追加
-    add_judge_job(submission_id, problem_id)
+    add_judge_job(submission_id)
 

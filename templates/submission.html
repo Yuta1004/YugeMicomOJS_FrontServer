@@ -35,7 +35,7 @@
                         <label>提出言語</label>
                         <p>{{ submission_data.lang }}</p><br>
 
-                        <label>ジャッジステータス</label><br>
+                        <label>ジャッジステータス</label>
                         <!--ステータスによってラベルを変える-->
                         {% set status = submission_data.status %}
                         {% if status == "AC" %}
@@ -50,6 +50,15 @@
                             </ul>
                         {% else %}
                             <td><h3><span class="label label-warning">{{ status }}</span></h3></td>
+                        {% endif %}
+                        <br>
+
+                        <!--管理者がページを閲覧している場合にはリジャッジボタンを表示する-->
+                        {% if is_admin %}
+                            <label>リジャッジボタン(ボタンを押すとすぐにリジャッジが行われます)</label>
+                            <form action="#" method="post">
+                                <button class="btn btn-warning" id="rejudge" name="rejudge" value="do_rejudge">リジャッジ</button>
+                            </form>
                         {% endif %}
                     </div>
                 </div>

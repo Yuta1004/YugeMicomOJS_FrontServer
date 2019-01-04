@@ -7,7 +7,7 @@ from problem import get_all_problem, get_problem_body, add_problem
 from submission import get_submission_data, save_submission, get_data_for_submission_page
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data, add_contest
 from file_read import get_code, get_iodata
-
+from judge import add_judge_job
 
 # Config
 config_file = ConfigParser()
@@ -249,12 +249,14 @@ def submission_list_view(user_id):
                            submission_data=get_submission_data(user_id, "all"))
 
 
-@app.route(base_url + "/submission/<path:submission_id>", methods=["POST"])
+@app.route(base_url + "/submission/<path:submission_id>", methods=["GET", "POST"])
 def submission_view(submission_id):
     # リジャッジ
     if "rejudge" in request.form.keys() and is_admin(session["user_id"]):
-        add_judge_job(submission_id, )
+        add_judge_job(submission_id)
+        return redirect(base_url + "/submission_list/all")
 
+    # 提出詳細ページ描画
     submission_data, code, open_code = get_data_for_submission_page(session["user_id"], submission_id)
 
     return render_template("submission.html",
