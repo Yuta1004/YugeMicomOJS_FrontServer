@@ -37,12 +37,14 @@ def before_request():
     if enough_login and session["user_id"] is None:
         return redirect(base_url + "/login")
 
+# トップページ
 @app.route(base_url + "/")
 def index():
     return render_template("index.html",
                            session=session["user_id"])
 
 
+# ユーザ登録ページ
 @app.route(base_url + "/register", methods=["GET", "POST"])
 def register_user():
     if request.method == "GET":
@@ -64,6 +66,7 @@ def register_user():
                                session=session["user_id"])
 
 
+# ログインページ
 @app.route(base_url + "/login", methods=["GET", "POST"])
 def login_user():
     if request.method == "GET":
@@ -83,12 +86,14 @@ def login_user():
                                session=session["user_id"])
 
 
+# ログアウト(トップページにリダイレクト)
 @app.route(base_url + "/logout")
 def logout_user():
     session["user_id"] = None
     return redirect(base_url)
 
 
+# ユーザ設定ページ
 @app.route(base_url + "/user_settings", methods=["POST", "GET"])
 def user_settings():
     if session["user_id"] is None:
@@ -113,6 +118,7 @@ def user_settings():
                            session=session["user_id"])
 
 
+# パスワード変更ページ
 @app.route(base_url + "/change_password", methods=["POST", "GET"])
 def change_password_route():
     if session["user_id"] is None:
@@ -135,6 +141,7 @@ def change_password_route():
                            change_succeeded=change_succeeded)
 
 
+# 問題追加ページ(管理者のみ)
 @app.route(base_url + "/add_problem", methods=["GET", "POST"])
 def add_problem_route():
     # 管理者かどうか確認
@@ -159,6 +166,7 @@ def add_problem_route():
                            add_failed=add_failed)
 
 
+# コンテスト追加ページ(管理者のみ)
 @app.route(base_url + "/add_contest", methods=["GET", "POST"])
 def add_contest_route():
     # 管理者かどうか確認
@@ -184,6 +192,7 @@ def add_contest_route():
                            problems=get_all_problem(session["user_id"], False))
 
 
+# コンテスト一覧表示ページ
 @app.route(base_url + "/contest_list")
 def contest_list_view():
     now_page = request.args.get("page", 1, type=int)
@@ -197,6 +206,7 @@ def contest_list_view():
                             future_contest=future_contest)
 
 
+# コンテスト情報表示ページ
 @app.route(base_url + "/contest/<path:contest_id>")
 def contest_view(contest_id):
     ranking_data, submission_data = get_ranking_data(contest_id)
@@ -209,6 +219,7 @@ def contest_view(contest_id):
                            problem_list=get_contest_problems(contest_id, session["user_id"]))
 
 
+# 問題一覧表示ページ
 @app.route(base_url + "/problem_list")
 def problem_list_view():
     now_page = request.args.get("page", 1, type=int)
@@ -219,6 +230,7 @@ def problem_list_view():
                             problem_list=get_all_problem(session["user_id"]))
 
 
+# 問題情報表示ページ
 @app.route(base_url + "/problem/<path:problem_id>", methods=["GET", "POST"])
 def problem_view(problem_id):
     # コード提出(POST)
@@ -239,6 +251,7 @@ def problem_view(problem_id):
                             problem_body=Markup(problem_body))
 
 
+# 提出一覧表示ページ
 @app.route(base_url + "/submission_list/<path:user_id>")
 def submission_list_view(user_id):
     now_page = request.args.get("page", 1, type=int)
@@ -249,6 +262,7 @@ def submission_list_view(user_id):
                            submission_data=get_submission_data(user_id, "all"))
 
 
+# 提出情報表示ページ
 @app.route(base_url + "/submission/<path:submission_id>", methods=["GET", "POST"])
 def submission_view(submission_id):
     # リジャッジ
@@ -256,7 +270,7 @@ def submission_view(submission_id):
         add_judge_job(submission_id)
         return redirect(base_url + "/submission_list/all")
 
-    # 提出詳細ページ描画
+    # 提出詳細ページ描画に必要な情報を取得
     submission_data, code, open_code = get_data_for_submission_page(session["user_id"], submission_id)
 
     return render_template("submission.html",
@@ -268,6 +282,7 @@ def submission_view(submission_id):
 
 
 # Routes(FileSend)
+# ジャッジプロセスが提出コードをダウンロードするときにアクセスするところ
 @app.route(base_url + "/get_submission_code/<path:submission_id>")
 def get_submission_code(submission_id):
     if "password" not in request.headers:
@@ -276,6 +291,7 @@ def get_submission_code(submission_id):
     return get_code(submission_id, request.headers["password"])
 
 
+# ジャッジプロセスが入出力データをダウンロードするときにアクセスするところ
 @app.route(base_url + "/get_iodata/<path:problem_id>")
 def get_iodata_route(problem_id):
     if "password" not in request.headers:
