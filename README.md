@@ -7,6 +7,12 @@
 **Dockerイメージ「YugeMiconOJS_JudgeImage」に依存します**  
 - Python3
 
+## 起動
+
+```python
+python3 judge_front_main.py
+```
+
 ## 必要なもの
 - ディレクトリ
   - Problem
