@@ -49,4 +49,4 @@ python3 judge_front_main.py
     - markdown2
     
 - Docker
-  - 「YugeMiconOJS_JudgeImage」がインストールされたDockerイメージ **(非公開)**
+  - Dockerイメージ「YugeMiconOJS_JudgeImage」 **(非公開)**
