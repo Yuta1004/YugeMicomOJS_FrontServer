@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, M
 from flask_bootstrap import Bootstrap
 from configparser import ConfigParser
 from login_process import register, login
-from user import get_user_data, update_user_data, change_password
+from user import get_user_data, update_user_data, change_password, is_admin
 from problem import get_all_problem, get_problem_body, add_problem
 from submission import get_submission_data, save_submission, get_data_for_submission_page
 from contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data, add_contest
@@ -137,6 +137,10 @@ def change_password_route():
 
 @app.route(base_url + "/add_problem", methods=["GET", "POST"])
 def add_problem_route():
+    # 管理者かどうか確認
+    if not is_admin(session["user_id"]):
+        return redirect(base_url)
+
     add_failed = None
 
     # 問題追加
@@ -157,6 +161,10 @@ def add_problem_route():
 
 @app.route(base_url + "/add_contest", methods=["GET", "POST"])
 def add_contest_route():
+    # 管理者かどうか確認
+    if not is_admin(session["user_id"]):
+        return redirect(base_url)
+
     add_failed = None
 
     # 問題追加
