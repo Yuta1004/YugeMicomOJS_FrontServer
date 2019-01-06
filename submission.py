@@ -99,7 +99,7 @@ def get_data_for_submission_page(user_id, submission_id):
     # 提出コード公開設定取得
     connect = sqlite3.connect("DB/user.db")
     cur = connect.cursor()
-    open_code = cur.execute("SELECT open_code FROM settings WHERE id = ?", (user_id, )).fetchone()[0]
+    open_code = cur.execute("SELECT open_code FROM settings WHERE id = ?", (submission_user_id, )).fetchone()[0]
     time_format = "%Y-%m-%d %H:%M:%S"
     is_open_code = (open_code == 1 and datetime.strptime(open_time, time_format) <= datetime.now()) \
                         or user_id == submission_user_id
