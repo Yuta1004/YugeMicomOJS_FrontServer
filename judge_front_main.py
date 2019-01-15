@@ -14,7 +14,7 @@ config_file = ConfigParser()
 config_file.read("config.ini")
 
 # Flask
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/yuge_micom_ojs/static')
 app.config["SECRET_KEY"] = config_file["system"]["password"]
 bootstrap = Bootstrap(app)
 
