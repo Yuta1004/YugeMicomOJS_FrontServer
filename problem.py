@@ -81,7 +81,7 @@ def get_problem_body(problem_id):
         return None
 
     problem_body = ""
-    with open("Problem/" + problem_id + ".md") as f:
+    with open("Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
         problem_body = f.read()
 
     return markdown2.markdown(problem_body, extras=['fenced-code-blocks'])
