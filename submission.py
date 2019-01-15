@@ -83,13 +83,13 @@ def get_data_for_submission_page(user_id, submission_id):
     connect.close()
 
     # 詳細情報パース
-    detail = submission_data.detail.split(";")
-    detail = [item.split("`") for item in detail]
+    detail = submission_data.detail.split("`;`")
+    detail = [item.split("`n`") for item in detail]
 
     detail_data = {}
     for elem in detail[:-1]:
         detail_data[elem[0]] = SubmissionDetail(elem[1],
-                                                elem[2].replace("$", "\n").replace("/tmp/judge/src", "/path/to/code"))
+                                                elem[2].replace("`n2`", "\n").replace("/tmp/judge/src", "/path/to/code"))
     submission_data.detail = detail_data
 
     # 提出コード取得
@@ -103,7 +103,7 @@ def get_data_for_submission_page(user_id, submission_id):
     time_format = "%Y-%m-%d %H:%M:%S"
     is_open_code = (open_code == 1 and datetime.strptime(open_time, time_format) <= datetime.now()) \
                         or user_id == submission_user_id
-
+    
     return submission_data, submission_code, is_open_code
 
 

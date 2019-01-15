@@ -38,7 +38,7 @@ def judge_code(submission_id):
     # 判定取り出し
     judge_list = []
     for line in judge_result.decode().split("\n")[:-1]:
-        judge_list.append(line.split("`")[1])
+        judge_list.append(line.split("`n`")[1])
 
     if judge_result.decode() == "":
         judge_list = ["IE"]
@@ -55,7 +55,7 @@ def judge_code(submission_id):
 
     judge_status_id = cur.execute("SELECT id FROM status WHERE name = ?", (judge_status, )).fetchone()[0]
     sql = "UPDATE submission SET status = ?, detail = ? WHERE id = ?"
-    cur.execute(sql, (judge_status_id, judge_result.decode().replace("\n", ";"), submission_id))
+    cur.execute(sql, (judge_status_id, judge_result.decode().replace("\n", "`;`"), submission_id))
     connect.commit()
 
     cur.close()
