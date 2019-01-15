@@ -57,6 +57,7 @@ def register(user_id, user_name, password, password_conf):
     # ユーザ追加
     cur.execute("INSERT INTO auth_info VALUES(?, ?, ?, \"normal\")",
                 (user_id, user_name, hash_password.decode()))
+    cur.execute("INSERT INTO settings VALUES(?, \"1\")", (user_id, ))
     connect.commit()
 
     cur.close()
