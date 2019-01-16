@@ -17,8 +17,8 @@ def judge_code(submission_id):
     # 問題ID取得
     connect = sqlite3.connect("DB/problem.db")
     cur = connect.cursor()
-    problem_id = cur.execute("SELECT problem_id FROM submission WHERE id = ?",
-                             (submission_id, )).fetchone()[0]
+    submission_data = cur.execute("SELECT problem_id, lang FROM submission WHERE id = ?",
+                             (submission_id, )).fetchone()
     cur.close()
     connect.close()
 
@@ -29,7 +29,8 @@ def judge_code(submission_id):
         config_file["system"]["server_url"],
         config_file["system"]["password"],
         submission_id,
-        problem_id
+        submission_data[0], # problem_id
+        submissiion_data[1] # lang
     ]
 
     client = docker.from_env()
