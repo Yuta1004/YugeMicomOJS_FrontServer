@@ -11,7 +11,7 @@
 ## 起動
 
 ```python
-python3 judge_front_main.py
+python3 run.py
 ```
 
 ## 必要なもの
