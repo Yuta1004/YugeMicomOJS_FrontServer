@@ -45,7 +45,7 @@ class ProblemInfo:
         self.status = status
 
 
-def get_all_problem(user_id, refine_time=True):
+def get_all_problem_with_status(user_id, refine_time=True):
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 

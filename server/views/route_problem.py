@@ -1,5 +1,5 @@
 from flask import redirect, session, render_template, request, Blueprint, Markup
-from server.functions.problem import get_all_problem, get_problem_body, add_problem
+from server.functions.problem import get_all_problem_with_status, get_problem_body, add_problem
 from server.functions.user import is_admin
 from server.functions.submission import save_submission
 from server import base_url
@@ -31,6 +31,20 @@ def add_problem_route():
                            add_failed=add_failed)
 
 
+# 問題編集ページ(管理者のみ)
+@route_problem.route(base_url + "/edit_problem", methods=["GET", "POST"])
+def edit_problem_route():
+    # 管理者かどうか確認
+    if not is_admin(session["user_id"]):
+        return redirect(base_url)
+
+    update_failed = None
+
+    return render_template("edit_problem.html",
+                           session=session["user_id"],
+                           update_failed=update_failed)
+
+
 # 問題一覧表示ページ
 @route_problem.route(base_url + "/problem_list")
 def problem_list_view():
@@ -39,7 +53,7 @@ def problem_list_view():
     return render_template("problem_list.html",
                             session=session["user_id"],
                             now_page=now_page,
-                            problem_list=get_all_problem(session["user_id"]))
+                            problem_list=get_all_problem_with_status(session["user_id"]))
 
 
 # 問題情報表示ページ

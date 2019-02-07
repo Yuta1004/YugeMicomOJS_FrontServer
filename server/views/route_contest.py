@@ -1,7 +1,7 @@
 from flask import render_template, request, session, redirect, Blueprint
 from server.functions.contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data, add_contest
 from server.functions.user import is_admin
-from server.functions.problem import get_all_problem
+from server.functions.problem import get_all_problem_with_status
 from server import base_url
 
 route_contest = Blueprint(__name__, "contest")
@@ -29,7 +29,7 @@ def add_contest_route():
     return render_template("add_contest.html",
                            session=session["user_id"],
                            add_failed=add_failed,
-                           problems=get_all_problem(session["user_id"], False))
+                           problems=get_all_problem_with_status(session["user_id"], False))
 
 
 # コンテスト一覧表示ページ
