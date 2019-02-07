@@ -5,7 +5,7 @@ def login(user_id, password):
     if user_id == "" or password == "":
         return False
 
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     # ユーザ検索
@@ -28,7 +28,7 @@ def login(user_id, password):
 
 
 def register(user_id, user_name, password, password_conf):
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     # 入力チェック

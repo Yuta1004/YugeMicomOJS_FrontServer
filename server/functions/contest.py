@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from problem import ProblemInfo
+from server.functions.problem import ProblemInfo
 import uuid
 
 
@@ -9,7 +9,7 @@ def add_contest(contest_name, start_time, end_time, problems):
     if contest_name == "" or start_time == "" or end_time == "" or problems is None:
         return False
 
-    connect = sqlite3.connect("DB/contest.db")
+    connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
     # コンテスト追加
@@ -32,7 +32,7 @@ class ContestInfo:
 
 
 def get_all_contest():
-    connect = sqlite3.connect("DB/contest.db")
+    connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
     all_contest = []
@@ -70,7 +70,7 @@ def get_3type_divided_contest():
 
 
 def get_contest_data(contest_id):
-    connect = sqlite3.connect("DB/contest.db")
+    connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
@@ -84,11 +84,11 @@ def get_contest_data(contest_id):
 
 
 def get_contest_problems(contest_id, user_id):
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     # contest.dbをアタッチ
-    cur.execute("ATTACH \"DB/contest.db\" AS contest")
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
 
     # コンテストに含まれる問題一覧を取得するsql
     sql = """
@@ -125,10 +125,10 @@ class RankingInfo:
 
 
 def get_ranking_data(contest_id):
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
-    cur.execute("ATTACH \"DB/contest.db\" AS contest")
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
 
     # ランキングデータ取得
     sql = """

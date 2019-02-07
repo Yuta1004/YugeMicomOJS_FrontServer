@@ -1,6 +1,6 @@
 import sqlite3
 import bcrypt
-from login_process import login
+from server.functions.login_process import login
 
 class UserInfo:
     def __init__(self, _id, name, position, open_code):
@@ -11,7 +11,7 @@ class UserInfo:
 
 
 def get_user_data(user_id):
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     sql = "SELECT auth_info.id, auth_info.name, auth_info.position, settings.open_code \
@@ -31,7 +31,7 @@ def get_user_data(user_id):
 
 
 def update_user_data(user_id, user_name, open_code):
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     if user_name == "":
@@ -54,7 +54,7 @@ def change_password(user_id, old_pass, new_pass, new_pass_conf):
     if new_pass != new_pass_conf or not login(user_id, old_pass):
         return False
 
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     # 半角英数8文字以上
@@ -77,7 +77,7 @@ def change_password(user_id, old_pass, new_pass, new_pass_conf):
 
 
 def is_admin(user_id):
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
     position = cur.execute("SELECT position FROM auth_info WHERE id = ?",

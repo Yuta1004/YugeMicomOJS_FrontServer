@@ -1,7 +1,6 @@
 __pycache__/
 *.db
 config.ini
-*.md
 Submission/
 Problem/
 IOData/

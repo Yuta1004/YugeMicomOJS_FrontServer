@@ -1,7 +1,7 @@
 import sqlite3
 import uuid
 from datetime import datetime
-from judge import add_judge_job
+from server.functions.judge import add_judge_job
 
 
 class SubmissionInfo:
@@ -17,7 +17,7 @@ class SubmissionInfo:
 
 
 def get_submission_data(user_id, problem_id):
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     # SQL
@@ -60,7 +60,7 @@ class SubmissionDetail:
 
 def get_data_for_submission_page(user_id, submission_id):
     # 提出詳細取得
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     sql = """
@@ -93,28 +93,28 @@ def get_data_for_submission_page(user_id, submission_id):
     submission_data.detail = detail_data
 
     # 提出コード取得
-    with open("Submission/" + submission_id + ".txt", "r", encoding="utf-8") as f:
+    with open("./server/Submission/" + submission_id + ".txt", "r", encoding="utf-8") as f:
         submission_code = f.read()
 
     # 提出コード公開設定取得
-    connect = sqlite3.connect("DB/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
     open_code = cur.execute("SELECT open_code FROM settings WHERE id = ?", (submission_user_id, )).fetchone()[0]
     time_format = "%Y-%m-%d %H:%M:%S"
     is_open_code = (open_code == 1 and datetime.strptime(open_time, time_format) <= datetime.now()) \
                         or user_id == submission_user_id
-    
+
     return submission_data, submission_code, is_open_code
 
 
 def save_submission(user_id, problem_id, lang, code):
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     submission_id = str(uuid.uuid4())
 
     # 提出コード保存
-    with open("Submission/" + submission_id + ".txt", "w", encoding="utf-8") as f:
+    with open("./server/Submission/" + submission_id + ".txt", "w", encoding="utf-8") as f:
         f.write(code)
 
     # 提出記録

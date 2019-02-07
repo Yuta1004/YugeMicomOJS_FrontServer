@@ -12,16 +12,16 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
             or problem_body == "" or io_data == "":
         return False
 
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     # 問題文保存
     problem_id = str(uuid.uuid4())
-    with open("Problem/" + problem_id+ ".md", "w", encoding="utf-8") as f:
+    with open("./server/Problem/" + problem_id+ ".md", "w", encoding="utf-8") as f:
         f.write(problem_body)
 
     # 入出力データ保存
-    with open("IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
+    with open("./server/IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
         io_data = json.loads(io_data)
         io_data["problem_id"] = problem_id
         f.write(json.dumps(io_data))
@@ -45,7 +45,7 @@ class ProblemInfo:
 
 
 def get_all_problem(user_id, refine_time=True):
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     sql = """
@@ -77,11 +77,11 @@ def get_all_problem(user_id, refine_time=True):
 
 
 def get_problem_body(problem_id):
-    if not os.path.exists("Problem/" + problem_id + ".md"):
+    if not os.path.exists("./server/Problem/" + problem_id + ".md"):
         return None
 
     problem_body = ""
-    with open("Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
+    with open("./server/Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
         problem_body = f.read()
 
     return markdown2.markdown(problem_body, extras=['fenced-code-blocks'])

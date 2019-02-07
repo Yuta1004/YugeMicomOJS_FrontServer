@@ -4,18 +4,15 @@ import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
 from configparser import ConfigParser
+from server import config_file
 
-
-# Config
-config_file = ConfigParser()
-config_file.read("config.ini")
 
 # スレッドプール
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
 
 def judge_code(submission_id):
     # 問題ID取得
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
     submission_data = cur.execute("SELECT problem_id, lang FROM submission WHERE id = ?",
                              (submission_id, )).fetchone()
@@ -30,7 +27,7 @@ def judge_code(submission_id):
         config_file["system"]["password"],
         submission_id,
         submission_data[0], # problem_id
-        submissiion_data[1] # lang
+        submission_data[1] # lang
     ]
 
     client = docker.from_env()
@@ -51,7 +48,7 @@ def judge_code(submission_id):
         judge_status = judge_counter.most_common()[1][0]
 
     # 提出データ更新
-    connect = sqlite3.connect("DB/problem.db")
+    connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     judge_status_id = cur.execute("SELECT id FROM status WHERE name = ?", (judge_status, )).fetchone()[0]
