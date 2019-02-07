@@ -37,10 +37,11 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
 
 
 class ProblemInfo:
-    def __init__(self, _id, name, scoring, status):
+    def __init__(self, _id, name, scoring, open_time, status):
         self.id = _id
         self.name = name
         self.scoring = scoring
+        self.open_time = open_time
         self.status = status
 
 
@@ -49,7 +50,7 @@ def get_all_problem(user_id, refine_time=True):
     cur = connect.cursor()
 
     sql = """
-          SELECT problem.id, problem.name, problem.scoring, IFNULL(submission.status_name, "未提出")
+          SELECT problem.id, problem.name, problem.scoring, problem.open_time, IFNULL(submission.status_name, "未提出")
           FROM problem
           LEFT OUTER JOIN (
                 SELECT submission.problem_id AS problem_id, max(submission.status), status.name AS status_name
@@ -68,7 +69,7 @@ def get_all_problem(user_id, refine_time=True):
     all_problem = []
     for problem in cur.fetchall():
         all_problem.append(ProblemInfo(problem[0], problem[1],
-                                       problem[2], problem[3]))
+                                       problem[2], problem[3], problem[4]))
 
     cur.close()
     connect.close()
