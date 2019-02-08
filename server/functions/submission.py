@@ -5,7 +5,25 @@ from server.functions.judge import add_judge_job
 
 
 class SubmissionInfo:
+    """提出情報を扱うデータクラス"""
+
     def __init__(self, submission_id, problem_id, problem_name, user_id, date, lang, status, detail):
+        """コンストラクタ
+
+        Args:
+            submission_id (str) : 提出ID
+            problem_id (str) : 問題ID
+            problem_name (str) : 問題名
+            user_id (str) : ユーザID
+            date (str) : 提出時間[xxxx-xx-xx xx:xx]
+            lang (str) : 提出言語
+            status (str) : ジャッジステータス
+            detail (str) : 実行詳細
+
+        Returns:
+            None
+        """
+
         self.id = submission_id
         self.problem_id = problem_id
         self.problem_name = problem_name
@@ -17,6 +35,19 @@ class SubmissionInfo:
 
 
 def get_submission_data(user_id, problem_id):
+    """指定ユーザID・問題IDで絞り込んだ提出情報一覧を返す
+
+    Description:
+        user_id / problem_idに[all]を指定した場合は絞り込みが無効になる
+
+    Args:
+        user_id (str) : 絞り込みをかけるユーザID
+        problem_id (str) : 絞り込みをかける問題ID
+
+    Returns:
+        submission_data (list) : SubmissionInfoのリスト
+    """
+
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
@@ -43,9 +74,7 @@ def get_submission_data(user_id, problem_id):
 
     submission_data = []
     for data in cur.fetchall():
-        submission_data.append(SubmissionInfo(data[0], data[1], data[2],
-                                              data[3], data[4], data[5],
-                                              data[6], data[7]))
+        submission_data.append(SubmissionInfo(*data))
 
     cur.close()
     connect.close()
@@ -54,11 +83,35 @@ def get_submission_data(user_id, problem_id):
 
 
 class SubmissionDetail:
+    """提出情報詳細を扱うデータクラス"""
+
     def __init__(self, status, err_msg):
+        """コンストラクタ
+
+        Args:
+            status (str) : ジャッジステータス
+            err_msg (str) : 実行詳細
+
+        Returns:
+            None
+        """
+
         self.status = status
         self.err_msg = err_msg
 
 def get_data_for_submission_page(user_id, submission_id):
+    """提出詳細ページを描画するために必要な情報を返す
+
+    Args:
+        user_id (str) : ユーザID
+        submission_id (str) : 提出ID
+
+    Returns:
+        submission_data (SubmissionInfo) : 提出情報
+        submission_code (str) : 提出コード
+        do_open_code (bool) : 提出コード公開設定
+    """
+
     # 提出詳細取得
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
@@ -71,10 +124,7 @@ def get_data_for_submission_page(user_id, submission_id):
           WHERE submission.status = status.id AND submission.id = ?
           """
     fetch_result = cur.execute(sql, (submission_id, )).fetchone()
-    submission_data = SubmissionInfo(fetch_result[0], fetch_result[1],
-                                     fetch_result[2], fetch_result[3],
-                                     fetch_result[4], fetch_result[5],
-                                     fetch_result[6], fetch_result[7])
+    submission_data = SubmissionInfo(*fetch_result[:8])
 
     # 必要情報取得
     submission_user_id = fetch_result[3]
@@ -101,27 +151,36 @@ def get_data_for_submission_page(user_id, submission_id):
     cur = connect.cursor()
     open_code = cur.execute("SELECT open_code FROM settings WHERE id = ?", (submission_user_id, )).fetchone()[0]
     time_format = "%Y-%m-%d %H:%M:%S"
-    is_open_code = (open_code == 1 and datetime.strptime(open_time, time_format) <= datetime.now()) \
+    do_open_code = (open_code == 1 and datetime.strptime(open_time, time_format) <= datetime.now()) \
                         or user_id == submission_user_id
 
-    return submission_data, submission_code, is_open_code
+    return submission_data, submission_code, do_open_code
 
 
 def save_submission(user_id, problem_id, lang, code):
-    connect = sqlite3.connect("./server/DB/problem.db")
-    cur = connect.cursor()
+    """提出情報を保存してジャッジジョブを追加する
 
-    submission_id = str(uuid.uuid4())
+    Args:
+        user_id (str) : ユーザID
+        problem_id (str) : 問題ID
+        lang (str) : 提出言語
+        code (str) : 提出コード
+
+    Returns:
+        None
+    """
 
     # 提出コード保存
+    submission_id = str(uuid.uuid4())
     with open("./server/Submission/" + submission_id + ".txt", "w", encoding="utf-8") as f:
         f.write(code)
 
     # 提出記録
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
     cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0, \"\")",
                 (submission_id, user_id, problem_id, lang))
     connect.commit()
-
     cur.close()
     connect.close()
 
