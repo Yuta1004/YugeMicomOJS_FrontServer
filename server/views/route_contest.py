@@ -1,5 +1,6 @@
 from flask import render_template, request, session, redirect, Blueprint
-from server.functions.contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data, add_contest
+from server.functions.contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
+from server.functions.contest import add_contest, update_contest
 from server.functions.user import is_admin
 from server.functions.problem import get_all_problem_with_status
 from server import base_url
@@ -30,6 +31,37 @@ def add_contest_route():
                            session=session["user_id"],
                            add_result=add_result,
                            problems=get_all_problem_with_status(session["user_id"], False))
+
+
+# コンテスト編集ページ(管理者のみ)
+@route_contest.route(base_url + "/edit_contest/<path:contest_id>", methods=["GET", "POST"])
+def edit_contest_route(contest_id):
+    # 管理者かどうか確認
+    if not is_admin(session["user_id"]):
+        return redirect(base_url)
+
+    update_result = None
+
+    # 情報更新
+    if request.method == "POST":
+        contest_name = request.form["contest_name"]
+        start_date = request.form["start_date"]
+        start_time = request.form["start_time"]
+        end_date = request.form["end_date"]
+        end_time = request.form["end_time"]
+        problems = request.form.getlist("problems")
+
+        update_result = update_contest(contest_id, contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
+
+    # 必要な情報を取得する
+    all_problems = get_all_problem_with_status(session["user_id"], False)
+    contest_data = get_contest_data(contest_id)
+
+    return render_template("edit_contest.html",
+                           session=session["user_id"],
+                           update_result=update_result,
+                           all_problems=all_problems,
+                           contest=contest_data)
 
 
 # コンテスト一覧表示ページ
