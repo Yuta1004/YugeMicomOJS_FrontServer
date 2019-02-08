@@ -5,6 +5,18 @@ import uuid
 
 
 def add_contest(contest_name, start_time, end_time, problems):
+    """ コンテストをDBに追加する
+
+    Args:
+        contest_name (str) : コンテスト名
+        start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
+        end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        problems (list) : 問題IDのリスト
+
+    Returns:
+        bool : 正常に追加されればTrue
+    """
+
     # 入力チェック
     if contest_name == "" or start_time == "" or end_time == "" or problems is None:
         return False
@@ -24,7 +36,21 @@ def add_contest(contest_name, start_time, end_time, problems):
 
 
 class ContestInfo:
+    """コンテスト情報を扱うデータクラス"""
+
     def __init__(self, _id, name, start, end):
+        """コンストラクタ
+
+        Args:
+            _id (str) : コンテストID
+            name (str) : コンテスト名
+            start (str) : 開始時刻[xxxx-xx-xx xx:xx]
+            end (str) : 終了時刻[xxxx-xx-xx xx:xx]
+
+        Returns:
+            None
+        """
+
         self.id = _id
         self.name = name
         self.start_time = start
@@ -32,6 +58,14 @@ class ContestInfo:
 
 
 def get_all_contest():
+    """登録されているコンテスト一覧を返す
+
+    Args:
+        None
+
+    Returns:
+        all_contest (list) : ContestInfoのリスト
+    """
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
@@ -51,6 +85,17 @@ def get_all_contest():
 
 
 def get_3type_divided_contest():
+    """開催前・開催中・開催後の3種類にコンテストを分類して返す
+
+    Args:
+        None
+
+    Returns:
+        past_contest (list) : 開催後のコンテスト、ContestInfoのリスト
+        now_contest (list) : 開催中のコンテスト、ContestInfoのリスト
+        future_contest (list) : 開催前のコンテスト、ContestInfoのリスト
+    """
+
     now = datetime.now()
     past_contest = []
     now_contest = []
@@ -70,12 +115,22 @@ def get_3type_divided_contest():
 
 
 def get_contest_data(contest_id):
+    """指定IDのコンテスト情報を返す
+
+    Args:
+        contest_id (str) : コンテストID
+
+    Returns:
+        contest_data (ContestInfo): コンテスト情報
+    """
+
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
     result = result.fetchone()
-    contest_data = ContestInfo(result[0], result[1], result[2], result[3])
+    print(result)
+    contest_data = ContestInfo(*result[:4])
 
     cur.close()
     connect.close()
@@ -84,15 +139,19 @@ def get_contest_data(contest_id):
 
 
 def get_contest_problems(contest_id, user_id):
-    connect = sqlite3.connect("./server/DB/problem.db")
-    cur = connect.cursor()
+    """指定コンテストに含まれる問題一覧と、指定ユーザIDの提出状況を合わせて返す
 
-    # contest.dbをアタッチ
-    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+    Args:
+        contest_id (str) : コンテストID
+        user_id (str): ユーザID
 
-    # コンテストに含まれる問題一覧を取得するsql
+    Returns:
+        problems (list) : ProblemInfoのリスト
+    """
+
+    # コンテストに含まれる問題一覧を取得する
     sql = """
-          SELECT problem.id, problem.name, problem.scoring, IFNULL(submission.status_name, "未提出")
+          SELECT problem.id, problem.name, problem.scoring, problem.open_time, IFNULL(submission.status_name, "未提出")
           FROM problem
           LEFT OUTER JOIN (
                 SELECT submission.problem_id AS problem_id, max(submission.status), status.name AS status_name
@@ -105,11 +164,15 @@ def get_contest_problems(contest_id, user_id):
                 FROM contest.contest
                 WHERE contest.contest.id=?
           ) LIKE (\"%\" || problem.id || \"%\")
-          """
+    """
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
     result = cur.execute(sql, (user_id, contest_id))
+
     problems = []
     for elem in result.fetchall():
-        problems.append(ProblemInfo(elem[0], elem[1], elem[2], elem[3]))
+        problems.append(ProblemInfo(*elem))
 
     cur.close()
     connect.close()
@@ -118,17 +181,37 @@ def get_contest_problems(contest_id, user_id):
 
 
 class RankingInfo:
-    def __init__(self, user_id, score, submission_time):
+    """ランキングの個々データを扱うデータクラス"""
+
+    def __init__(self, rank, user_id, score, submission_time):
+        """コンストラクタ
+
+        Args:
+            rank (int) : 順位
+            user_id (str) : ユーザID
+            score (int) : スコア
+            submission_time (str) : 最終有効提出時刻[xxxx-xx-xx xx:xx]
+
+        Returns:
+            None
+        """
+
+        self.rank = rank
         self.user_id = user_id
         self.score = score
         self.submission_time = submission_time
 
 
 def get_ranking_data(contest_id):
-    connect = sqlite3.connect("./server/DB/problem.db")
-    cur = connect.cursor()
+    """指定コンテストのランキングと提出状況を返す
 
-    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+    Args:
+        contest_id (str); コンテストID
+
+    Returns:
+        ranking_list (list) : RankingInfoのリスト
+        submission_data (dict) : key1 = ユーザID, key2 = 問題ID, item = 提出状況
+    """
 
     # ランキングデータ取得
     sql = """
@@ -145,9 +228,14 @@ def get_ranking_data(contest_id):
           GROUP BY user_id
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
           """
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+    result = cur.execute(sql, (contest_id, )).fetchall()
+
     ranking_list = []
-    for elem in cur.execute(sql, (contest_id, )).fetchall():
-        ranking_list.append(RankingInfo(elem[0], elem[1], elem[2]))
+    for rank, elem in enumerate(result):
+        ranking_list.append(RankingInfo(rank, *elem))
 
     # 全員の提出状況を取得
     sql = """
@@ -161,11 +249,12 @@ def get_ranking_data(contest_id):
                     contest.start_time <= submission.date AND submission.date <= contest.end_time
           GROUP BY submission.problem_id, submission.user_id
           """
+    result = cur.execute(sql, (contest_id, )).fetchall()
+
     submission_data = {}
-    for line in cur.execute(sql, (contest_id, )).fetchall():
+    for line in result:
         if line[0] not in submission_data.keys():
             submission_data[line[0]] = {}
-
         submission_data[line[0]][line[1]] = line[3]
 
     cur.close()
