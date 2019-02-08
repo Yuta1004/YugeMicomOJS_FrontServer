@@ -1,0 +1,69 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS Register{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>問題編集</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if update_failed is not none and update_failed %}
+            <div class="alert alert-success">
+                <p><b>正常に更新されました</b></p>
+            </div>
+        {% elif update_failed is not none %}
+            <div class="alert alert-danger">
+                <p><b>更新に失敗しました</b></p>
+                <ul>
+                    <li>全て入力してください</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="#" method="post">
+            <div class="form-group">
+                <label class="control-label">問題ID</label>
+                <p>{{ problem.id }}</p>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">問題名</label>
+                <input class="form-control" type="text" name="problem_name" id="problem_name" value="{{ problem.name }}">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">配点</b></label>
+                <input class="form-control" type="number" name="scoring" id="scoring" value={{ problem.scoring }}>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">公開時間</b></label><br>
+                日付<input class="form-control" type="date" name="open_date" id="open_date" value={{ problem.open_time.split()[0] }}><br>
+                時間<input class="form-control" type="time" name="open_time" id="open_time" step=1 value={{ problem.open_time.split()[1] }}>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">問題文(Markdown)</label>
+                <textarea class="form-control" name="problem_body" id="problem_body" rows="10" value=>{{ problem_body }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">入出力データ(Json)</label>
+                <textarea class="form-control" name="io_data" id="io_data" rows="10">{{ problem_iodata }}</textarea>
+            </div>
+
+            <button class="btn btn-primary">問題更新</button>
+        </form>
+
+        <br><br>
+        <p>未登録の場合は<a href="/yuge_micom_ojs/register">ユーザ登録</a>を行ってください</p>
+    </div>
+</body>
+
+{% endblock %}
