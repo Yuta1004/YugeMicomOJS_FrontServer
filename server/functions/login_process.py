@@ -2,6 +2,17 @@ import bcrypt
 import sqlite3
 
 def login(user_id, password):
+    """ログインの成功可否を返す
+
+    Args:
+        user_id (str) : ユーザID
+        password (str) : パスワード
+
+    Returns:
+        bool : パスワードが認証された場合はTrue
+    """
+
+    # 入力チェック
     if user_id == "" or password == "":
         return False
 
@@ -28,6 +39,18 @@ def login(user_id, password):
 
 
 def register(user_id, user_name, password, password_conf):
+    """ユーザ登録処理
+
+    Args:
+        user_id (str) : ユーザID
+        user_name (str) : ユーザ名(ニックネーム)
+        password (str) : パスワード
+        password_conf (str) : 入力確認用パスワード
+
+    Returns:
+        bool : ユーザ登録に成功したらTrue
+    """
+
     connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
 
