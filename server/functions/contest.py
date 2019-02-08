@@ -38,7 +38,7 @@ def add_contest(contest_name, start_time, end_time, problems):
 class ContestInfo:
     """コンテスト情報を扱うデータクラス"""
 
-    def __init__(self, _id, name, start, end):
+    def __init__(self, _id, name, start, end, problems):
         """コンストラクタ
 
         Args:
@@ -46,6 +46,7 @@ class ContestInfo:
             name (str) : コンテスト名
             start (str) : 開始時刻[xxxx-xx-xx xx:xx]
             end (str) : 終了時刻[xxxx-xx-xx xx:xx]
+            problems (list) : コンテスト対象の問題IDのリスト
 
         Returns:
             None
@@ -55,6 +56,7 @@ class ContestInfo:
         self.name = name
         self.start_time = start
         self.end_time = end
+        self.problems = problems
 
 
 def get_all_contest():
@@ -77,7 +79,8 @@ def get_all_contest():
         all_contest.append(ContestInfo(contest[0],
                                        contest[1],
                                        datetime.strptime(contest[2], time_format),
-                                       datetime.strptime(contest[3], time_format)))
+                                       datetime.strptime(contest[3], time_format),
+                                       contest[4].split(";")))
 
     cur.close()
     connect.close()
@@ -130,7 +133,7 @@ def get_contest_data(contest_id):
 
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
     result = result.fetchone()
-    contest_data = ContestInfo(*result[:4])
+    contest_data = ContestInfo(*result[:4], result[4].split(";"))
 
     cur.close()
     connect.close()
