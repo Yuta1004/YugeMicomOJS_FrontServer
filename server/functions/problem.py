@@ -51,6 +51,53 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
     return True
 
 
+def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, io_data):
+    """問題更新処理
+
+    Args:
+        problem_id (str) : 問題ID
+        problem_name (str) : 問題名
+        scoring (int) : 配点
+        open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
+        problem_body (str) : 問題文、Markdown形式
+        io_data (str) : 入出力データ、Json形式
+
+    Returns:
+        bool : 問題更新に成功した場合はTrue
+    """
+
+    # 入力ミスならreturn
+    if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
+            or problem_body == "" or io_data == "":
+        return False
+
+    # 問題文保存
+    with open("./server/Problem/" + problem_id+ ".md", "w", encoding="utf-8") as f:
+        f.write(problem_body)
+
+    # 入出力データ保存
+    with open("./server/IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
+        io_data = json.loads(io_data)
+        io_data["problem_id"] = problem_id
+        f.write(json.dumps(io_data))
+
+    sql = """
+          UPDATE problem
+          SET name = ?, scoring = ?, open_time = DATETIME(?)
+          WHERE id = ?
+          """
+
+    # DB更新
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute(sql, (problem_name, scoring, open_date + " " + open_time, problem_id))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    return True
+
+
 class ProblemInfo:
     """問題情報を扱うデータクラス"""
 
