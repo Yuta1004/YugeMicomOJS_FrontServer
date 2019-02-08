@@ -11,6 +11,15 @@ from server import config_file
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
 
 def judge_code(submission_id):
+    """提出されたコードをジャッジする
+
+    Args:
+        submission_id (str) : 提出ID
+
+    Returns:
+        None
+    """
+
     # 問題ID取得
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
@@ -19,6 +28,7 @@ def judge_code(submission_id):
     cur.close()
     connect.close()
 
+    # Dockerについていろいろ
     image_name = config_file["docker"]["image_name"]
     env = {"LD_LIBRARY_PATH": "/usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64"}
     commands = [
@@ -30,6 +40,7 @@ def judge_code(submission_id):
         submission_data[1] # lang
     ]
 
+    # ジャッジ
     client = docker.from_env()
     judge_result = client.containers.run(image_name, commands, remove=True, environment=env)
 
@@ -50,10 +61,12 @@ def judge_code(submission_id):
     # 提出データ更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-
-    judge_status_id = cur.execute("SELECT id FROM status WHERE name = ?", (judge_status, )).fetchone()[0]
-    sql = "UPDATE submission SET status = ?, detail = ? WHERE id = ?"
-    cur.execute(sql, (judge_status_id, judge_result.decode().replace("\n", "`;`"), submission_id))
+    sql = """
+          UPDATE submission
+          SET status = (SELECT id FROM status WHERE name = ?), detail = ?
+          WHERE id = ?
+          """
+    cur.execute(sql, (judge_status, judge_result.decode().replace("\n", "`;`"), submission_id))
     connect.commit()
 
     cur.close()
@@ -61,5 +74,17 @@ def judge_code(submission_id):
 
 
 def add_judge_job(submission_id):
+    """ジャッジジョブ追加
+
+    Description:
+        追加されたジョブはFIFOで処理されていく
+
+    Args:
+        submission_id (str) : 提出ID
+
+    Returns:
+        None
+    """
+
     executor.submit(judge_code, submission_id)
 
