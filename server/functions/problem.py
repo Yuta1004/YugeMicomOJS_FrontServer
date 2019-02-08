@@ -117,22 +117,23 @@ def get_all_problem_with_status(user_id, refine_time=True):
     return all_problem
 
 
-def get_problem_body(problem_id):
-    """問題文を返す
+def get_problem_data(problem_id):
+    """指定IDのコンテスト情報を返す
 
     Args:
-        problem_id (str) : 問題ID
+        problem_id (str) : コンテストID
 
     Returns:
-        str : 問題文、HTML形式
+        problem_data (ProblemInfo): コンテスト情報
     """
 
-    if not os.path.exists("./server/Problem/" + problem_id + ".md"):
-        return None
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    result = cur.execute("SELECT * FROM problem WHERE id=?", (problem_id, ))
+    result = result.fetchone()
+    problem_data = ProblemInfo(*result)
+    cur.close()
+    connect.close()
 
-    problem_body = ""
-    with open("./server/Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
-        problem_body = f.read()
-
-    return markdown2.markdown(problem_body, extras=['fenced-code-blocks'])
+    return problem_data
 
