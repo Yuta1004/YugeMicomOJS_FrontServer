@@ -34,6 +34,42 @@ def add_contest(contest_name, start_time, end_time, problems):
     return True
 
 
+def update_contest(contest_id, contest_name, start_time, end_time, problems):
+    """ 指定IDのコンテスト情報を更新する
+
+    Args:
+        contest_id (str) : コンテストID
+        contest_name (str) : コンテスト名
+        start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
+        end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        problems (list) : 問題IDのリスト
+
+    Returns:
+        bool : 正常に追加されればTrue
+    """
+
+    # 入力チェック
+    if contest_id == "" or contest_name == "" or start_time == "" or \
+            end_time == "" or problems is None:
+        return False
+
+    sql = """
+          UPDATE contest
+          SET name = ?, start_time = DATETIME(?), end_time = DATETIME(?), problems = ?
+          WHERE id = ?
+          """
+
+    # 更新
+    connect = sqlite3.connect("./server/DB/contest.db")
+    cur = connect.cursor()
+    cur.execute(sql, (contest_name, start_time, end_time, ";".join(problems), contest_id))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    return True
+
+
 class ContestInfo:
     """コンテスト情報を扱うデータクラス"""
 
@@ -128,8 +164,7 @@ def get_contest_data(contest_id):
 
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-    result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
-    result = result.fetchone()
+    result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, )).fetchone()
     contest_data = ContestInfo(*result[:4], result[4].split(";"))
     cur.close()
     connect.close()
