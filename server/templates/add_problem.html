@@ -13,11 +13,11 @@
         <h1>問題追加</h1><br>
 
         <!--入力内容に不備があった場合-->
-        {% if addfailed is not none and add_failed %}
+        {% if (add_result is not none) and add_result %}
             <div class="alert alert-success">
                 <p><b>問題が追加されました</b></p>
             </div>
-        {% elif add_failed is not none %}
+        {% elif add_result is not none %}
             <div class="alert alert-danger">
                 <p><b>問題追加に失敗しました</b></p>
                 <ul>

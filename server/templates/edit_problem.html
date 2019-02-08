@@ -13,11 +13,11 @@
         <h1>問題編集</h1><br>
 
         <!--入力内容に不備があった場合-->
-        {% if update_failed is not none and update_failed %}
+        {% if (update_result is not none) and update_result %}
             <div class="alert alert-success">
                 <p><b>正常に更新されました</b></p>
             </div>
-        {% elif update_failed is not none %}
+        {% elif update_result is not none %}
             <div class="alert alert-danger">
                 <p><b>更新に失敗しました</b></p>
                 <ul>

@@ -16,7 +16,7 @@ def add_problem_route():
     if not is_admin(session["user_id"]):
         return redirect(base_url)
 
-    add_failed = None
+    add_result = None
 
     # 問題追加
     if request.method == "POST":
@@ -27,11 +27,11 @@ def add_problem_route():
         problem_body = request.form["problem_body"]
         io_data = request.form["io_data"]
 
-        add_failed = add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data)
+        add_result = add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data)
 
     return render_template("add_problem.html",
                            session=session["user_id"],
-                           add_failed=add_failed)
+                           add_result=add_result)
 
 
 # 問題編集ページ(管理者のみ)
@@ -41,7 +41,7 @@ def edit_problem_route(problem_id):
     if not is_admin(session["user_id"]):
         return redirect(base_url)
 
-    update_failed = None
+    update_result = None
 
     # 問題更新(POSTのとき)
     if request.method == "POST":
@@ -52,7 +52,7 @@ def edit_problem_route(problem_id):
         problem_body = request.form["problem_body"]
         io_data = request.form["io_data"]
 
-        update_failed = update_problem(problem_id, problem_name, scoring, open_date,
+        update_result = update_problem(problem_id, problem_name, scoring, open_date,
                                        open_time, problem_body, io_data)
 
     # 必要な情報を読み込む
@@ -66,7 +66,7 @@ def edit_problem_route(problem_id):
                            problem=problem_data,
                            problem_iodata=iodata_format,
                            problem_body=problem_body,
-                           update_failed=update_failed)
+                           update_result=update_result)
 
 
 # 問題一覧表示ページ

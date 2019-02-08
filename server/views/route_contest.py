@@ -13,7 +13,7 @@ def add_contest_route():
     if not is_admin(session["user_id"]):
         return redirect(base_url)
 
-    add_failed = None
+    add_result = None
 
     # 問題追加
     if request.method == "POST":
@@ -24,11 +24,11 @@ def add_contest_route():
         end_time = request.form["end_time"]
         problems = request.form.getlist("problems")
 
-        add_failed = add_contest(contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
+        add_result = add_contest(contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
 
     return render_template("add_contest.html",
                            session=session["user_id"],
-                           add_failed=add_failed,
+                           add_result=add_result,
                            problems=get_all_problem_with_status(session["user_id"], False))
 
 
