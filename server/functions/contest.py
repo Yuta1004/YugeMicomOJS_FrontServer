@@ -66,6 +66,7 @@ def get_all_contest():
     Returns:
         all_contest (list) : ContestInfoのリスト
     """
+
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
 
@@ -129,7 +130,6 @@ def get_contest_data(contest_id):
 
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
     result = result.fetchone()
-    print(result)
     contest_data = ContestInfo(*result[:4])
 
     cur.close()
