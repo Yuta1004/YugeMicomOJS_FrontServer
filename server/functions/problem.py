@@ -7,6 +7,19 @@ import json
 
 
 def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data):
+    """問題追加処理
+
+    Args:
+        problem_name (str) : 問題名
+        scoring (int) : 配点
+        open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
+        problem_body (str) : 問題文、Markdown形式
+        io_data (str) : 入出力データ、Json形式
+
+    Returns:
+        bool : 問題追加に成功した場合はTrue
+    """
+
     # 入力ミスならreturn
     if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
             or problem_body == "" or io_data == "":
@@ -26,7 +39,9 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
         io_data["problem_id"] = problem_id
         f.write(json.dumps(io_data))
 
-    # DB追加
+    # DB更新
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
     cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?))",
                 (problem_id, problem_name, scoring, open_date + " " + open_time))
     connect.commit()
@@ -37,7 +52,22 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
 
 
 class ProblemInfo:
-    def __init__(self, _id, name, scoring, open_time, status):
+    """問題情報を扱うデータクラス"""
+
+    def __init__(self, _id, name, scoring, open_time, status=None):
+        """コンストラクタ
+
+        Args:
+            _id (str) : 問題ID
+            name (str) : 問題名
+            scoring (int) : 配点
+            open_time (str) : 公開時間[xxxx-xx-xx xx:xx]
+            status (str) : ジャッジステータス、指定しない場合はNone
+
+        Returns:
+            None
+        """
+
         self.id = _id
         self.name = name
         self.scoring = scoring
@@ -46,8 +76,15 @@ class ProblemInfo:
 
 
 def get_all_problem_with_status(user_id, refine_time=True):
-    connect = sqlite3.connect("./server/DB/problem.db")
-    cur = connect.cursor()
+    """問題一覧をジャッジステータスと一緒ににして返す
+
+    Args:
+        user_id (str) : ユーザID
+        refine_time (bool) : 公開時間による縛りを有効にするか
+
+    Returns:
+        all_problem (list) : ProblemInfoのリスト
+    """
 
     sql = """
           SELECT problem.id, problem.name, problem.scoring, problem.open_time, IFNULL(submission.status_name, "未提出")
@@ -61,15 +98,18 @@ def get_all_problem_with_status(user_id, refine_time=True):
           WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")
           """
 
-    # 時間で絞り込みをかけるかどうか->実行
+    # 時間で絞り込みをかけるかどうか
     if not refine_time:
         sql = sql.replace("WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")", "")
+
+    # SQL実行
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
     cur.execute(sql, (user_id, ));
 
     all_problem = []
     for problem in cur.fetchall():
-        all_problem.append(ProblemInfo(problem[0], problem[1],
-                                       problem[2], problem[3], problem[4]))
+        all_problem.append(ProblemInfo(*problem))
 
     cur.close()
     connect.close()
@@ -78,6 +118,15 @@ def get_all_problem_with_status(user_id, refine_time=True):
 
 
 def get_problem_body(problem_id):
+    """問題文を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        str : 問題文、HTML形式
+    """
+
     if not os.path.exists("./server/Problem/" + problem_id + ".md"):
         return None
 
