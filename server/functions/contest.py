@@ -21,10 +21,9 @@ def add_contest(contest_name, start_time, end_time, problems):
     if contest_name == "" or start_time == "" or end_time == "" or problems is None:
         return False
 
+    # コンテスト追加
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-
-    # コンテスト追加
     contest_id = str(uuid.uuid4())
     cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?)",
                 (contest_id, contest_name, start_time, end_time, ";".join(problems)))
@@ -71,9 +70,9 @@ def get_all_contest():
 
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-
     all_contest = []
     time_format = "%Y-%m-%d %H:%M:%S"
+
     cur.execute("SELECT * FROM contest");
     for contest in cur.fetchall():
         all_contest.append(ContestInfo(contest[0],
@@ -81,7 +80,6 @@ def get_all_contest():
                                        datetime.strptime(contest[2], time_format),
                                        datetime.strptime(contest[3], time_format),
                                        contest[4].split(";")))
-
     cur.close()
     connect.close()
 
@@ -130,11 +128,9 @@ def get_contest_data(contest_id):
 
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, ))
     result = result.fetchone()
     contest_data = ContestInfo(*result[:4], result[4].split(";"))
-
     cur.close()
     connect.close()
 
