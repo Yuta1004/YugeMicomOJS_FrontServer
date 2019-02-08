@@ -68,3 +68,22 @@ def get_iodata(problem_id, password):
     with open("./server/IOData/" + problem_id + ".json", "r", encoding="utf-8") as f:
         return f.read()
 
+
+def get_problem_body(problem_id):
+    """問題文を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        str : 問題文、HTML形式
+    """
+
+    if not os.path.exists("./server/Problem/" + problem_id + ".md"):
+        return ""
+
+    problem_body = ""
+    with open("./server/Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
+        return f.read()
+
+
