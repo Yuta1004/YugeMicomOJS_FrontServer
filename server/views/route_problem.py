@@ -1,7 +1,7 @@
 from flask import redirect, session, render_template, request, Blueprint, Markup
 import json
 import markdown2
-from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem
+from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem, add_problem
 from server.functions.file_read import get_code, get_iodata, get_problem_body
 from server.functions.user import is_admin
 from server.functions.submission import save_submission
