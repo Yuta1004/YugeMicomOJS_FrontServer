@@ -94,7 +94,7 @@
                                         <td>{{ loop.index0 + 1 }}</td>
                                         <td><b>{{ elem.user_id }}</b></td>
                                         <td>{{ elem.score }}</td>
-                                        <td>{{ elem.submission_time // 3600 }}:{{ elem.submission_time % 3600 // 60 }}:{{elem.submission_time % 60 }}</td>
+                                        <td>{{ elem.submission_time }}</td>
 
                                         <!--ユーザの提出状況を表示-->
                                         {% for problem in problem_list %}

@@ -224,7 +224,7 @@ class RankingInfo:
             rank (int) : 順位
             user_id (str) : ユーザID
             score (int) : スコア
-            submission_time (str) : 最終有効提出時刻[xxxx-xx-xx xx:xx]
+            submission_time (str) : 最終有効提出時刻[xx:xx:xx]
 
         Returns:
             None
@@ -233,7 +233,10 @@ class RankingInfo:
         self.rank = rank
         self.user_id = user_id
         self.score = score
-        self.submission_time = submission_time
+        self.submission_time = str(submission_time // 3600).zfill(2) + ":" + \
+                               str(submission_time % 3600 // 60).zfill(2) + ":" + \
+                               str(submission_time % 60).zfill(2)
+
 
 
 def get_ranking_data(contest_id):
