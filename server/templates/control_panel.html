@@ -1,0 +1,91 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="page-header">
+            <h2>コントロールパネル(管理者専用ページ)</h2>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">問題</div>
+            <div class="panel-body">
+                <!-- テーブルの外側の罫線だけ表示 -->
+                <style type="text/css">
+                    table { border: 1px solid #DDD; }
+                    td { border-width: 0; }
+                </style>
+
+                <!--タイトル-->
+                <p>問題追加URL : <a href="/yuge_micom_ojs/add_problem">問題追加</a></p><br>
+
+                <!--問題一覧をテーブルで表示-->
+                <p>問題一覧</p>
+                <div style="height:400px; overflow:auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-4">問題名</th>
+                                <th class="col-xs-2">配点</th>
+                                <th class="col-xs-3">公開日時</th>
+                                <th class="col-xs-3">問題編集ページ</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                            {% for problem in problem_list %}
+                                <tr>
+                                    <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
+                                    <td>{{ problem.scoring }}</td>
+                                    <td>{{ problem.open_time }}</td>
+                                    <td><a href={{ "/yuge_micom_ojs/edit_problem/" + problem.id }}>編集</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">コンテスト</div>
+            <div class="panel-body">
+                <p>コンテスト作成URL : <a href="/yuge_micom_ojs/add_contest">コンテスト開催</a></p><br>
+
+                <!--コンスト一覧をテーブルで表示-->
+                <p>コンテスト一覧</p>
+                <div style="height:400px; overflow:auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-3">コンテスト名</th>
+                                <th class="col-xs-3">開始時刻</th>
+                                <th class="col-xs-3">終了時刻</th>
+                                <th class="col-xs-3">コンテスト編集ページ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contest in contest_list %}
+                                <tr>
+                                    <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id }}>{{ contest.name }}</a></td>
+                                    <td>{{ contest.start_time }}</td>
+                                    <td>{{ contest.end_time }}</td>
+                                    <td><a href={{ "/yuge_micom_ojs/edit_contest/" + contest.id }}>編集</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                 </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+{% endblock %}
