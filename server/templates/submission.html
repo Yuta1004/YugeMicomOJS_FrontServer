@@ -53,12 +53,16 @@
                         {% endif %}
                         <br>
 
-                        <!--管理者がページを閲覧している場合にはリジャッジボタンを表示する-->
+                        <!--管理者がページにアクセスしたとき-->
                         {% if is_admin %}
                             <label>リジャッジボタン(ボタンを押すとすぐにリジャッジが行われます)</label>
                             <form action="#" method="post">
                                 <button class="btn btn-warning" id="rejudge" name="rejudge" value="do_rejudge">リジャッジ</button>
-                            </form>
+                            </form><br>
+
+                            <!--削除ボタンが押されたら確認モーダルが起動する-->
+                            <label>提出削除ボタン</label><br>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#conf_rm_submission">提出削除</button>
                         {% endif %}
                     </div>
                 </div>
@@ -141,6 +145,33 @@
         </div>
     {% endfor %}
 
+    <!--削除確認モーダル-->
+    {% if is_admin %}
+        <div class="modal fade" id="conf_rm_submission" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-label">削除確認</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>この提出を削除しますか？</p>
+                        <p><b>※この操作は取り消せません※</b></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <form action="#" method="post" style="display: inline">
+                            <button class="btn btn-danger" id="rm_submission" name="rm_submission" value="rm_submission">削除</button>
+                        </form>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     <!--コード表示用スタイル設定-->
     <style type="text/css">

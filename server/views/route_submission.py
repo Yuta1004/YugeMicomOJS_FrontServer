@@ -1,5 +1,5 @@
 from flask import render_template, request, session, redirect, Blueprint
-from server.functions.submission import get_submission_data, save_submission, get_data_for_submission_page
+from server.functions.submission import get_submission_data, save_submission, get_data_for_submission_page, remove_submission
 from server.functions.user import is_admin
 from server.functions.judge import add_judge_job
 from server import base_url
@@ -23,6 +23,11 @@ def submission_view(submission_id):
     # リジャッジ
     if "rejudge" in request.form.keys() and is_admin(session["user_id"]):
         add_judge_job(submission_id)
+        return redirect(base_url + "/submission_list/all")
+
+    # 提出削除
+    if "rm_submission" in request.form.keys() and is_admin(session["user_id"]):
+        remove_submission(submission_id)
         return redirect(base_url + "/submission_list/all")
 
     # 提出詳細ページ描画に必要な情報を取得
