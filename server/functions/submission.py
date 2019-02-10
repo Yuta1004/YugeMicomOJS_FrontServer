@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import uuid
 from datetime import datetime
@@ -187,3 +188,24 @@ def save_submission(user_id, problem_id, lang, code):
     # 判定ジョブを追加
     add_judge_job(submission_id)
 
+
+def remove_submission(submission_id):
+    """指定IDの提出を削除する
+
+    Args:
+        Submission_id (str) : 提出ID
+
+    Returns:
+        None
+    """
+
+    # DBから削除
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("DELETE FROM submission WHERE id = ?", (submission_id, ))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    # 提出コード削除
+    os.remove("./server/Submission/" + submission_id + ".txt")
