@@ -136,7 +136,7 @@ def get_maxrate_data(user_id):
         return RateInfo(0.0, get_contest_data("60c53941-d9f5-4b13-931f-95cd7ff269e4"))
 
     # 対応するコンテストデータを取得
-    fetch_result = fetch_result[0]
+    fetch_result = fetch_result
     contest_data = get_contest_data(fetch_result[1])
 
     return RateInfo(fetch_result[0], contest_data)
