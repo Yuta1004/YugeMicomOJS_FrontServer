@@ -1,5 +1,6 @@
 from flask import request, redirect, render_template, session, Blueprint
 from server.functions.user import get_user_data, update_user_data, change_password, is_admin
+from server.functions.rate import get_maxrate_data
 from server import base_url
 
 
@@ -20,6 +21,7 @@ def user_page():
         update_succeeded = update_user_data(session["user_id"], user_name, open_code)
 
     # 設定ページに必要な情報取得
+    maxrate_data = get_maxrate_data(session["user_id"])
     user_info = get_user_data(session["user_id"])
     if user_info is None:
         return redirect(base_url)
@@ -27,7 +29,8 @@ def user_page():
     return render_template("user_page.html",
                            user=user_info,
                            update_succeeded=update_succeeded,
-                           session=session["user_id"])
+                           session=session["user_id"],
+                           maxrate_data=maxrate_data)
 
 
 # パスワード変更ページ
