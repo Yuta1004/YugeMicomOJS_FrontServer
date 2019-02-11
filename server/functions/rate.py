@@ -22,13 +22,13 @@ def cal_rate(max_score, ac_num, failed_num, group_rank):
 
 
 def cal_contest_rate(contest_id):
-    """コンテスト単レートを計算してDBに記録する
+    """コンテスト単レートを計算して返す
 
     Args:
         contest_id (str) : コンテストID
 
     Returns:
-        None
+        rate_values(dict) : キー=ユーザID、要素=レートの辞書
     """
 
     sql = """
@@ -68,6 +68,21 @@ def cal_contest_rate(contest_id):
     for score in group_by_score.keys():
         for rank, user_info in enumerate(group_by_score[score]):
             rate_values[user_info[0]] = cal_rate(*user_info[1:4], rank + 1)
+
+    return rate_values
+
+def update_rate(contest_id):
+    """指定IDのコンテストのレート情報を更新する
+
+    Args:
+        contest_id (str) : コンテストID
+
+    Returns:
+        None
+    """
+
+    # レート計算
+    rate_values = cal_contest_rate(contest_id)
 
     # DB記録
     connect = sqlite3.connect("./server/DB/rate.db")
