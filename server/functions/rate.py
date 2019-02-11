@@ -1,5 +1,6 @@
 import math
 import sqlite3
+from server.functions.contest import get_contest_data
 
 
 def cal_rate(max_score, ac_num, rank):
@@ -93,4 +94,45 @@ def update_rate(contest_id):
     connect.commit()
     cur.close()
     connect.close()
+
+
+class RateInfo:
+    """レート情報を扱うデータクラス"""
+
+    def __init__(self, rate, contest_info):
+        """コンストラクタ
+
+        Args:
+            rate (float) : レート
+            contest_info (ContestInfo) : そのレートがついたコンテストの情報
+
+        Returns:
+            None
+        """
+
+        self.rate = rate
+        self.contest_info = contest_info
+
+def get_maxrate_data(user_id):
+    """指定ユーザのMAXレートの情報を返す
+
+    Args:
+        user_id (str) : ユーザID
+
+    Returns:
+        RateInfo : MAXレート情報
+    """
+
+    # DBからデータ取得
+    connect = sqlite3.connect("./server/DB/rate.db")
+    cur = connect.cursor()
+    fetch_result = cur.execute("SELECT MAX(rate), contest_id FROM single_rate WHERE user_id = ?",
+                               (user_id, )).fetchone()
+    cur.close()
+    connect.close()
+
+    # 対応するコンテストデータを取得
+    contest_data = get_contest_data(fetch_result[1])
+
+    return RateInfo(fetch_result[0], contest_data)
 
