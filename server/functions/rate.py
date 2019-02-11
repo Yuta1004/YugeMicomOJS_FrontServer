@@ -73,7 +73,7 @@ def cal_contest_rate(contest_id):
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
     for user_id, rate in rate_values.items():
-        cur.execute("REPLACE INTO single_rate VALUES(?, ?, DATETIME(\"now\", \"+9 hours\"), ?)",
+        cur.execute("REPLACE INTO single_rate VALUES(?, ?, ?)",
                     (user_id, contest_id, rate))
     connect.commit()
     cur.close()
