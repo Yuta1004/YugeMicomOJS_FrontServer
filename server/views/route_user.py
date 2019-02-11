@@ -6,8 +6,8 @@ from server import base_url
 route_user = Blueprint(__name__, "user")
 
 # ユーザ設定ページ
-@route_user.route(base_url + "/user_settings", methods=["POST", "GET"])
-def user_settings():
+@route_user.route(base_url + "/user_page", methods=["POST", "GET"])
+def user_page():
     if session["user_id"] is None:
         return redirect(base_url)
 
@@ -24,7 +24,7 @@ def user_settings():
     if user_info is None:
         return redirect(base_url)
 
-    return render_template("user_settings.html",
+    return render_template("user_page.html",
                            user=user_info,
                            update_succeeded=update_succeeded,
                            session=session["user_id"])
