@@ -31,7 +31,7 @@ def cal_contest_rate(contest_id):
     """
 
     sql = """
-          SELECT user_id, MAX(score), ac_num, MAX(submission_time)
+          SELECT user_id, MAX(score), SUM(ac_num), MAX(submission_time)
           FROM (
                 SELECT submission.user_id AS user_id, problem.scoring AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time,
