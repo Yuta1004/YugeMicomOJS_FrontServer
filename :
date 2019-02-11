@@ -80,10 +80,10 @@ def contest_list_view():
 
 
 # コンテスト情報表示ページ
-@route_contest.route(base_url + "/contest/<path:contest_id>", methods=["GET", "POST"])
+@route_contest.route(base_url + "/contest/<path:contest_id>", methods["GET", "POST"])
 def contest_view(contest_id):
     # レート更新
-    if "update_rate" in request.form.keys() and is_admin(session["user_id"]):
+    if "update_contest" in request.form.keys() and is_admin(session["user_id"]):
         update_rate(contest_id)
         return redirect(base_url + "/contest_list")
 
