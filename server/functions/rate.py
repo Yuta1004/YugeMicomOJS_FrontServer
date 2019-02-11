@@ -2,22 +2,21 @@ import math
 import sqlite3
 
 
-def cal_rate(max_score, ac_num, failed_num, group_rank):
+def cal_rate(max_score, ac_num, rank):
     """単レート計算
 
     Args:
         max_score (int) : コンテスト中の最高問題得点
         ac_num (int) : AC数
-        failed_num (int) : 失敗提出数
-        group_rank (int) : 同得点帯順位
+        rank (int) : 順位
 
     Returns:
         float : 単レート
     """
 
     score = max_score * math.log(max_score ** 0.3)
-    ac_score = (math.log(max(ac_num - failed_num, 1)  ** 0.5) + 1)
-    rank_score = math.log(group_rank ** 0.2) + 1
+    ac_score = math.log(ac_num ** 0.5) + 1
+    rank_score = math.log(rank ** 0.2) + 1
     return score * ac_score / rank_score
 
 
@@ -32,12 +31,11 @@ def cal_contest_rate(contest_id):
     """
 
     sql = """
-          SELECT user_id, MAX(score), SUM(ac_num), SUM(failed_num), MAX(submission_time)
+          SELECT user_id, MAX(score), ac_num, MAX(submission_time)
           FROM (
                 SELECT submission.user_id AS user_id, problem.scoring AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time,
-                       SUM(submission.status == 6) AS ac_num,
-                       SUM(0 < submission.status AND submission.status < 6) AS failed_num
+                       SUM(submission.status == 6) AS ac_num
                 FROM submission, problem, contest.contest AS contest
                 LEFT OUTER JOIN status ON submission.status = status.id
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
@@ -65,9 +63,12 @@ def cal_contest_rate(contest_id):
 
     # レート計算
     rate_values = {}
+    rank = 1
     for score in group_by_score.keys():
-        for rank, user_info in enumerate(group_by_score[score]):
-            rate_values[user_info[0]] = cal_rate(*user_info[1:4], rank + 1)
+        for user_info in group_by_score[score]:
+            rate_values[user_info[0]] = cal_rate(*user_info[1:3], rank)
+            rank += 1
+        rank += len(group_by_score[score]) * 1.5
 
     return rate_values
 
