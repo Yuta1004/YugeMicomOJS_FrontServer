@@ -15,8 +15,8 @@ def cal_rate(max_score, ac_num, rank):
     """
 
     score = max_score * math.log(max_score ** 0.3)
-    ac_score = math.log(ac_num ** 0.5) + 1
-    rank_score = math.log(rank ** 0.2) + 1
+    ac_score = math.log(ac_num ** 0.1) + 1
+    rank_score = math.log(rank ** 0.1) + 1
     return score * ac_score / rank_score
 
 
@@ -31,15 +31,14 @@ def cal_contest_rate(contest_id):
     """
 
     sql = """
-          SELECT user_id, MAX(score), SUM(ac_num), MAX(submission_time)
+          SELECT user_id, MAX(score), COUNT(user_id), MAX(submission_time)
           FROM (
                 SELECT submission.user_id AS user_id, problem.scoring AS score,
-                       MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time,
-                       SUM(submission.status == 6) AS ac_num
+                       MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
                 FROM submission, problem, contest.contest AS contest
                 LEFT OUTER JOIN status ON submission.status = status.id
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
-                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
+                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\") AND submission.status = 6
                 GROUP BY submission.problem_id, submission.user_id
                 ) submission_data
           GROUP BY user_id
