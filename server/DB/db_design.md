@@ -36,3 +36,10 @@
 ## status
 - id : NUMBER PRIMARY KEY
 - name : TEXT NOT NULL
+
+# rate.db
+## single_rate
+- user_id : TEXT PRIMARY KEY
+- contest_id : TEXT PRIMARY KEY
+- update_date : DATETIME NOT NULL
+- rate : REAL NOT NULL
