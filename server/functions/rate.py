@@ -163,48 +163,27 @@ def update_user_rate(user_id):
     connect.close()
 
 
-class RateInfo:
-    """レート情報を扱うデータクラス"""
-
-    def __init__(self, rate, contest_info):
-        """コンストラクタ
-
-        Args:
-            rate (float) : レート
-            contest_info (ContestInfo) : そのレートがついたコンテストの情報
-
-        Returns:
-            None
-        """
-
-        self.rate = rate
-        self.contest_info = contest_info
-
-def get_maxrate_data(user_id):
-    """指定ユーザのMAXレートの情報を返す
+def get_user_rate_data(user_id):
+    """指定ユーザのレートの情報を返す
 
     Args:
         user_id (str) : ユーザID
 
     Returns:
-        RateInfo : MAXレート情報
+        rate (float) : レート情報
     """
 
     # DBからデータ取得
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
-    fetch_result = cur.execute("SELECT MAX(rate), contest_id FROM single_rate WHERE user_id = ?",
+    rate = cur.execute("SELECT rate FROM user_rate WHERE user_id = ?",
                                (user_id, )).fetchone()
     cur.close()
     connect.close()
 
-    # レート情報がなかった場合
-    if fetch_result[0] is None or fetch_result[1] is None:
-        return RateInfo(0.0, get_contest_data("60c53941-d9f5-4b13-931f-95cd7ff269e4"))
-
-    # 対応するコンテストデータを取得
-    fetch_result = fetch_result
-    contest_data = get_contest_data(fetch_result[1])
-
-    return RateInfo(fetch_result[0], contest_data)
+    # 返す
+    if rate is None:
+        return 0.0
+    else:
+        return rate[0]
 
