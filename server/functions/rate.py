@@ -72,8 +72,49 @@ def cal_contest_rate(contest_id):
 
     return rate_values
 
-def update_rate(contest_id):
-    """指定IDのコンテストのレート情報を更新する
+
+def cal_user_rate(user_id):
+    """指定ユーザのレートを計算する
+
+    Args:
+        user_id (str) : ユーザID
+
+    Returns:
+        rate (float) : レート
+    """
+
+    # DB接続
+    connect = sqlite3.connect("./server/DB/rate.db")
+    cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+
+    # BEST
+    sql = """
+          SELECT SUM(rate)
+          FROM single_rate
+          WHERE user_id = ?
+          ORDER BY rate
+          LIMIT 10
+          """
+    best = cur.execute(sql, (user_id, )).fetchone()[0]
+
+    # RECENT
+    sql = """
+          SELECT SUM(rate)
+          FROM single_rate, contest
+          WHERE user_id = ? AND contest_id = contest.id
+          ORDER BY contest.end_time
+          LIMIT 10
+          """
+    recent = cur.execute(sql, (user_id, )).fetchone()[0]
+    cur.close()
+    connect.close()
+
+    return best * 0.08 + recent * 0.02
+
+
+def update_contest_rate(contest_id, with_update_user = True):
+    """指定IDのコンテストの単レート情報を更新する
 
     Args:
         contest_id (str) : コンテストID
@@ -85,12 +126,38 @@ def update_rate(contest_id):
     # レート計算
     rate_values = cal_contest_rate(contest_id)
 
-    # DB記録
+    # コンテスト単レート更新
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
     for user_id, rate in rate_values.items():
-        cur.execute("REPLACE INTO single_rate VALUES(?, ?, ?)",
-                    (user_id, contest_id, rate))
+        cur.execute("REPLACE INTO single_rate VALUES(?, ?, ?)", (user_id, contest_id, rate))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    # ユーザレート更新
+    if with_update_user:
+        for user_id in rate_values.keys():
+            update_user_rate(user_id)
+
+
+def update_user_rate(user_id):
+    """指定ユーザのレート情報を更新する
+
+    Args:
+        user_id (str) : ユーザID
+
+    Returns:
+        None
+    """
+
+    # レート計算
+    rate = cal_user_rate(user_id)
+
+    # DB記録
+    connect = sqlite3.connect("./server/DB/rate.db")
+    cur = connect.cursor()
+    cur.execute("REPLACE INTO user_rate VALUES(?, ?)", (user_id, rate))
     connect.commit()
     cur.close()
     connect.close()
