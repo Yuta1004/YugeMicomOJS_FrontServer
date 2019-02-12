@@ -42,3 +42,7 @@
 - user_id : TEXT PRIMARY KEY
 - contest_id : TEXT PRIMARY KEY
 - rate : REAL NOT NULL
+
+## user_rate
+- user_id : TEXT PRIMARY KEY
+- rate : REAL NOT NULL
