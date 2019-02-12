@@ -110,7 +110,7 @@ def cal_user_rate(user_id):
     cur.close()
     connect.close()
 
-    return best * 0.08 + recent * 0.02
+    return best * 0.07 + recent * 0.03
 
 
 def update_contest_rate(contest_id, with_update_user = True):
