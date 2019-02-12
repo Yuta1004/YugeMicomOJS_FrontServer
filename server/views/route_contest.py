@@ -3,7 +3,7 @@ from server.functions.contest import get_3type_divided_contest, get_contest_prob
 from server.functions.contest import add_contest, update_contest
 from server.functions.user import is_admin
 from server.functions.problem import get_all_problem_with_status
-from server.functions.rate import update_rate
+from server.functions.rate import update_contest_rate
 from server import base_url
 
 route_contest = Blueprint(__name__, "contest")
@@ -84,7 +84,7 @@ def contest_list_view():
 def contest_view(contest_id):
     # レート更新
     if "update_rate" in request.form.keys() and is_admin(session["user_id"]):
-        update_rate(contest_id)
+        update_contest_rate(contest_id)
         return redirect(base_url + "/contest_list")
 
     ranking_data, submission_data = get_ranking_data(contest_id)
