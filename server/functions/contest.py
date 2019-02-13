@@ -217,12 +217,13 @@ def get_contest_problems(contest_id, user_id):
 class RankingInfo:
     """ランキングの個々データを扱うデータクラス"""
 
-    def __init__(self, rank, user_id, score, submission_time):
+    def __init__(self, rank, user_id, user_name, score, submission_time):
         """コンストラクタ
 
         Args:
             rank (int) : 順位
             user_id (str) : ユーザID
+            user_name (str) : ユーザ名
             score (int) : スコア
             submission_time (str) : 最終有効提出時刻[xx:xx:xx]
 
@@ -232,6 +233,7 @@ class RankingInfo:
 
         self.rank = rank
         self.user_id = user_id
+        self.user_name = user_name
         self.score = score
         self.submission_time = str(submission_time // 3600).zfill(2) + ":" + \
                                str(submission_time % 3600 // 60).zfill(2) + ":" + \
@@ -252,7 +254,7 @@ def get_ranking_data(contest_id):
 
     # ランキングデータ取得
     sql = """
-          SELECT user_id, SUM(score), MAX(submission_time)
+          SELECT user_id, user.auth_info.name, SUM(score), MAX(submission_time)
           FROM (
                 SELECT submission.user_id AS user_id, problem.scoring  AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
@@ -261,13 +263,15 @@ def get_ranking_data(contest_id):
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND status.name == "AC" AND
                       submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
                 GROUP BY problem.id, submission.user_id
-                ) submission_data
+                ) submission_data, user.auth_info
+          WHERE user.auth_info.id = user_id
           GROUP BY user_id
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
           """
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
     cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+    cur.execute("ATTACH \"./server/DB/user.db\" AS user")
     result = cur.execute(sql, (contest_id, )).fetchall()
 
     ranking_list = []
