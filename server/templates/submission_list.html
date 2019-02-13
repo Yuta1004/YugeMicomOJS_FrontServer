@@ -47,7 +47,7 @@
                             <tr>
                                 <td>{{ data.date }}</td>
                                 <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
-                                <td><div class="text-center">{{ data.user_id }}</div></td>
+                                <td><div class="text-center">{{ data.user_name }}</div></td>
 
                                 <!--ステータスによってラベルを変える-->
                                 {% if data.status == "AC" %}

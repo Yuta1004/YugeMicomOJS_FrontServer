@@ -8,7 +8,7 @@ from server.functions.judge import add_judge_job
 class SubmissionInfo:
     """提出情報を扱うデータクラス"""
 
-    def __init__(self, submission_id, problem_id, problem_name, user_id, date, lang, status, detail):
+    def __init__(self, submission_id, problem_id, problem_name, user_id, user_name, date, lang, status, detail):
         """コンストラクタ
 
         Args:
@@ -16,6 +16,7 @@ class SubmissionInfo:
             problem_id (str) : 問題ID
             problem_name (str) : 問題名
             user_id (str) : ユーザID
+            user_name (str) : ユーザ名
             date (str) : 提出時間[xxxx-xx-xx xx:xx]
             lang (str) : 提出言語
             status (str) : ジャッジステータス
@@ -29,6 +30,7 @@ class SubmissionInfo:
         self.problem_id = problem_id
         self.problem_name = problem_name
         self.user_id = user_id
+        self.user_name = user_name
         self.date = date
         self.lang = lang
         self.status = status
@@ -51,12 +53,13 @@ def get_submission_data(user_id, problem_id):
 
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/user.db\" AS user")
 
     # SQL
-    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, submission.date, submission.lang, status.name, submission.detail \
-                FROM submission, status \
+    sql_base = "SELECT submission.id, problem.id, problem.name, submission.user_id, user.auth_info.name, submission.date, submission.lang, status.name, submission.detail \
+                FROM submission, status, user.auth_info \
                 INNER JOIN problem ON submission.problem_id = problem.id \
-                WHERE submission.status = status.id"
+                WHERE submission.status = status.id AND submission.user_id = user.auth_info.id"
 
     sql_base_sort = " ORDER BY submission.date DESC"
 
