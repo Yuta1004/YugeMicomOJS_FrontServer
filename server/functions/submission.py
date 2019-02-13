@@ -119,20 +119,21 @@ def get_data_for_submission_page(user_id, submission_id):
     # 提出詳細取得
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/user.db\" AS user")
 
     sql = """
-          SELECT submission.id, problem.id, problem.name, submission.user_id,
+          SELECT submission.id, problem.id, problem.name, submission.user_id, user.auth_info.name,
                     submission.date, submission.lang, status.name, submission.detail, problem.open_time
-          FROM submission, status
+          FROM submission, status, user.auth_info
           INNER JOIN problem ON submission.problem_id = problem.id
-          WHERE submission.status = status.id AND submission.id = ?
+          WHERE submission.status = status.id AND submission.id = ? AND user.auth_info.id = submission.user_id
           """
     fetch_result = cur.execute(sql, (submission_id, )).fetchone()
-    submission_data = SubmissionInfo(*fetch_result[:8])
+    submission_data = SubmissionInfo(*fetch_result[:9])
 
     # 必要情報取得
     submission_user_id = fetch_result[3]
-    open_time = fetch_result[8]
+    open_time = fetch_result[9]
     cur.close()
     connect.close()
 
