@@ -13,9 +13,11 @@
         <font size="6">{{ contest_data.name }} </font>
         {{ contest_data.start_time }} ~ {{ contest_data.end_time }}<br><br>
 
-        <form action="#" method="post" style="display: inline">
-            <button class="btn btn-primary" id="update_rate" name="update_rate" value="update_rate">レート更新</button>
-        </form><br><br>
+        {% if is_admin %}
+            <form action="#" method="post" style="display: inline">
+                <button class="btn btn-primary" id="update_rate" name="update_rate" value="update_rate">レート更新</button>
+            </form><br><br>
+        {% endif %}
 
 
         <!--タブ-->
