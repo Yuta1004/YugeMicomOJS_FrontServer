@@ -106,7 +106,7 @@ def change_password(user_id, old_pass, new_pass, new_pass_conf):
     hash_password = bcrypt.hashpw(new_pass.encode(), gen_salt)
 
     # パスワード変更
-    connect = sqlite3.connect("./server/db/user.db")
+    connect = sqlite3.connect("./server/DB/user.db")
     cur = connect.cursor()
     cur.execute("UPDATE auth_info SET password = ? WHERE id = ?",
                 (hash_password.decode(), user_id))
