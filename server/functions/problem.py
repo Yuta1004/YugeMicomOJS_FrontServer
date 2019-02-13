@@ -143,6 +143,7 @@ def get_all_problem_with_status(user_id, refine_time=True):
                 GROUP BY problem.id
           ) submission ON problem.id = submission.problem_id
           WHERE problem.open_time <= datetime(\"now\", \"+9 hours\")
+          ORDER BY problem.scoring
           """
 
     # 時間で絞り込みをかけるかどうか
