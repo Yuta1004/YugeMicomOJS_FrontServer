@@ -12,3 +12,8 @@ def index():
                            session=session["user_id"])
 
 
+# 入出力コード例
+@route_top.route(base_url + "/code_example")
+def code_example():
+    return render_template("code_example.html",
+                           session=session["user_id"])

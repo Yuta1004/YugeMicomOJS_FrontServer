@@ -1,0 +1,66 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<head>
+    <!--Code-Pretty-->
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h2>提出コード例</h2><br>
+
+        <!--コード表示用スタイル設定-->
+        <style type="text/css">
+            .prettyprint {
+                white-space: pre;
+                overflow: auto;
+            }
+            .prettyprint ol.linenums > li {
+                list-style-type: decimal;
+            }
+        </style>
+
+        <!--Python3-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Python3</div>
+            <div class="panel-body">
+                <pre><code class="prettyprint linenums"># 標準入力
+inp = input()
+
+# 標準出力
+print(inp)</code></pre>
+            </div>
+        </div>
+
+        <!--Java-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Java</div>
+            <div class="panel-body">
+                <pre><code class="prettyprint linenums">import java.io.*;
+
+class Main{
+    public static void main(String args[]) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        // 標準入力
+        String inp = br.readLine();
+
+        // 標準出力
+        System.out.println(inp);
+    }
+}</code></pre>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+{% endblock %}
