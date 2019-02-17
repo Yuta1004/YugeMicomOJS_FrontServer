@@ -48,8 +48,8 @@
                                 <td>{{ data.date }}</td>
 
                                 <!--問題公開時間を過ぎているか-->
-                                {% if data.open_time > now_time and not is_special %}
-                                    <td><a href="/yuge_micom_ojs/problem/">＊＊＊＊＊</a></td>
+                                {% if now_time < data.open_time  and not is_special %}
+                                    <td>＊＊＊＊＊</td>
                                 {% else %}
                                     <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
                                 {% endif %}
@@ -70,7 +70,7 @@
                                 <td>{{ data.lang }}</td>
 
                                 <!--問題公開時間を過ぎているか-->
-                                {% if data.open_time < now_time and not is_special %}
+                                {% if now_time < data.open_time and not is_special %}
                                     <td>詳細</td>
                                 {% else %}
                                     <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
