@@ -46,7 +46,14 @@
                         {% for data in submission_data[(now_page-1)*15: now_page*15] %}
                             <tr>
                                 <td>{{ data.date }}</td>
-                                <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
+
+                                <!--問題公開時間を過ぎているか-->
+                                {% if data.open_time > now_time and not is_special %}
+                                    <td><a href="/yuge_micom_ojs/problem/">＊＊＊＊＊</a></td>
+                                {% else %}
+                                    <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
+                                {% endif %}
+
                                 <td><div class="text-center">{{ data.user_name }}</div></td>
 
                                 <!--ステータスによってラベルを変える-->
@@ -61,7 +68,13 @@
                                 {% endif %}
 
                                 <td>{{ data.lang }}</td>
-                                <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
+
+                                <!--問題公開時間を過ぎているか-->
+                                {% if data.open_time < now_time and not is_special %}
+                                    <td>詳細</td>
+                                {% else %}
+                                    <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>

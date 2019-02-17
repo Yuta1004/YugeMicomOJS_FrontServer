@@ -1,6 +1,7 @@
 from flask import render_template, request, session, redirect, Blueprint
+from datetime import datetime
 from server.functions.submission import get_submission_data, save_submission, get_data_for_submission_page, remove_submission
-from server.functions.user import is_admin
+from server.functions.user import is_admin, is_special
 from server.functions.judge import add_judge_job
 from server import base_url
 
@@ -14,6 +15,8 @@ def submission_list_view(user_id):
     return render_template("submission_list.html",
                            session=session["user_id"],
                            now_page=now_page,
+                           now_time=datetime.now(),
+                           is_special=is_special(session["user_id"]),
                            submission_data=get_submission_data(user_id, "all"))
 
 
