@@ -135,3 +135,26 @@ def is_admin(user_id):
     connect.close()
 
     return position == "admin"
+
+
+def is_special(user_id):
+    """指定IDのユーザが特別なユーザかどうかを返す
+
+    SpecialUser <- 全問題の閲覧が可能なユーザ
+
+    Args:
+        user_id (str) : ユーザID
+
+    Returns:
+        bool : スペシャルユーザの場合はTtue
+    """
+
+    connect = sqlite3.connect("./server/DB/user.db")
+    cur = connect.cursor()
+    position = cur.execute("SELECT position FROM auth_info WHERE id = ?",
+                           (user_id, )).fetchone()[0]
+    cur.close()
+    connect.close()
+
+    return position == "special" or position == "admin"
+
