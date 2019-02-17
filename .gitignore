@@ -4,4 +4,6 @@ config.ini
 Submission/
 Problem/
 IOData/
+Backup/
+backup.sh
 nohup.out

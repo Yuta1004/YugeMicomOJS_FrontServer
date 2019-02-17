@@ -198,6 +198,7 @@ def get_contest_problems(contest_id, user_id):
                 FROM contest.contest
                 WHERE contest.contest.id=?
           ) LIKE (\"%\" || problem.id || \"%\")
+          ORDER BY problem.scoring
     """
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
