@@ -4,7 +4,7 @@ from datetime import datetime
 import markdown2
 from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem, add_problem
 from server.functions.file_read import get_code, get_iodata, get_problem_body
-from server.functions.user import is_admin
+from server.functions.user import is_admin, is_special
 from server.functions.submission import save_submission
 from server import base_url, config_file
 
@@ -95,7 +95,7 @@ def problem_view(problem_id):
     # 公開時間より前のアクセスなら404
     problem_data = get_problem_data(problem_id)
     open_time = datetime.strptime(problem_data.open_time, "%Y-%m-%d %H:%M:%S")
-    if (not is_admin(session["user_id"])) and (datetime.now() < open_time):
+    if (not is_special(session["user_id"])) and (datetime.now() < open_time):
         return abort(404)
 
     # 問題ページ描画
