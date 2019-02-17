@@ -4,6 +4,22 @@
 
 {% block content %}
 
+<!--URLから開くタブを選択する-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(
+        function(){
+            var tabName = document.location.hash;
+            if(tabName){
+                $('.nav-tabs a[href="' + tabName + '"]').tab('show');
+            }
+        }
+    );
+    $(document.body).on("click", "a[data-toggle]", function(event) {
+        location.hash = this.getAttribute("href");
+    });
+</script>
+
 <body>
     <!--ナビゲーションバー-->
     {% include "navigation.html" %}
