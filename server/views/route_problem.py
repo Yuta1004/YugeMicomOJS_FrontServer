@@ -1,5 +1,6 @@
-from flask import redirect, session, render_template, request, Blueprint, Markup
+from flask import redirect, session, render_template, request, Blueprint, Markup, abort
 import json
+from datetime import datetime
 import markdown2
 from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem, add_problem
 from server.functions.file_read import get_code, get_iodata, get_problem_body
@@ -90,6 +91,12 @@ def problem_view(problem_id):
                         request.form["submission_code"])
 
         return redirect(base_url + "/submission_list/all")
+
+    # 公開時間より前のアクセスなら404
+    problem_data = get_problem_data(problem_id)
+    open_time = datetime.strptime(problem_data.open_time, "%Y-%m-%d %H:%M:%S")
+    if (not is_admin(session["user_id"])) and (datetime.now() < open_time):
+        return abort(404)
 
     # 問題ページ描画
     problem_body = markdown2.markdown(get_problem_body(problem_id), extras=['fenced-code-blocks'])
