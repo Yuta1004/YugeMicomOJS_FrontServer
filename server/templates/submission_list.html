@@ -84,15 +84,24 @@
                 <nav>
                     <div style="text-align:center">
 	                    <ul class="pagination">
+                            <!--始点と終点-->
                             {% set start = [1, now_page-3] | max %}
-                            {% set end = [now_page+4, (submission_data | length)//15+2] | min %}
-                            {% for num in range(start, end) %}
-                                {% if num == now_page %}
-                                    <li class="active"><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
-                                {% else %}
-                                    <li><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                            {% set end = (submission_data | length)//15+1 %}
+                            <li><a href="?page=1">＜＜</a></li>
+
+                            <!--最大7つ-->
+                            {% for i in range(7) %}
+                                {% set num = start + i %}
+                                {% if num <= end %}
+                                    {% if num == now_page %}
+                                        <li class="active"><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                    {% else %}
+                                        <li><a href={{ "?page=" ~ num }}>{{ num }}</a></li>
+                                    {% endif %}
                                 {% endif %}
                             {% endfor %}
+
+                            <li><a href={{ "?page=" + end|string }}>＞＞</a></li>
                         </ul>
                     </div>
                 </nav>
