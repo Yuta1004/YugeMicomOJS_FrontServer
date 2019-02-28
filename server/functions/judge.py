@@ -40,8 +40,8 @@ def judge_code(submission_id):
 
     # 必要ディレクトリ/ファイルをマウントさせる為の準備
     io_dir = os.path.abspath(".") + "/server/IOData/" + problem_id + "/"
-    code_path = os.path.abspath(".") + "/server/Submission/" + submission_id + lang_to_extension[lang]
-    info_dict_path = os.path.abspath(".") + "info_dict.json"
+    code_path = os.path.abspath(".") + "/server/Submission/" + submission_id + ".txt"
+    info_dict_path = os.path.abspath(".") + "/info_dict.json"
     volumes = {
         io_dir: {
             "bind": "/tmp/judge/io/",
@@ -63,14 +63,19 @@ def judge_code(submission_id):
 
     # ジャッジ
     client = docker.from_env()
-    judge_result = client.containers.run(image_name, commands, remove=True, volumes=volumes)
+    judge_result = client.containers.run(image_name, commands, remove=True, volumes=volumes).decode()
+
+    # スコア取り出し
+    judge_result = judge_result.split("`resultend`\n")
+    score = int(judge_result[1].replace("\n", ""))
+    judge_result = judge_result[0]
 
     # 判定取り出し
     judge_list = []
-    for line in judge_result.decode().split("\n")[:-1]:
+    for line in judge_result.split("\n")[:-1]:
         judge_list.append(line.split("`n`")[1])
 
-    if judge_result.decode() == "":
+    if judge_result == "":
         judge_list = ["IE"]
 
     # 全体の判定を決める
@@ -84,10 +89,10 @@ def judge_code(submission_id):
     cur = connect.cursor()
     sql = """
           UPDATE submission
-          SET status = (SELECT id FROM status WHERE name = ?), detail = ?
+          SET status = (SELECT id FROM status WHERE name = ?), detail = ?, score = ?
           WHERE id = ?
           """
-    cur.execute(sql, (judge_status, judge_result.decode().replace("\n", "`;`"), submission_id))
+    cur.execute(sql, (judge_status, judge_result.replace("\n", "`;`"), score, submission_id))
     connect.commit()
 
     cur.close()

@@ -32,6 +32,7 @@
 - lang : TEXT NOT NULL
 - status : NUMBER NOT NULL
 - detail : TEXT NOT NULL DEFAULT ""
+- score : NUMBER NOT NULL
 
 ## status
 - id : NUMBER PRIMARY KEY

@@ -8,7 +8,7 @@ from server.functions.judge import add_judge_job
 class SubmissionInfo:
     """提出情報を扱うデータクラス"""
 
-    def __init__(self, submission_id, problem_id, problem_name, open_time, user_id, user_name, date, lang, status, detail):
+    def __init__(self, submission_id, problem_id, problem_name, open_time, user_id, user_name, date, lang, status, detail, score):
         """コンストラクタ
 
         Args:
@@ -21,7 +21,8 @@ class SubmissionInfo:
             date (str) : 提出時間[xxxx-xx-xx xx:xx]
             lang (str) : 提出言語
             status (str) : ジャッジステータス
-            detail (str) : 実行詳細
+            detail (SubmissonDetail) : 実行詳細
+            score (str) : スコア
 
         Returns:
             None
@@ -37,6 +38,7 @@ class SubmissionInfo:
         self.lang = lang
         self.status = status
         self.detail = detail
+        self.score = score
 
 
 def get_submission_data(user_id, problem_id):
@@ -58,7 +60,7 @@ def get_submission_data(user_id, problem_id):
     cur.execute("ATTACH \"./server/DB/user.db\" AS user")
 
     # SQL
-    sql_base = "SELECT submission.id, problem.id, problem.name, problem.open_time, submission.user_id, user.auth_info.name, submission.date, submission.lang, status.name, submission.detail \
+    sql_base = "SELECT submission.id, problem.id, problem.name, problem.open_time, submission.user_id, user.auth_info.name, submission.date, submission.lang, status.name, submission.detail, submission.score\
                 FROM submission, status, user.auth_info \
                 INNER JOIN problem ON submission.problem_id = problem.id \
                 WHERE submission.status = status.id AND submission.user_id = user.auth_info.id"
@@ -91,10 +93,11 @@ def get_submission_data(user_id, problem_id):
 class SubmissionDetail:
     """提出情報詳細を扱うデータクラス"""
 
-    def __init__(self, status, err_msg):
+    def __init__(self, test_case_name, status, err_msg):
         """コンストラクタ
 
         Args:
+            test_case_name (str) : テストケース名
             status (str) : ジャッジステータス
             err_msg (str) : 実行詳細
 
@@ -102,6 +105,7 @@ class SubmissionDetail:
             None
         """
 
+        self.test_case_name = test_case_name
         self.status = status
         self.err_msg = err_msg
 
@@ -125,28 +129,28 @@ def get_data_for_submission_page(user_id, submission_id):
 
     sql = """
           SELECT submission.id, problem.id, problem.name, problem.open_time, submission.user_id, user.auth_info.name,
-                    submission.date, submission.lang, status.name, submission.detail, problem.open_time
+                    submission.date, submission.lang, status.name, submission.detail, submission.score, problem.open_time
           FROM submission, status, user.auth_info
           INNER JOIN problem ON submission.problem_id = problem.id
           WHERE submission.status = status.id AND submission.id = ? AND user.auth_info.id = submission.user_id
           """
     fetch_result = cur.execute(sql, (submission_id, )).fetchone()
-    submission_data = SubmissionInfo(*fetch_result[:10])
+    submission_data = SubmissionInfo(*fetch_result[:11])
 
     # 必要情報取得
     submission_user_id = fetch_result[4]
-    open_time = fetch_result[10]
+    open_time = fetch_result[11]
     cur.close()
     connect.close()
 
     # 詳細情報パース
     detail = submission_data.detail.split("`;`")
     detail = [item.split("`n`") for item in detail]
-
     detail_data = {}
-    for elem in detail[:-1]:
-        detail_data[elem[0]] = SubmissionDetail(elem[1],
-                                                elem[2].replace("`n2`", "\n").replace("/tmp/judge/src", "/path/to/code"))
+    for idx, elem in enumerate(detail[:-1]):
+        detail_data[str(idx)] = SubmissionDetail(elem[0],   # テストケース名
+                                                 elem[1],   # ジャッジステータス
+                                                 elem[2].replace("`n2`", "\n").replace("/tmp/judge/src", "/path/to/code"))
     submission_data.detail = detail_data
 
     # 提出コード取得
@@ -185,7 +189,7 @@ def save_submission(user_id, problem_id, lang, code):
     # 提出記録
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0, \"\")",
+    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0, \"\", 0)",
                 (submission_id, user_id, problem_id, lang))
     connect.commit()
     cur.close()

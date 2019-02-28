@@ -17,7 +17,7 @@
 
     "IO_InputPath": "/tmp/judge/io/input/",
 
-    "IO_OutputPath": "/tmp/judge/io/output",
+    "IO_OutputPath": "/tmp/judge/io/output/",
 
     "OutputPath": "/tmp/judge/out.txt"
 }
