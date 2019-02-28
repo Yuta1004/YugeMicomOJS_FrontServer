@@ -6,6 +6,11 @@ from collections import Counter
 from configparser import ConfigParser
 from server import config_file
 
+# プログラミング言語と拡張子の対応表
+lang_to_extension = {
+    "Python3": ".py",
+    "Java": ".java"
+}
 
 # スレッドプール
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
@@ -23,26 +28,42 @@ def judge_code(submission_id):
     # 問題ID取得
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    submission_data = cur.execute("SELECT problem_id, lang FROM submission WHERE id = ?",
-                             (submission_id, )).fetchone()
+    problem_id, lang = (cur.execute("SELECT problem_id, lang FROM submission WHERE id = ?",
+                             (submission_id, )).fetchone())
     cur.close()
     connect.close()
 
     # Dockerについていろいろ
     image_name = config_file["docker"]["image_name"]
     env = {"LD_LIBRARY_PATH": "/usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64"}
-    commands = [
-        "judge-program",
-        config_file["system"]["server_url"],
-        config_file["system"]["password"],
-        submission_id,
-        submission_data[0], # problem_id
-        submission_data[1] # lang
-    ]
+    commands = ["judge-program", lang]
+
+    # 必要ディレクトリ/ファイルをマウントさせる為の準備
+    io_dir = os.path.abspath(".") + "/server/IOData/" + problem_id + "/"
+    code_path = os.path.abspath(".") + "/server/Submission/" + submission_id + lang_to_extension[lang]
+    info_dict_path = os.path.abspath(".") + "info_dict.json"
+    volumes = {
+        io_dir: {
+            "bind": "/tmp/judge/io/",
+            "mode": "ro"
+        },
+        code_path: {
+            "bind": "/tmp/judge/src/Main" + lang_to_extension[lang],
+            "mode": "ro"
+        },
+        io_dir + "test_case.json": {
+            "bind": "/tmp/judge/test_case.json",
+            "mode": "ro"
+        },
+        info_dict_path: {
+            "bind": "/tmp/judge/info_dict.json",
+            "mode": "ro"
+        }
+    }
 
     # ジャッジ
     client = docker.from_env()
-    judge_result = client.containers.run(image_name, commands, remove=True, environment=env)
+    judge_result = client.containers.run(image_name, commands, remove=True, volumes=volumes)
 
     # 判定取り出し
     judge_list = []

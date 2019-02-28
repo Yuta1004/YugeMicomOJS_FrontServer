@@ -1,0 +1,23 @@
+{
+    "Compile": {
+        "Python3": "pyflakes /tmp/judge/src/Main.py &> /tmp/judge/out.txt",
+        "Java" : "javac /tmp/judge/src/Main.java &> /tmp/judge/out.txt"
+    },
+
+    "Execute": {
+        "Python3": "python3 /tmp/judge/src/Main.py &> /tmp/judge/out.txt",
+        "Java" : "java -classpath /tmp/judge/src/ Main &> /tmp/judge/out.txt"
+
+    },
+
+    "ProgramSavePath": {
+        "Python3": "/tmp/judge/src/Main.py",
+        "Java" : "/tmp/judge/src/Main.java"
+    },
+
+    "IO_InputPath": "/tmp/judge/io/input/",
+
+    "IO_OutputPath": "/tmp/judge/io/output",
+
+    "OutputPath": "/tmp/judge/out.txt"
+}
