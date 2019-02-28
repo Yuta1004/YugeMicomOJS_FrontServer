@@ -13,6 +13,7 @@ no_login_ok_url = ["/login", "/register", "/get_submission_code", "/get_iodata"]
 # Flask
 app = Flask(__name__, static_url_path='/yuge_micom_ojs/static')
 app.config["SECRET_KEY"] = config_file["system"]["password"]
+app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024     # 4MB
 bootstrap = Bootstrap(app)
 
 # BeforeRequestRoute

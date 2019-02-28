@@ -26,7 +26,7 @@
             </div>
         {% endif %}
 
-        <form action="#" method="post">
+        <form action="#" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="control-label">問題名</label>
                 <input class="form-control" type="text" name="problem_name" id="problem_name">
@@ -49,18 +49,24 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label">入出力データ(Json)</label>
-                <textarea class="form-control" name="io_data" id="io_data" rows="10">{
-    "test_case_size": 3,
-    "input": {
-        "0": ["1", "2", "3"],
-        "1": ["1", "2", "3"],
-        "2": ["1", "2", "3"]
-    },
-    "output": {
-        "0": ["6"],
-        "1": ["6"],
-        "2": ["6"]
+                <label class="control-label">入力データ(.txt)</label>
+                <input class="form-control" type="file" multiple name="input" id="input">
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">出力データ(.txt)</label>
+                <input class="form-control" type="file" multiple name="output" id="output">
+            </div>
+
+            <p>※入力・出力データのファイル名が一致しているもの同士で判定が行われます</p>
+            <p>※空行も判定対象になります</p><br>
+
+            <div class="form-group">
+                <label class="control-label">部分点データ(Json)</label>
+                <textarea class="form-control" name="score_data" id="score_data" rows="10">{
+    "testcase": {
+        "100": ["test_a", "test_b"],
+        "200": ["test_c", "test_d"]
     }
 }</textarea>
             </div>

@@ -6,7 +6,7 @@ import uuid
 import json
 
 
-def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data):
+def add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data):
     """問題追加処理
 
     Args:
@@ -14,30 +14,31 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
         scoring (int) : 配点
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
-        io_data (str) : 入出力データ、Json形式
+        score_data (str) : 部分点データ、Json形式
 
     Returns:
         bool : 問題追加に成功した場合はTrue
+        problem_id (str) : 問題ID
     """
 
     # 入力ミスならreturn
     if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
-            or problem_body == "" or io_data == "":
+            or problem_body == "" or score_data == "":
         return False
 
+    problem_id = str(uuid.uuid4())
+    os.mkdir("./server/IOData/" + problem_id)
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
 
     # 問題文保存
-    problem_id = str(uuid.uuid4())
     with open("./server/Problem/" + problem_id+ ".md", "w", encoding="utf-8") as f:
         f.write(problem_body)
 
-    # 入出力データ保存
-    with open("./server/IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
-        io_data = json.loads(io_data)
-        io_data["problem_id"] = problem_id
-        f.write(json.dumps(io_data))
+    # 部分点データ保存
+    with open("./server/IOData/" + problem_id + "/test_case.json", "w", encoding="utf-8") as f:
+        score_data = json.loads(score_data)
+        f.write(json.dumps(score_data))
 
     # DB更新
     connect = sqlite3.connect("./server/DB/problem.db")
@@ -48,7 +49,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, io_da
     cur.close()
     connect.close()
 
-    return True
+    return True, problem_id
 
 
 def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, io_data):

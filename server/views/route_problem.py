@@ -1,5 +1,6 @@
 from flask import redirect, session, render_template, request, Blueprint, Markup, abort
 import json
+import os
 from datetime import datetime
 import markdown2
 from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem, add_problem
@@ -18,7 +19,6 @@ def add_problem_route():
         return redirect(base_url)
 
     add_result = None
-
     # 問題追加
     if request.method == "POST":
         problem_name = request.form["problem_name"]
@@ -26,9 +26,19 @@ def add_problem_route():
         open_date = request.form["open_date"]
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
-        io_data = request.form["io_data"]
+        score_data = request.form["score_data"]
 
-        add_result = add_problem(problem_name, scoring, open_date, open_time, problem_body, io_data)
+        add_result, problem_id = add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data)
+
+        # 入出力ファイル保存
+        if add_result:
+            save_path = "./server/IOData/" + problem_id + "/"
+            io_name_list = ["input", "output"]
+            for form_name in io_name_list:
+                os.mkdir(save_path + form_name)
+                upload_files = request.files.getlist(form_name)
+                for file_obj in upload_files:
+                    file_obj.save(save_path + form_name + "/" + file_obj.filename)
 
     return render_template("add_problem.html",
                            session=session["user_id"],
