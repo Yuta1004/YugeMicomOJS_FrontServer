@@ -36,7 +36,8 @@
                             <th>提出時間</th>
                             <th>問題</th>
                             <th><div class="text-center">提出ユーザ</div></th>
-                            <th><div class="text-center">ジャッジステータス</div></th>
+                            <th><div class="text-center">ステータス</div></th>
+                            <th><div class="text-center">スコア</th>
                             <th>言語</th>
                             <th>詳細</th>
                         </tr>
@@ -67,6 +68,7 @@
                                     <td><div class="text-center"><span class="label label-warning">{{ data.status }}</span></div></td>
                                 {% endif %}
 
+                                <td><div class="text-center">{{ data.score }}</div></td>
                                 <td>{{ data.lang }}</td>
 
                                 <!--問題公開時間を過ぎているか-->
