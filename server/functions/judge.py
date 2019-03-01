@@ -9,7 +9,9 @@ from server import config_file
 # プログラミング言語と拡張子の対応表
 lang_to_extension = {
     "Python3": ".py",
-    "Java": ".java"
+    "Java": ".java",
+    "C": ".c",
+    "C++": ".cpp"
 }
 
 # スレッドプール
