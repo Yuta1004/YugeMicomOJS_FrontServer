@@ -2,6 +2,7 @@ import sqlite3
 from datetime import datetime
 import markdown2
 import os
+from pathlib import Path
 import uuid
 import json
 
@@ -52,7 +53,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     return True, problem_id
 
 
-def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, io_data):
+def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data):
     """問題更新処理
 
     Args:
@@ -61,7 +62,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         scoring (int) : 配点
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
-        io_data (str) : 入出力データ、Json形式
+        test_case_data (str) : テストケースデータ、Json形式
 
     Returns:
         bool : 問題更新に成功した場合はTrue
@@ -69,7 +70,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
 
     # 入力ミスならreturn
     if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
-            or problem_body == "" or io_data == "":
+            or problem_body == "" or test_case_data == "":
         return False
 
     # 問題文保存
@@ -77,10 +78,9 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         f.write(problem_body)
 
     # 入出力データ保存
-    with open("./server/IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
-        io_data = json.loads(io_data)
-        io_data["problem_id"] = problem_id
-        f.write(json.dumps(io_data))
+    with open("./server/IOData/" + problem_id + "/test_case.json", "w", encoding="utf-8") as f:
+        test_case_data = json.loads(test_case_data)
+        f.write(json.dumps(test_case_data))
 
     sql = """
           UPDATE problem
@@ -97,6 +97,55 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
     connect.close()
 
     return True
+
+
+def save_io_file(problem_id, files):
+    """POSTされた入出力ファイルを保存する
+
+    Args:
+        problem_id (str) : 問題ID
+        files (flask.requests.files) : リクエストのファイル一覧
+
+    Returns:
+        None
+    """
+
+    # 保存パス
+    save_path = "./server/IOData/" + problem_id + "/"
+    io_name_list = ["input", "output"]
+
+    # ファイル保存, input -> output
+    for form_name in io_name_list:
+        os.makedirs(save_path + form_name, exist_ok=True)
+        upload_files = files.getlist(form_name)
+
+        # 含まれる全てのファイルを保存
+        for file_obj in upload_files:
+            if file_obj.filename[-4:-1] + file_obj.filename[-1] == ".txt":
+                file_obj.save(save_path + form_name + "/" + file_obj.filename)
+
+
+def rm_io_file(problem_id, input_list=None, output_list=None):
+    """指定された入出力ファイルを削除する
+
+    Args:
+        problem_id (str) : 問題ID
+        input_list (list) : 削除する入力ファイルのリスト
+        output_list (list) : 削除する出力ファイルのリスト
+
+    Returns:
+        None
+    """
+
+    # 保存パス
+    io_data_path = "./server/IOData/" + problem_id + "/"
+    io_list = {"input/": input_list, "output/": output_list}
+
+    # ファイル保存, input -> output
+    for dir_name, file_name_list in io_list.items():
+        # 含まれる全てのファイルを削除
+        for file_name in file_name_list:
+            os.remove(io_data_path + dir_name + file_name + ".txt")
 
 
 class ProblemInfo:
@@ -185,4 +234,46 @@ def get_problem_data(problem_id):
     connect.close()
 
     return problem_data
+
+
+def get_input_file_list(problem_id):
+    """指定IDの入力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        list : 入力ファイルのリスト
+    """
+
+    path_obj = Path("./server/IOData/" + problem_id + "/input/")
+    return list(path_obj.glob("*"))
+
+
+def get_output_file_list(problem_id):
+    """指定IDの出力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        list : 出力ファイルのリスト
+    """
+
+    path_obj = Path("./server/IOData/" + problem_id + "/output/")
+    return list(path_obj.glob("*"))
+
+
+def get_io_file_list(problem_id):
+    """指定IDの入出力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        dict : keyに[input], [output]をもつ辞書
+    """
+
+    return {"input": get_input_file_list(problem_id),
+            "output": get_output_file_list(problem_id)}
 
