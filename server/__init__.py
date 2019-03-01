@@ -40,7 +40,6 @@ def error_404_notfound(error):
 from server.views.route_auth import route_auth
 from server.views.route_admin import route_admin
 from server.views.route_contest import route_contest
-from server.views.route_judge_process import route_judge_process
 from server.views.route_problem import route_problem
 from server.views.route_submission import route_submission
 from server.views.route_top import route_top
@@ -49,7 +48,6 @@ from server.views.route_user import route_user
 app.register_blueprint(route_auth)
 app.register_blueprint(route_admin)
 app.register_blueprint(route_contest)
-app.register_blueprint(route_judge_process)
 app.register_blueprint(route_problem)
 app.register_blueprint(route_submission)
 app.register_blueprint(route_top)

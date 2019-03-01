@@ -1,18 +1,23 @@
 {
     "Compile": {
         "Python3": "pyflakes /tmp/judge/src/Main.py &> /tmp/judge/out.txt",
-        "Java" : "javac /tmp/judge/src/Main.java &> /tmp/judge/out.txt"
+        "Java" : "javac /tmp/judge/src/Main.java &> /tmp/judge/out.txt",
+        "C": "g++ -std-std=gnu11 -O2 -o /tmp/judge/src/Main /tmp/judge/src/Main.c &> /tmp/judge/out.txt",
+        "C++": "g++ -std=gnu++14 -O2 -o /tmp/judge/src/Main /tmp/judge/src/Main.cpp &> /tmp/judge/out.txt"
     },
 
     "Execute": {
         "Python3": "python3 /tmp/judge/src/Main.py &> /tmp/judge/out.txt",
-        "Java" : "java -classpath /tmp/judge/src/ Main &> /tmp/judge/out.txt"
-
+        "Java" : "java -classpath /tmp/judge/src/ Main &> /tmp/judge/out.txt",
+        "C": "./tmp/judge/src/Main &> /tmp/judge/out.txt",
+        "C++": "./tmp/judge/src/Main &> /tmp/judge/out.txt"
     },
 
     "ProgramSavePath": {
         "Python3": "/tmp/judge/src/Main.py",
-        "Java" : "/tmp/judge/src/Main.java"
+        "Java" : "/tmp/judge/src/Main.java",
+        "C": "/tmp/judge/src/Main.c",
+        "C++": "/tmp/judge/src/Main.cpp"
     },
 
     "IO_InputPath": "/tmp/judge/io/input/",

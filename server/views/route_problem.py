@@ -3,8 +3,9 @@ import json
 import os
 from datetime import datetime
 import markdown2
-from server.functions.problem import get_all_problem_with_status, get_problem_data, update_problem, add_problem
-from server.functions.file_read import get_code, get_iodata, get_problem_body
+from server.functions.problem import get_all_problem_with_status, get_problem_data,\
+    update_problem, add_problem, get_io_file_list, save_io_file, rm_io_file
+from server.functions.file_read import get_code, get_test_case_data, get_problem_body
 from server.functions.user import is_admin, is_special
 from server.functions.submission import save_submission
 from server import base_url, config_file
@@ -32,13 +33,7 @@ def add_problem_route():
 
         # 入出力ファイル保存
         if add_result:
-            save_path = "./server/IOData/" + problem_id + "/"
-            io_name_list = ["input", "output"]
-            for form_name in io_name_list:
-                os.mkdir(save_path + form_name)
-                upload_files = request.files.getlist(form_name)
-                for file_obj in upload_files:
-                    file_obj.save(save_path + form_name + "/" + file_obj.filename)
+            save_io_file(problem_id, request.files)
 
     return render_template("add_problem.html",
                            session=session["user_id"],
@@ -61,22 +56,31 @@ def edit_problem_route(problem_id):
         open_date = request.form["open_date"]
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
-        io_data = request.form["io_data"]
+        test_case_data = request.form["test_case_data"]
 
         update_result = update_problem(problem_id, problem_name, scoring, open_date,
-                                       open_time, problem_body, io_data)
+                                       open_time, problem_body, test_case_data)
+
+        # 入出力ファイル保存・削除
+        if update_result:
+            save_io_file(problem_id, request.files)
+            rm_io_file(problem_id,
+                       request.form.getlist("rm_input"), request.form.getlist("rm_output"))
 
     # 必要な情報を読み込む
     problem_data = get_problem_data(problem_id)
-    iodata = json.loads(get_iodata(problem_id, config_file["system"]["password"]))
-    iodata_format = json.dumps(iodata, indent=4)
+    test_case_data = json.loads(get_test_case_data(problem_id))
+    test_case_data_format = json.dumps(test_case_data, indent=4)
     problem_body = get_problem_body(problem_id)
+    io_file_list = get_io_file_list(problem_id)
 
     return render_template("edit_problem.html",
                            session=session["user_id"],
                            problem=problem_data,
-                           problem_iodata=iodata_format,
+                           problem_test_case_data=test_case_data_format,
                            problem_body=problem_body,
+                           input_file_list=io_file_list["input"],
+                           output_file_list=io_file_list["output"],
                            update_result=update_result)
 
 

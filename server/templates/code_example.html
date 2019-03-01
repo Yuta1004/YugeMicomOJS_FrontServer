@@ -15,7 +15,8 @@
 
     <!--メインコンテンツ-->
     <div class="container">
-        <h2>提出コード例</h2><br>
+        <h2>実行環境詳細</h2><br>
+        <p>※クリックで開きます</p><br>
 
         <!--コード表示用スタイル設定-->
         <style type="text/css">
@@ -30,8 +31,23 @@
 
         <!--Python3-->
         <div class="panel panel-default">
-            <div class="panel-heading">Python3</div>
-            <div class="panel-body">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#python3">Python3</a>
+            </div>
+            <div id="python3" class="panel-body collapse">
+                <p><b>コンパイルコマンド</b></p>
+                <pre><code>pyflakes Main.py</code></pre><br>
+
+                <p><b>実行コマンド</b></p>
+                <pre><code>python3 Main.py</code></pre><br>
+
+                <p><b>その他</b></p>
+                <p>構文チェック</p>
+                <pre><code>Pyflakes 2.1.1 Python 3.6.8 on Linux</code></pre>
+                <p>実行環境</p>
+                <pre><code>Python 3.6.8</code></pre><br>
+
+                <p><b>コード例</b></p>
                 <pre><code class="prettyprint linenums"># Input
 inp = input()
 
@@ -42,8 +58,25 @@ print(inp)</code></pre>
 
         <!--Java-->
         <div class="panel panel-default">
-            <div class="panel-heading">Java</div>
-            <div class="panel-body">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#java">Java</a>
+            </div>
+            <div id="java" class="panel-body collapse">
+                <p><b>コンパイルコマンド</b></p>
+                <pre><code>javac Main.java</code></pre><br>
+
+                <p><b>実行コマンド</b></p>
+                <pre><code>java -classpath /path/to/code/ Main</code></pre><br>
+
+                <p><b>その他</b></p>
+                <p>コンパイラ</p>
+                <pre><code>javac 1.8.0_191</code></pre>
+                <p>実行環境</p>
+                <pre><code>openjdk version "1.8.0_191"
+OpenJDK Runtime Environment (IcedTea 3.10.0) (Alpine 8.191.12-r0)
+OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)</code></pre><br>
+
+                <p><b>コード例</b></p>
                 <pre><code class="prettyprint linenums">import java.io.*;
 
 class Main{
@@ -56,6 +89,77 @@ class Main{
         // Output
         System.out.println(inp);
     }
+}</code></pre>
+            </div>
+        </div>
+
+        <!--C-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#c">C</a>
+            </div>
+            <div id="c" class="panel-body collapse">
+                <p><b>コンパイルコマンド</b></p>
+                <pre><code>gcc -std=gnu11 -O2 -o Main Main.c</code></pre><br>
+
+                <p><b>実行コマンド</b></p>
+                <pre><code>./Main</code></pre><br>
+
+                <p><b>その他</b></p>
+                <p>コンパイラ</p>
+                <pre><code>gcc (Alpine 8.2.0) 8.2.0</code></pre>
+                <p>言語バージョン</p>
+                <pre><code>C11</code></pre><br>
+
+                <p><b>コード例</b></p>
+                <pre><code class="prettyprint linenums">#include &lt;stdio.h&gt;
+
+int main(){
+    // Input
+    char inp[40];
+    scanf("%s", inp);
+
+    // Output
+    printf("%s\n", inp);
+
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+
+        <!--C++-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#cpp">C++</a>
+            </div>
+            <div id="cpp" class="panel-body collapse">
+                <p><b>コンパイルコマンド</b></p>
+                <pre><code>g++ -std=gnu++14 -O2 -o Main Main.cpp</code></pre><br>
+
+                <p><b>実行コマンド</b></p>
+                <pre><code>./Main</code></pre><br>
+
+                <p><b>その他</b></p>
+                <p>コンパイラ</p>
+                <pre><code>g++ (Alpine 8.2.0) 8.2.0</code></pre>
+                <p>言語バージョン</p>
+                <pre><code>C++14 (+GNU拡張)</code></pre><br>
+
+                <p><b>コード例</b></p>
+                <pre><code class="prettyprint linenums">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main(){
+    // Input
+    string inp;
+    cin &gt;&gt; inp;
+
+    // Output
+    cout &lt;&lt; inp &lt;&lt; endl;
+
+    return 0;
 }</code></pre>
             </div>
         </div>
