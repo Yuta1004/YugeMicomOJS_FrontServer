@@ -53,7 +53,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     return True, problem_id
 
 
-def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, io_data):
+def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data):
     """問題更新処理
 
     Args:
@@ -62,7 +62,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         scoring (int) : 配点
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
-        io_data (str) : 入出力データ、Json形式
+        test_case_data (str) : テストケースデータ、Json形式
 
     Returns:
         bool : 問題更新に成功した場合はTrue
@@ -70,7 +70,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
 
     # 入力ミスならreturn
     if problem_name == "" or scoring == "" or open_date == "" or open_time == "" \
-            or problem_body == "" or io_data == "":
+            or problem_body == "" or test_case_data == "":
         return False
 
     # 問題文保存
@@ -78,10 +78,9 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         f.write(problem_body)
 
     # 入出力データ保存
-    with open("./server/IOData/" + problem_id + ".json", "w", encoding="utf-8") as f:
-        io_data = json.loads(io_data)
-        io_data["problem_id"] = problem_id
-        f.write(json.dumps(io_data))
+    with open("./server/IOData/" + problem_id + "/test_case.json", "w", encoding="utf-8") as f:
+        test_case_data = json.loads(test_case_data)
+        f.write(json.dumps(test_case_data))
 
     sql = """
           UPDATE problem
