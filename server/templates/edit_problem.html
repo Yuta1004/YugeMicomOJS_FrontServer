@@ -54,7 +54,35 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label">入出力データ(Json)</label>
+                <label class="control-label">削除する入力ファイル</label><br>
+                <select name="rm_input" id="rm_input" size="10" multiple>
+                    {% for file in input_file_list %}
+                        <option value={{ file.as_posix().split(".")[0] }}>{{ file.as_posix().split("/")[-1] }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">削除する出力ファイル</label><br>
+                <select name="rm_output" id="rm_output" size="10" multiple>
+                    {% for file in output_file_list %}
+                        <option value={{ file.as_posix().split(".")[0] }}>{{ file.as_posix().split("/")[-1] }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">入力データ(.txt)</label>
+                <input class="form-control" type="file" multiple name="input" id="input">
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">出力データ(.txt)</label>
+                <input class="form-control" type="file" multiple name="output" id="output">
+            </div><br>
+
+            <div class="form-group">
+                <label class="control-label">テストケースデータ(Json)</label>
                 <textarea class="form-control" name="io_data" id="io_data" rows="10">{{ problem_test_case_data }}</textarea>
             </div>
 
