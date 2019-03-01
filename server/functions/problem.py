@@ -117,7 +117,7 @@ def save_io_file(problem_id, files):
 
     # ファイル保存, input -> output
     for form_name in io_name_list:
-        #os.mkdir(save_path + form_name)
+        os.makedirs(save_path + form_name, exist_ok=True)
         upload_files = files.getlist(form_name)
 
         # 含まれる全てのファイルを保存
