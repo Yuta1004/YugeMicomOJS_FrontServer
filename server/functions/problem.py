@@ -2,6 +2,7 @@ import sqlite3
 from datetime import datetime
 import markdown2
 import os
+from pathlib import Path
 import uuid
 import json
 
@@ -99,6 +100,31 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
     return True
 
 
+def save_io_file(problem_id, files):
+    """POSTされた入出力ファイルを保存する
+
+    Args:
+        problem_id (str) : 問題ID
+        files (flask.requests.files) : リクエストのファイル一覧
+
+    Returns:
+        None
+    """
+
+    # 保存パス
+    save_path = "./server/IOData/" + problem_id + "/"
+    io_name_list = ["input", "output"]
+
+    # ファイル保存, input -> output
+    for form_name in io_name_list:
+        os.mkdir(save_path + form_name)
+        upload_files = files.getlist(form_name)
+
+        # 含まれる全てのファイルを保存
+        for file_obj in upload_files:
+            if file_obj.filename[-4:-1] + file_obj.filename[-1] == ".txt":
+                file_obj.save(save_path + form_name + "/" + file_obj.filename)
+
 class ProblemInfo:
     """問題情報を扱うデータクラス"""
 
@@ -185,4 +211,46 @@ def get_problem_data(problem_id):
     connect.close()
 
     return problem_data
+
+
+def get_input_file_list(problem_id):
+    """指定IDの入力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        list : 入力ファイルのリスト
+    """
+
+    path_obj = Path("./server/IOData/" + problem_id + "/input/")
+    return list(path_obj.glob("*"))
+
+
+def get_output_file_list(problem_id):
+    """指定IDの出力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        list : 出力ファイルのリスト
+    """
+
+    path_obj = Path("./server/IOData/" + problem_id + "/output/")
+    return list(path_obj.glob("*"))
+
+
+def get_io_file_list(problem_id):
+    """指定IDの入出力ファイル一覧を返す
+
+    Args:
+        problem_id (str) : 問題ID
+
+    Returns:
+        dict : keyに[input], [output]をもつ辞書
+    """
+
+    return {"input": get_input_file_list(problem_id),
+            "output": get_output_file_list(problem_id)}
 
