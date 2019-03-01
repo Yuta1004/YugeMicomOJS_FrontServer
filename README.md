@@ -3,10 +3,12 @@
 自作のオンラインジャッジシステム(フロントサーバ)
 
 ## 対応言語
-2019/01/27 現在  
-**Dockerイメージ「YugeMiconOJS_JudgeImage」に依存します**  
+2019/03/02 現在  
+**Dockerイメージ「YugeMiconOJS_JudgeSystem」に依存します**  
 - Python3
 - Java
+- C
+- C++
 
 ## 起動
 
