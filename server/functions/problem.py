@@ -117,13 +117,37 @@ def save_io_file(problem_id, files):
 
     # ファイル保存, input -> output
     for form_name in io_name_list:
-        os.mkdir(save_path + form_name)
+        #os.mkdir(save_path + form_name)
         upload_files = files.getlist(form_name)
 
         # 含まれる全てのファイルを保存
         for file_obj in upload_files:
             if file_obj.filename[-4:-1] + file_obj.filename[-1] == ".txt":
                 file_obj.save(save_path + form_name + "/" + file_obj.filename)
+
+
+def rm_io_file(problem_id, input_list=None, output_list=None):
+    """指定された入出力ファイルを削除する
+
+    Args:
+        problem_id (str) : 問題ID
+        input_list (list) : 削除する入力ファイルのリスト
+        output_list (list) : 削除する出力ファイルのリスト
+
+    Returns:
+        None
+    """
+
+    # 保存パス
+    io_data_path = "./server/IOData/" + problem_id + "/"
+    io_list = {"input/": input_list, "output/": output_list}
+
+    # ファイル保存, input -> output
+    for dir_name, file_name_list in io_list.items():
+        # 含まれる全てのファイルを削除
+        for file_name in file_name_list:
+            os.remove(io_data_path + dir_name + file_name + ".txt")
+
 
 class ProblemInfo:
     """問題情報を扱うデータクラス"""
