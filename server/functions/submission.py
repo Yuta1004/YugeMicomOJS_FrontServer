@@ -4,7 +4,6 @@ import uuid
 from datetime import datetime
 from server.functions.judge import add_judge_job
 
-
 class SubmissionInfo:
     """提出情報を扱うデータクラス"""
 

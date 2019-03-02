@@ -4,6 +4,33 @@
 
 {% block content %}
 
+<!--Websocket-->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    // サーバ接続
+    var socket = io({transports: ["websocket"]}).connect(null, {port: location.port, rememberTransport: false});
+
+    // ジャッジステータス更新
+    socket.on("update_judge_status", function(submission_id, judge_status){
+        // ステータスによって表示するラベルを変える
+        var label_type = ""
+        if(judge_status === "AC"){
+            label_type = "<span class=\"label label-success\">AC</span>";
+        }else if(judge_status === "WJ"){
+            label_type = "<span class=\"label label-default\">WA</span>";
+        }else if(judge_status === "IE"){
+            label_type = "<span class=\"label label-danger\">IE</span>";
+        }else if(judge_status === "SJ"){
+            label_type = "<img src=\"/yuge_micom_ojs/static/wj.svg\">"
+        }else{
+            label_type = "<span class=\"label label-warning\">" + judge_status + "</span>";
+        }
+
+        var label = document.getElementById("label_" + submission_id)
+        label.innerHTML = label_type
+    });
+</script>
+
 <body>
     <!--ナビゲーションバー-->
     {% include "navigation.html" %}
@@ -58,15 +85,19 @@
                                 <td><div class="text-center">{{ data.user_name }}</div></td>
 
                                 <!--ステータスによってラベルを変える-->
-                                {% if data.status == "AC" %}
-                                    <td><div class="text-center"><span class="label label-success">{{ data.status }}</span></div></td>
-                                {% elif data.status == "WJ" %}
-                                    <td><div class="text-center"><span class="label label-default">{{ data.status }}</span></div></td>
-                                {% elif data.status == "IE" %}
-                                    <td><div class="text-center"><span class="label label-danger">{{ data.status }}</span></div></td>
-                                {% else %}
-                                    <td><div class="text-center"><span class="label label-warning">{{ data.status }}</span></div></td>
-                                {% endif %}
+                                <td><div class="text-center" id={{ "label_" + data.id }} name={{ "label_" + data.id }}>
+                                    {% if data.status == "AC" %}
+                                        <span class="label label-success">{{ data.status }}</span>
+                                    {% elif data.status == "WJ" %}
+                                        <span class="label label-default">{{ data.status }}</span>
+                                    {% elif data.status == "IE" %}
+                                        <span class="label label-danger">{{ data.status }}</span>
+                                    {% elif data.status == "SJ" %}
+                                        <img src="/yuge_micom_ojs/static/wj.svg">
+                                    {% else %}
+                                        <span class="label label-warning">{{ data.status }}</span>
+                                    {% endif %}
+                                </div></td>
 
                                 <td><div class="text-center">{{ data.score }}</div></td>
                                 <td>{{ data.lang }}</td>

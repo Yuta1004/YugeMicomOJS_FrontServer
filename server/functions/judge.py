@@ -1,8 +1,9 @@
 import docker
 import os
 import sqlite3
-from concurrent.futures import ThreadPoolExecutor
+from server import socketio
 from collections import Counter
+from gevent.threadpool import ThreadPoolExecutor
 from configparser import ConfigParser
 from server import config_file
 
@@ -17,6 +18,7 @@ lang_to_extension = {
 # スレッドプール
 executor = ThreadPoolExecutor(max_workers=int(config_file["system"]["max_worker"]))
 
+
 def judge_code(submission_id):
     """提出されたコードをジャッジする
 
@@ -26,6 +28,9 @@ def judge_code(submission_id):
     Returns:
         None
     """
+
+    # ジャッジ開始
+    start_judge(submission_id)
 
     # 問題ID取得
     connect = sqlite3.connect("./server/DB/problem.db")
@@ -100,12 +105,33 @@ def judge_code(submission_id):
     cur.close()
     connect.close()
 
+    # ジャッジ終了
+    finish_judge(submission_id, judge_status)
+
 
 def add_judge_job(submission_id):
     """ジャッジジョブ追加
 
-    Description:
-        追加されたジョブはFIFOで処理されていく
+    Args:
+        submission_id (str) : 提出ID
+
+    Returns:
+        None
+    """
+    # ステータス変更
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("UPDATE submission SET status = 0 WHERE id = ?", (submission_id, ))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    socketio.emit("update_judge_status", (submission_id, "WJ"))
+    executor.submit(judge_code, submission_id)
+
+
+def start_judge(submission_id):
+    """ジャッジ開始時に呼ぶ！
 
     Args:
         submission_id (str) : 提出ID
@@ -114,5 +140,28 @@ def add_judge_job(submission_id):
         None
     """
 
-    executor.submit(judge_code, submission_id)
+    print("Start Judge ")
+    # ステータス変更
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("UPDATE submission SET status = -1 WHERE id = ?", (submission_id, ))
+    connect.commit()
+    cur.close()
+    connect.close()
+
+    socketio.emit("update_judge_status", (submission_id, "SJ"))
+
+
+def finish_judge(submission_id, judge_status):
+    """ジャッジ終了時に呼ぶ!
+
+    Args:
+        submission_id (str) : 提出ID
+        judge_status (str) : ジャッジステータス
+
+    Returns:
+        None
+    """
+
+    socketio.emit("update_judge_status", (submission_id, judge_status))
 
