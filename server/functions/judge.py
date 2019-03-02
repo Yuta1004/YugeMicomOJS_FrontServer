@@ -118,7 +118,15 @@ def add_judge_job(submission_id):
     Returns:
         None
     """
+    # ステータス変更
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("UPDATE submission SET status = 0 WHERE id = ?", (submission_id, ))
+    connect.commit()
+    cur.close()
+    connect.close()
 
+    socketio.emit("update_judge_status", (submission_id, "WJ"))
     executor.submit(judge_code, submission_id)
 
 
@@ -131,6 +139,15 @@ def start_judge(submission_id):
     Returns:
         None
     """
+
+    print("Start Judge ")
+    # ステータス変更
+    connect = sqlite3.connect("./server/DB/problem.db")
+    cur = connect.cursor()
+    cur.execute("UPDATE submission SET status = -1 WHERE id = ?", (submission_id, ))
+    connect.commit()
+    cur.close()
+    connect.close()
 
     socketio.emit("update_judge_status", (submission_id, "SJ"))
 
