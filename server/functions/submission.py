@@ -2,8 +2,7 @@ import os
 import sqlite3
 import uuid
 from datetime import datetime
-from server.functions.judge import add_judge_job
-
+from server.functions.judge import add_judge_job, executor
 
 class SubmissionInfo:
     """提出情報を扱うデータクラス"""
@@ -186,11 +185,16 @@ def save_submission(user_id, problem_id, lang, code):
     with open("./server/Submission/" + submission_id + ".txt", "w", encoding="utf-8") as f:
         f.write(code)
 
+    # SJ or WJ
+    judge_status = 0
+    if len(executor._threads) <= 4:
+        judge_status = -1
+
     # 提出記録
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, 0, \"\", 0)",
-                (submission_id, user_id, problem_id, lang))
+    cur.execute("INSERT INTO submission VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"), ?, ?, \"\", 0)",
+                (submission_id, user_id, problem_id, lang, judge_status))
     connect.commit()
     cur.close()
     connect.close()

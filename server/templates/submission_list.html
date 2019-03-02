@@ -92,6 +92,8 @@
                                         <span class="label label-default">{{ data.status }}</span>
                                     {% elif data.status == "IE" %}
                                         <span class="label label-danger">{{ data.status }}</span>
+                                    {% elif data.status == "SJ" %}
+                                        <img src="/yuge_micom_ojs/static/wj.svg">
                                     {% else %}
                                         <span class="label label-warning">{{ data.status }}</span>
                                     {% endif %}

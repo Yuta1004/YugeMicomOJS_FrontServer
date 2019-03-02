@@ -133,7 +133,6 @@ def start_judge(submission_id):
     """
 
     socketio.emit("update_judge_status", (submission_id, "SJ"))
-    print("Start Judge : ", submission_id)
 
 
 def finish_judge(submission_id, judge_status):
@@ -148,4 +147,4 @@ def finish_judge(submission_id, judge_status):
     """
 
     socketio.emit("update_judge_status", (submission_id, judge_status))
-    print("Finish Judge : ", submission_id)
+
