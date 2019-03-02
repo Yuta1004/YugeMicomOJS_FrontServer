@@ -1,3 +1,3 @@
-from server import app
+from server import app, socketio
 
-app.run(port=12000)
+socketio.run(app, port=12000)
