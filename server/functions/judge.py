@@ -1,8 +1,9 @@
 import docker
 import os
 import sqlite3
+from server import socketio
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
+from gevent.threadpool import ThreadPoolExecutor
 from configparser import ConfigParser
 from server import config_file
 
@@ -105,7 +106,7 @@ def judge_code(submission_id):
     connect.close()
 
     # ジャッジ終了
-    finish_judge(submission_id)
+    finish_judge(submission_id, judge_status)
 
 
 def add_judge_job(submission_id):
@@ -131,17 +132,20 @@ def start_judge(submission_id):
         None
     """
 
+    socketio.emit("update_judge_status", (submission_id, "SJ"))
     print("Start Judge : ", submission_id)
 
 
-def finish_judge(submission_id):
+def finish_judge(submission_id, judge_status):
     """ジャッジ終了時に呼ぶ!
 
     Args:
         submission_id (str) : 提出ID
+        judge_status (str) : ジャッジステータス
 
     Returns:
         None
     """
 
+    socketio.emit("update_judge_status", (submission_id, judge_status))
     print("Finish Judge : ", submission_id)
