@@ -140,7 +140,6 @@ def start_judge(submission_id):
         None
     """
 
-    print("Start Judge ")
     # ステータス変更
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
