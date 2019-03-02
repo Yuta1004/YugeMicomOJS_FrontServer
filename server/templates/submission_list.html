@@ -4,6 +4,18 @@
 
 {% block content %}
 
+<!--Websocket-->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect("http://" + document.domain + ":" + location.port);
+    socket.on("connect", function() {
+        socket.emit("message_from_client", "Hello Server!");
+        socket.on("message_from_server", function(message){
+            console.log(message);
+        })
+    });
+</script>
+
 <body>
     <!--ナビゲーションバー-->
     {% include "navigation.html" %}

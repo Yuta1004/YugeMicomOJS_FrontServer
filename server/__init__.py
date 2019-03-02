@@ -1,4 +1,5 @@
 from flask import Flask, session, request, redirect, render_template
+from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 from configparser import ConfigParser
 
@@ -14,6 +15,7 @@ no_login_ok_url = ["/login", "/register", "/get_submission_code", "/get_iodata"]
 app = Flask(__name__, static_url_path='/yuge_micom_ojs/static')
 app.config["SECRET_KEY"] = config_file["system"]["password"]
 app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024     # 4MB
+socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
 
 # BeforeRequestRoute
@@ -44,6 +46,7 @@ from server.views.route_problem import route_problem
 from server.views.route_submission import route_submission
 from server.views.route_top import route_top
 from server.views.route_user import route_user
+from server.views import route_socketio
 
 app.register_blueprint(route_auth)
 app.register_blueprint(route_admin)
