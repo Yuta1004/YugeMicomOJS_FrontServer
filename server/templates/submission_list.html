@@ -8,7 +8,8 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
     // サーバ接続
-    var socket = io({transports: ["websocket"]}).connect(null, {port: location.port, rememberTransport: false});
+    // {transports: ["websocket"]}
+    var socket = io.connect(null, {port: location.port, rememberTransport: false});
 
     // ジャッジステータス更新
     socket.on("update_judge_status", function(submission_id, judge_status){
