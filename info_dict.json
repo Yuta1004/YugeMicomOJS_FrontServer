@@ -2,7 +2,7 @@
     "Compile": {
         "Python3": "pyflakes /tmp/judge/src/Main.py &> /tmp/judge/out.txt",
         "Java" : "javac /tmp/judge/src/Main.java &> /tmp/judge/out.txt",
-        "C": "g++ -std-std=gnu11 -O2 -o /tmp/judge/src/Main /tmp/judge/src/Main.c &> /tmp/judge/out.txt",
+        "C": "gcc -std=gnu11 -O2 -o /tmp/judge/src/Main /tmp/judge/src/Main.c &> /tmp/judge/out.txt",
         "C++": "g++ -std=gnu++14 -O2 -o /tmp/judge/src/Main /tmp/judge/src/Main.cpp &> /tmp/judge/out.txt"
     },
 
