@@ -77,7 +77,7 @@
                                 <td>{{ data.date }}</td>
 
                                 <!--問題公開時間を過ぎているか-->
-                                {% if (now_time < data.open_time) and (not is_special) and (not data.user_id != user_id) %}
+                                {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
                                     <td>＊＊＊＊＊</td>
                                 {% else %}
                                     <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
@@ -100,13 +100,14 @@
                                     {% endif %}
                                 </div></td>
 
-                                <td><div class="text-center">{{ data.score }}</div></td>
-                                <td>{{ data.lang }}</td>
-
                                 <!--問題公開時間を過ぎているか-->
-                                {% if (now_time < data.open_time) and (not is_special) and (not data.user_id != user_id) %}
+                                {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
+                                    <td><div class="text-center">＊</div></td>
+                                    <td>＊＊＊</td>
                                     <td>詳細</td>
                                 {% else %}
+                                    <td><div class="text-center">{{ data.score }}</div></td>
+                                    <td>{{ data.lang }}</td>
                                     <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
                                 {% endif %}
                             </tr>

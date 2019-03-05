@@ -106,12 +106,6 @@ def problem_view(problem_id):
 
         return redirect(base_url + "/submission_list/all")
 
-    # 公開時間より前のアクセスなら404
-    problem_data = get_problem_data(problem_id)
-    open_time = datetime.strptime(problem_data.open_time, "%Y-%m-%d %H:%M:%S")
-    if (not is_special(session["user_id"])) and (datetime.now() < open_time):
-        return abort(404)
-
     # 問題ページ描画
     problem_body = markdown2.markdown(get_problem_body(problem_id), extras=['fenced-code-blocks'])
     if problem_body is None:
