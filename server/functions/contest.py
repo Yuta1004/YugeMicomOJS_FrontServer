@@ -257,11 +257,11 @@ def get_ranking_data(contest_id):
     sql = """
           SELECT user_id, user.auth_info.name, SUM(score), MAX(submission_time)
           FROM (
-                SELECT submission.user_id AS user_id, submission.score AS score,
+                SELECT submission.user_id AS user_id, MAX(submission.score) AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
                 FROM submission, problem, contest.contest AS contest
                 LEFT OUTER JOIN status ON submission.status = status.id
-                WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND status.name == "AC" AND
+                WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND submission.score > 0 AND
                       submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
                 GROUP BY problem.id, submission.user_id
                 ) submission_data, user.auth_info

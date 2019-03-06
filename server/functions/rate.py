@@ -34,12 +34,12 @@ def cal_contest_rate(contest_id):
     sql = """
           SELECT user_id, MAX(score), COUNT(user_id), MAX(submission_time)
           FROM (
-                SELECT submission.user_id AS user_id, submission.scoring AS score,
+                SELECT submission.user_id AS user_id, MAX(submission.score) AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
                 FROM submission, problem, contest.contest AS contest
                 LEFT OUTER JOIN status ON submission.status = status.id
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
-                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\") AND submission.status = 6
+                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\") AND submission.score > 0
                 GROUP BY submission.problem_id, submission.user_id
                 ) submission_data
           GROUP BY user_id
