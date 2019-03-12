@@ -211,7 +211,6 @@ def get_all_problem_with_status(user_id, refine_time=True):
 
     all_problem = []
     for problem in cur.fetchall():
-        print(problem[-1])
         all_problem.append(ProblemInfo(*problem[:-2], problem[-2].split(";"), problem[-1]))
 
     cur.close()
