@@ -38,10 +38,11 @@
                     <div class="form-group">
                         <label class="control-label">提出言語</label>
                         <select class="form-control" style="width:25%;" id="submission_lang" name="submission_lang">
-                            <option>Python3</option>
-                            <option>Java</option>
-                            <option>C</option>
-                            <option>C++</option>
+                            {% for lang in problem.lang_rest %}
+                                {% if lang != "" %}
+                                    <option>{{ lang }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
                     </div>
 

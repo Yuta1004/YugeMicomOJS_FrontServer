@@ -28,8 +28,9 @@ def add_problem_route():
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
         score_data = request.form["score_data"]
+        lang_rest = request.form.getlist("lang_rest")
 
-        add_result, problem_id = add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data)
+        add_result, problem_id = add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data, lang_rest)
 
         # 入出力ファイル保存
         if add_result:
@@ -57,9 +58,10 @@ def edit_problem_route(problem_id):
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
         test_case_data = request.form["test_case_data"]
+        lang_rest = request.form.getlist("lang_rest")
 
         update_result = update_problem(problem_id, problem_name, scoring, open_date,
-                                       open_time, problem_body, test_case_data)
+                                       open_time, problem_body, test_case_data, lang_rest)
 
         # 入出力ファイル保存・削除
         if update_result:
@@ -107,12 +109,14 @@ def problem_view(problem_id):
         return redirect(base_url + "/submission_list/all")
 
     # 問題ページ描画
+    problem_data = get_problem_data(problem_id)
     problem_body = markdown2.markdown(get_problem_body(problem_id), extras=['fenced-code-blocks'])
     if problem_body is None:
         return abort(404)
 
     return render_template("problem.html",
                             session=session["user_id"],
+                            problem=problem_data,
                             problem_body=Markup(problem_body))
 
 

@@ -82,6 +82,20 @@
             </div><br>
 
             <div class="form-group">
+                <label class="control-label">言語縛り</label><br>
+                <select name="lang_rest" id="lang_rest" size="10" multiple>
+                    {% set lang_list = ["Python3", "Java", "C", "C++"] %}
+                    {% for lang in lang_list %}
+                        {% if lang in problem.lang_rest %}
+                            <option selected>{{ lang }}</option>
+                        {% else %}
+                            <option>{{ lang }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <div class="form-group">
                 <label class="control-label">テストケースデータ(Json)</label>
                 <textarea class="form-control" name="test_case_data" id="test_case_data" rows="10">{{ problem_test_case_data }}</textarea>
             </div>

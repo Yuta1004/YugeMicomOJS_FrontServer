@@ -7,7 +7,7 @@ import uuid
 import json
 
 
-def add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data):
+def add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data, lang_rest):
     """問題追加処理
 
     Args:
@@ -16,6 +16,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
         score_data (str) : 部分点データ、Json形式
+        lang_rest (list) : 言語縛り
 
     Returns:
         bool : 問題追加に成功した場合はTrue
@@ -44,8 +45,8 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     # DB更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?))",
-                (problem_id, problem_name, scoring, open_date + " " + open_time))
+    cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?), ?)",
+                (problem_id, problem_name, scoring, open_date + " " + open_time, ";".join(lang_rest) + ";"))
     connect.commit()
     cur.close()
     connect.close()
@@ -53,7 +54,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     return True, problem_id
 
 
-def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data):
+def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data, lang_rest):
     """問題更新処理
 
     Args:
@@ -63,6 +64,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
         test_case_data (str) : テストケースデータ、Json形式
+        lang_rest (list) : 言語縛り
 
     Returns:
         bool : 問題更新に成功した場合はTrue
@@ -84,14 +86,14 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
 
     sql = """
           UPDATE problem
-          SET name = ?, scoring = ?, open_time = DATETIME(?)
+          SET name = ?, scoring = ?, open_time = DATETIME(?), lang_rest = ?
           WHERE id = ?
           """
 
     # DB更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute(sql, (problem_name, scoring, open_date + " " + open_time, problem_id))
+    cur.execute(sql, (problem_name, scoring, open_date + " " + open_time, ";".join(lang_rest), problem_id))
     connect.commit()
     cur.close()
     connect.close()
@@ -151,7 +153,7 @@ def rm_io_file(problem_id, input_list=None, output_list=None):
 class ProblemInfo:
     """問題情報を扱うデータクラス"""
 
-    def __init__(self, _id, name, scoring, open_time, status=None):
+    def __init__(self, _id, name, scoring, open_time, lang_rest, status=None):
         """コンストラクタ
 
         Args:
@@ -159,6 +161,7 @@ class ProblemInfo:
             name (str) : 問題名
             scoring (int) : 配点
             open_time (str) : 公開時間[xxxx-xx-xx xx:xx]
+            lang_rest (list) : 言語縛り
             status (str) : ジャッジステータス、指定しない場合はNone
 
         Returns:
@@ -170,6 +173,7 @@ class ProblemInfo:
         self.scoring = scoring
         self.open_time = open_time
         self.status = status
+        self.lang_rest = lang_rest
 
 
 def get_all_problem_with_status(user_id, refine_time=True):
@@ -184,7 +188,7 @@ def get_all_problem_with_status(user_id, refine_time=True):
     """
 
     sql = """
-          SELECT problem.id, problem.name, problem.scoring, problem.open_time, IFNULL(submission.status_name, "未提出")
+          SELECT problem.id, problem.name, problem.scoring, problem.open_time, problem.lang_rest, IFNULL(submission.status_name, "未提出")
           FROM problem
           LEFT OUTER JOIN (
                 SELECT submission.problem_id AS problem_id, max(submission.status), status.name AS status_name
@@ -207,7 +211,7 @@ def get_all_problem_with_status(user_id, refine_time=True):
 
     all_problem = []
     for problem in cur.fetchall():
-        all_problem.append(ProblemInfo(*problem))
+        all_problem.append(ProblemInfo(*problem[:-2], problem[-2].split(";"), problem[-1]))
 
     cur.close()
     connect.close()
@@ -216,7 +220,7 @@ def get_all_problem_with_status(user_id, refine_time=True):
 
 
 def get_problem_data(problem_id):
-    """指定IDのコンテスト情報を返す
+    """指定IDの問題情報を返す
 
     Args:
         problem_id (str) : コンテストID
@@ -229,7 +233,7 @@ def get_problem_data(problem_id):
     cur = connect.cursor()
     result = cur.execute("SELECT * FROM problem WHERE id=?", (problem_id, ))
     result = result.fetchone()
-    problem_data = ProblemInfo(*result)
+    problem_data = ProblemInfo(*result[:-1], result[-1].split(";"))
     cur.close()
     connect.close()
 
