@@ -58,9 +58,10 @@ def edit_problem_route(problem_id):
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
         test_case_data = request.form["test_case_data"]
+        lang_rest = request.form.getlist("lang_rest")
 
         update_result = update_problem(problem_id, problem_name, scoring, open_date,
-                                       open_time, problem_body, test_case_data)
+                                       open_time, problem_body, test_case_data, lang_rest)
 
         # 入出力ファイル保存・削除
         if update_result:

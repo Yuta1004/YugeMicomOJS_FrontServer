@@ -54,7 +54,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     return True, problem_id
 
 
-def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data):
+def update_problem(problem_id, problem_name, scoring, open_date, open_time, problem_body, test_case_data, lang_rest):
     """問題更新処理
 
     Args:
@@ -64,6 +64,7 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
         test_case_data (str) : テストケースデータ、Json形式
+        lang_rest (list) : 言語縛り
 
     Returns:
         bool : 問題更新に成功した場合はTrue
@@ -85,14 +86,14 @@ def update_problem(problem_id, problem_name, scoring, open_date, open_time, prob
 
     sql = """
           UPDATE problem
-          SET name = ?, scoring = ?, open_time = DATETIME(?)
+          SET name = ?, scoring = ?, open_time = DATETIME(?), lang_rest = ?
           WHERE id = ?
           """
 
     # DB更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute(sql, (problem_name, scoring, open_date + " " + open_time, problem_id))
+    cur.execute(sql, (problem_name, scoring, open_date + " " + open_time, ";".join(lang_rest), problem_id))
     connect.commit()
     cur.close()
     connect.close()
