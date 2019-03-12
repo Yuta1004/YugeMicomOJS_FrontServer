@@ -185,7 +185,7 @@ def get_contest_problems(contest_id, user_id):
 
     # コンテストに含まれる問題一覧を取得する
     sql = """
-          SELECT problem.id, problem.name, problem.scoring, problem.open_time, IFNULL(submission.status_name, "未提出")
+          SELECT problem.id, problem.name, problem.scoring, problem.open_time, problem.lang_rest, IFNULL(submission.status_name, "未提出")
           FROM problem
           LEFT OUTER JOIN (
                 SELECT submission.problem_id AS problem_id, max(submission.status), status.name AS status_name
@@ -207,7 +207,7 @@ def get_contest_problems(contest_id, user_id):
 
     problems = []
     for elem in result.fetchall():
-        problems.append(ProblemInfo(*elem))
+        problems.append(ProblemInfo(*elem[:-2], elem[-2].split(";"), elem[-1]))
 
     cur.close()
     connect.close()
