@@ -107,12 +107,14 @@ def problem_view(problem_id):
         return redirect(base_url + "/submission_list/all")
 
     # 問題ページ描画
+    problem_data = get_problem_data(problem_id)
     problem_body = markdown2.markdown(get_problem_body(problem_id), extras=['fenced-code-blocks'])
     if problem_body is None:
         return abort(404)
 
     return render_template("problem.html",
                             session=session["user_id"],
+                            problem=problem_data,
                             problem_body=Markup(problem_body))
 
 
