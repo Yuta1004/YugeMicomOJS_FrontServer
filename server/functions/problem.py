@@ -7,7 +7,7 @@ import uuid
 import json
 
 
-def add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data):
+def add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data, lang_rest):
     """問題追加処理
 
     Args:
@@ -16,6 +16,7 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
         open_time (str) : 問題公開時間[xxxx-xx-xx xx:xx]
         problem_body (str) : 問題文、Markdown形式
         score_data (str) : 部分点データ、Json形式
+        lang_rest (list) : 言語縛り
 
     Returns:
         bool : 問題追加に成功した場合はTrue
@@ -44,8 +45,8 @@ def add_problem(problem_name, scoring, open_date, open_time, problem_body, score
     # DB更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
-    cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?))",
-                (problem_id, problem_name, scoring, open_date + " " + open_time))
+    cur.execute("INSERT INTO problem VALUES(?, ?, ?, DATETIME(?), ?)",
+                (problem_id, problem_name, scoring, open_date + " " + open_time, ";".join(lang_rest) + ";"))
     connect.commit()
     cur.close()
     connect.close()

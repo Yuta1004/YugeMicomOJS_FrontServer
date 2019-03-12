@@ -62,6 +62,16 @@
             <p>※空行も判定対象になります</p><br>
 
             <div class="form-group">
+                <label class="control-label">言語縛り</label><br>
+                <select name="lang_rest" id="lang_rest" size="10" multiple>
+                    <option>Python3</option>
+                    <option>Java</option>
+                    <option>C</option>
+                    <option>C++</option>
+                </select>
+            </div><br>
+
+            <div class="form-group">
                 <label class="control-label">部分点データ(Json)</label>
                 <textarea class="form-control" name="score_data" id="score_data" rows="10">{
     "testcase": {

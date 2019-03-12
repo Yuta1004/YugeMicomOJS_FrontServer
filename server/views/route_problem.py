@@ -28,8 +28,9 @@ def add_problem_route():
         open_time = request.form["open_time"]
         problem_body = request.form["problem_body"]
         score_data = request.form["score_data"]
+        lang_rest = request.form.getlist("lang_rest")
 
-        add_result, problem_id = add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data)
+        add_result, problem_id = add_problem(problem_name, scoring, open_date, open_time, problem_body, score_data, lang_rest)
 
         # 入出力ファイル保存
         if add_result:
