@@ -23,6 +23,7 @@
 - name : TEXT NOT NULL
 - scoring : NUMBER NOT NULL
 - open_time : DATETIME NOT NULL
+- lang_rest : TEXT NOT NULL
 
 ## submission
 - id : TEXT PRIMARY KEY
