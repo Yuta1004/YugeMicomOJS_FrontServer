@@ -79,11 +79,11 @@
                                 <!--問題公開時間を過ぎているか-->
                                 {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
                                     <td>＊＊＊＊＊</td>
+                                    <td><div class="text-center">＊＊＊＊＊</div></td>
                                 {% else %}
                                     <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
+                                    <td><div class="text-center">{{ data.user_name }}</div></td>
                                 {% endif %}
-
-                                <td><div class="text-center">{{ data.user_name }}</div></td>
 
                                 <!--ステータスによってラベルを変える-->
                                 <td><div class="text-center" id={{ "label_" + data.id }} name={{ "label_" + data.id }}>
