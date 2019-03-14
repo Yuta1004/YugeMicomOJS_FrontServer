@@ -134,7 +134,7 @@
                     </div>
 
                     <div class="modal-body">
-                        {% if open_code %}
+                        {% if open_code or is_admin %}
                             <pre><code class="prettyprint">{{ submission_data.detail[(i-1)|string].err_msg }}</code></pre>
                         {% else %}
                             <div class="alert alert-warning">
@@ -193,7 +193,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">提出コード</div>
             <div class="panel-body">
-                {% if open_code %}
+                {% if open_code or is_admin %}
                     <pre><code class="prettyprint linenums">{{ code }}</code></pre>
                 {% else %}
                     <div class="alert alert-warning">
