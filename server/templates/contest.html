@@ -58,14 +58,17 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>問題名</th>
                                     <th>配点</th>
                                     <th><div class="text-center">ジャッジステータス</div></th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% set alphabet_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
                                 {% for problem in problem_list %}
                                     <tr>
+                                        <td>{{ alphabet_list[loop.index0] }}</td>
                                         <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
                                         <td>{{ problem.scoring }}</td>
 
