@@ -1,6 +1,6 @@
 from flask import request, redirect, render_template, session, Blueprint
 from server.functions.user import get_user_data, update_user_data, change_password, is_admin
-from server.functions.rate import get_user_rate_data
+from server.functions.rate import get_user_rate_data, get_user_rate_trans_data
 from server import base_url
 
 
@@ -21,6 +21,7 @@ def user_page():
         update_succeeded = update_user_data(session["user_id"], user_name, open_code)
 
     # 設定ページに必要な情報取得
+    rate_trans_info = get_user_rate_trans_data(session["user_id"])
     user_rate_data = get_user_rate_data(session["user_id"])
     user_info = get_user_data(session["user_id"])
     if user_info is None:
@@ -28,9 +29,11 @@ def user_page():
 
     return render_template("user_page.html",
                            user=user_info,
+                           rate_labels=["YEC No.1", "YEC No.2", "YEC No.3", "YEC No.4"],
                            update_succeeded=update_succeeded,
                            session=session["user_id"],
-                           rate=user_rate_data)
+                           rate=user_rate_data,
+                           rate_trans_info=rate_trans_info)
 
 
 # パスワード変更ページ

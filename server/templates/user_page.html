@@ -12,9 +12,45 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">レート</div>
-            <div class="panel-body">
-                <h2>レート：<b>{{ rate }}</b></h2>
-                <p>レート機能は<b>仮実装</b>です。仕様が変更される場合があります。</p>
+            <div class="panel-body" align="center">
+                <!--レート-->
+                <h1><b>{{ rate | int }}</b></h1>
+
+                <!--推移グラフ-->
+                <canvas id="rate_graph"></canvas>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+                <script type="text/javascript">
+                    var canvas_obj = document.getElementById("rate_graph").getContext('2d');
+                    canvas_obj.canvas.width = 150;
+                    canvas_obj.canvas.height = 150;
+                    var rate_chart = new Chart(canvas_obj, {
+                        type: 'line',
+                        data: {
+                            labels: {{ rate_trans_info.keys() | list | safe }},
+                            datasets: [{
+                                label: "レート",
+                                data: {{ rate_trans_info.values() | list | safe }},
+                                borderColor: "rgba(255, 0, 0, 1)",
+                                backgroundColor: "rgba(0, 0, 0, 0)"
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: "レート推移"
+                            },
+                            scales: [{
+                                ticks: {
+                                    suggestedMax: 150,
+                                    suggestedMin: 0,
+                                    stepSize: 10,
+                                }
+                            }],
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                </script>
             </div>
         </div>
 

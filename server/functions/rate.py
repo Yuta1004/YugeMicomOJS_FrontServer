@@ -1,5 +1,6 @@
 import math
 import sqlite3
+from collections import OrderedDict
 from server.functions.contest import get_contest_data
 
 
@@ -186,4 +187,36 @@ def get_user_rate_data(user_id):
         return 0.0
     else:
         return rate[0]
+
+
+def get_user_rate_trans_data(user_id):
+    """指定ユーザのレート推移を渡す
+
+    Args:
+        user_id (str) : ユーザID
+
+    Returns:
+        dict (str : int) : キーにコンテスト名、値にその時点でのレート
+    """
+
+    # データ取得
+    fetch_sql = """
+                SELECT contest.name, rate
+                FROM contest, user_rate
+                WHERE user_id = ? AND contest_id = contest.id
+                ORDER BY update_date
+                """
+    connect = sqlite3.connect("./server/DB/rate.db")
+    cur = connect.cursor()
+    cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
+    fetch_result = cur.execute(fetch_sql, (user_id, )).fetchall()
+    cur.close()
+    connect.close()
+
+    # 辞書型に変換
+    rate_trans_info = OrderedDict()
+    for info in fetch_result:
+        rate_trans_info[info[0]] = info[1]
+
+    return rate_trans_info
 
