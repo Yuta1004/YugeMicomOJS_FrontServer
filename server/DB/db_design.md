@@ -40,13 +40,8 @@
 - name : TEXT NOT NULL
 
 # rate.db
-## single_rate
+## rate
 - user_id : TEXT PRIMARY KEY
 - contest_id : TEXT PRIMARY KEY
-- rate : REAL NOT NULL
-
-## user_rate
-- user_id : TEXT PRIMARY KEY
-- rate : REAL NOT NULL
-- contest_id : TEXT NOT NULL DEFAULT "Init Rate Info"
-- update_date : DATETIME NOT NULL DEFAULT "2000-1-1 00:00:00"
+- single_rate : REAL NOT NULL
+- total_rate : REAL NOT NULL

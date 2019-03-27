@@ -139,14 +139,15 @@ def update_contest_rate(contest_id, with_update_user = True):
     # ユーザレート更新
     if with_update_user:
         for user_id in rate_values.keys():
-            update_user_rate(user_id)
+            update_user_rate(user_id, contest_id)
 
 
-def update_user_rate(user_id):
+def update_user_rate(user_id, contest_id):
     """指定ユーザのレート情報を更新する
 
     Args:
         user_id (str) : ユーザID
+        contest_id (str) : コンテストID
 
     Returns:
         None
@@ -158,7 +159,7 @@ def update_user_rate(user_id):
     # DB記録
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
-    cur.execute("REPLACE INTO user_rate VALUES(?, ?)", (user_id, rate))
+    cur.execute("INSERT INTO user_rate VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"))", (user_id, rate, contest_id))
     connect.commit()
     cur.close()
     connect.close()
