@@ -91,18 +91,18 @@ def cal_user_rate(user_id):
 
     # BEST
     sql = """
-          SELECT SUM(rate)
-          FROM single_rate
+          SELECT SUM(single_rate)
+          FROM rate
           WHERE user_id = ?
-          ORDER BY rate
+          ORDER BY single_rate
           LIMIT 10
           """
     best = cur.execute(sql, (user_id, )).fetchone()[0]
 
     # RECENT
     sql = """
-          SELECT SUM(rate)
-          FROM single_rate, contest
+          SELECT SUM(single_rate)
+          FROM rate, contest
           WHERE user_id = ? AND contest_id = contest.id
           ORDER BY contest.end_time
           LIMIT 10
@@ -128,10 +128,18 @@ def update_contest_rate(contest_id, with_update_user = True):
     rate_values = cal_contest_rate(contest_id)
 
     # コンテスト単レート更新
+    update_sql = """
+                REPLACE INTO rate VALUES(?, ?, ?, (
+                    SELECT total_rate
+                    FROM rate
+                    WHERE user_id = ?
+                ))
+                """
+
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
     for user_id, rate in rate_values.items():
-        cur.execute("REPLACE INTO single_rate VALUES(?, ?, ?)", (user_id, contest_id, rate))
+        cur.execute(update_sql, (user_id, contest_id, rate, user_id))
     connect.commit()
     cur.close()
     connect.close()
@@ -156,10 +164,17 @@ def update_user_rate(user_id, contest_id):
     # レート計算
     rate = cal_user_rate(user_id)
 
-    # DB記録
+    update_sql = """
+                 REPLACE INTO rate VALUES(?, ?, (
+                    SELECT single_rate
+                    FROM rate
+                    WHERE user_id = ?
+                 ), ?)
+                 """
+    # 更新
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
-    cur.execute("INSERT INTO user_rate VALUES(?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"))", (user_id, rate, contest_id))
+    cur.execute(update_sql, (user_id, contest_id, user_id, rate))
     connect.commit()
     cur.close()
     connect.close()
@@ -178,7 +193,7 @@ def get_user_rate_data(user_id):
     # DBからデータ取得
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
-    rate = cur.execute("SELECT rate FROM user_rate WHERE user_id = ?",
+    rate = cur.execute("SELECT total_rate FROM rate WHERE user_id = ?",
                                (user_id, )).fetchone()
     cur.close()
     connect.close()
@@ -202,11 +217,16 @@ def get_user_rate_trans_data(user_id):
 
     # データ取得
     fetch_sql = """
-                SELECT contest.name, rate
-                FROM contest, user_rate
-                WHERE user_id = ? AND contest_id = contest.id
-                ORDER BY update_date
+                SELECT contest.name, rate.total_rate
+                FROM contest, rate
+                WHERE rate.user_id = ? AND rate.contest_id = contest.id
+                ORDER BY (
+                    SELECT end_time
+                    FROM contest
+                    WHERE contest.id = rate.contest_id
+                )
                 """
+
     connect = sqlite3.connect("./server/DB/rate.db")
     cur = connect.cursor()
     cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
