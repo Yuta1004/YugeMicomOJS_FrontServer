@@ -219,7 +219,7 @@ def get_user_rate_trans_data(user_id):
     fetch_sql = """
                 SELECT contest.name, rate.total_rate
                 FROM contest, rate
-                WHERE rate.user_id = ? AND rate.contest_id = contest.id
+                WHERE rate.user_id = ? AND rate.contest_id = contest.id AND rate.total_rate <> 0.0
                 ORDER BY (
                     SELECT end_time
                     FROM contest
