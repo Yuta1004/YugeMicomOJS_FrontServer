@@ -22,13 +22,14 @@ def add_contest_route():
     # 問題追加
     if request.method == "POST":
         contest_name = request.form["contest_name"]
+        contest_top = request.form["contest_top"]
         start_date = request.form["start_date"]
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
         problems = request.form.getlist("problems")
 
-        add_result = add_contest(contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
+        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
 
     return render_template("add_contest.html",
                            session=session["user_id"],
@@ -48,15 +49,17 @@ def edit_contest_route(contest_id):
     # 情報更新
     if request.method == "POST":
         contest_name = request.form["contest_name"]
+        contest_top = request.form["contest_top"]
         start_date = request.form["start_date"]
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
         problems = request.form.getlist("problems")
 
-        update_result = update_contest(contest_id, contest_name, start_date+" "+start_time, end_date+" "+end_time, problems)
+        update_result = update_contest(contest_id, contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
 
     # 必要な情報を取得する
+    contest_top = get_contest_top(contest_id)
     all_problems = get_all_problem_with_status(session["user_id"], False)
     contest_data = get_contest_data(contest_id)
 
@@ -64,6 +67,7 @@ def edit_contest_route(contest_id):
                            session=session["user_id"],
                            update_result=update_result,
                            all_problems=all_problems,
+                           contest_top=contest_top,
                            contest=contest_data)
 
 
