@@ -24,6 +24,8 @@
     <!--ナビゲーションバー-->
     {% include "navigation.html" %}
 
+    <link id="contest_top_css" rel="stylesheet" href={{ url_for("static", filename="markdown_view.css") }}>
+
     <!--メインコンテンツ-->
     <div class="container">
         <font size="6">{{ contest_data.name }} </font>
@@ -49,7 +51,6 @@
             <div class="tab-pane active" id="top">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <link id="contest_top_css" rel="stylesheet" href={{ url_for("static", filename="markdown_view.css") }}>
                         <div class="top_body">
                             {{ contest_top }}
                         </div>
@@ -71,9 +72,9 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th><div class="text-center">#</div></th>
                                     <th>問題名</th>
-                                    <th>配点</th>
+                                    <th><div class="text-center">配点</div></th>
                                     <th><div class="text-center">ジャッジステータス</div></th>
                                 </tr>
                             </thead>
@@ -81,9 +82,9 @@
                                 {% set alphabet_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
                                 {% for problem in problem_list %}
                                     <tr>
-                                        <td>{{ alphabet_list[loop.index0] }}</td>
+                                        <td><div class="text-center">{{ alphabet_list[loop.index0] }}</div></td>
                                         <td><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></td>
-                                        <td>{{ problem.scoring }}</td>
+                                        <td><div class="text-center">{{ problem.scoring }}</div></td>
 
                                         <!--ステータスによってラベルを変える-->
                                         {% if problem.status == "AC" %}
@@ -117,10 +118,10 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>順位</th>
-                                    <th>ユーザ名</th>
-                                    <th>得点</th>
-                                    <th>経過時間</th>
+                                    <th><div class="text-center">順位</div></th>
+                                    <th><div class="text-center">ユーザ名</div></th>
+                                    <th><div class="text-center">得点</div></th>
+                                    <th><div class="text-center">経過時間</div></th>
                                     {% for problem in problem_list %}
                                         <th><div class="text-center"><a href={{ "/yuge_micom_ojs/problem/" + problem.id }}>{{ problem.name }}</a></div></th>
                                     {% endfor %}
@@ -130,10 +131,10 @@
                                 <!--ランキングテーブル表示-->
                                 {% for elem in ranking_list %}
                                     <tr>
-                                        <td>{{ loop.index0 + 1 }}</td>
-                                        <td><b>{{ elem.user_name }}</b></td>
-                                        <td>{{ elem.score }}</td>
-                                        <td>{{ elem.submission_time }}</td>
+                                        <td><div class="text-center">{{ loop.index0 + 1 }}</div></td>
+                                        <td><b><div class="text-center">{{ elem.user_name }}</div></b></td>
+                                        <td><div class="text-center">{{ elem.score }}</div></td>
+                                        <td><div class="text-center">{{ elem.submission_time }}</div></td>
 
                                         <!--ユーザの提出状況を表示-->
                                         {% for problem in problem_list %}
