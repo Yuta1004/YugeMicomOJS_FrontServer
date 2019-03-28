@@ -4,11 +4,12 @@ from server.functions.problem import ProblemInfo
 import uuid
 
 
-def add_contest(contest_name, start_time, end_time, problems):
+def add_contest(contest_name, contest_top, start_time, end_time, problems):
     """ コンテストをDBに追加する
 
     Args:
         contest_name (str) : コンテスト名
+        contest_top (str) : コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
         problems (list) : 問題IDのリスト
@@ -18,7 +19,7 @@ def add_contest(contest_name, start_time, end_time, problems):
     """
 
     # 入力チェック
-    if contest_name == "" or start_time == "" or end_time == "" or problems is None:
+    if contest_name == "" or contest_top == "" or start_time == "" or end_time == "" or problems is None:
         return False
 
     # コンテスト追加
@@ -31,15 +32,20 @@ def add_contest(contest_name, start_time, end_time, problems):
     cur.close()
     connect.close()
 
+    # コンテスト情報保存
+    with open("./server/ContestPage/" + contest_id + ".md", "w", encoding="utf-8") as f:
+        f.write(contest_top)
+
     return True
 
 
-def update_contest(contest_id, contest_name, start_time, end_time, problems):
+def update_contest(contest_id, contest_name, contest_top, start_time, end_time, problems):
     """ 指定IDのコンテスト情報を更新する
 
     Args:
         contest_id (str) : コンテストID
         contest_name (str) : コンテスト名
+        contest_top (str) ; コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
         problems (list) : 問題IDのリスト
@@ -49,7 +55,7 @@ def update_contest(contest_id, contest_name, start_time, end_time, problems):
     """
 
     # 入力チェック
-    if contest_id == "" or contest_name == "" or start_time == "" or \
+    if contest_id == "" or contest_name == "" or contest_top == "" or start_time == "" or \
             end_time == "" or problems is None:
         return False
 
@@ -66,6 +72,10 @@ def update_contest(contest_id, contest_name, start_time, end_time, problems):
     connect.commit()
     cur.close()
     connect.close()
+
+    # コンテスト情報保存
+    with open("./server/ContestPage/" + contest_id + ".md", "w", encoding="utf-8") as f:
+        f.write(contest_top)
 
     return True
 
