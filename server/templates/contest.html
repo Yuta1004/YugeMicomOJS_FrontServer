@@ -49,8 +49,9 @@
             <div class="tab-pane active" id="top">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <div class="top_body" style={{ url_for("static", filename="markdown_view.css") }}>
-                            {{ top_body }}
+                        <link id="contest_top_css" rel="stylesheet" href={{ url_for("static", filename="markdown_view.css") }}>
+                        <div class="top_body">
+                            {{ contest_top }}
                         </div>
                     </div>
                 </div>
