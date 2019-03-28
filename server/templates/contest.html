@@ -38,14 +38,26 @@
 
         <!--タブ-->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#problems" data-toggle="tab">問題</a></li>
+            <li class="active"><a href="#top" data-toggle="tab">トップ</a></li>
+            <li><a href="#problems" data-toggle="tab">問題</a></li>
             <li><a href="#ranking" data-toggle="tab">ランキング</a><li>
         </ul>
 
         <!--タブの要素-->
         <div class ="tab-content">
+            <!--トップページ-->
+            <div class="tab-pane active" id="top">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="top_body" style={{ url_for("static", filename="markdown_view.css") }}>
+                            {{ top_body }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!--問題一覧-->
-            <div class="tab-pane active" id="problems">
+            <div class="tab-pane" id="problems">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <!-- テーブルの外側の罫線だけ表示 -->

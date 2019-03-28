@@ -1,10 +1,12 @@
-from flask import render_template, request, session, redirect, Blueprint
+from flask import render_template, request, session, redirect, Blueprint, Markup
 from server.functions.contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
 from server.functions.contest import add_contest, update_contest
 from server.functions.user import is_admin
 from server.functions.problem import get_all_problem_with_status
 from server.functions.rate import update_contest_rate
+from server.functions.file_read import get_contest_top
 from server import base_url
+import markdown2
 
 route_contest = Blueprint(__name__, "contest")
 
@@ -88,10 +90,12 @@ def contest_view(contest_id):
         return redirect(base_url + "/contest_list")
 
     ranking_data, submission_data = get_ranking_data(contest_id)
+    contest_top = markdown2.markdown(get_contest_top(contest_id), extras=['fenced-code-blocks'])
 
     return render_template("contest.html",
                            session=session["user_id"],
                            contest_data=get_contest_data(contest_id),
+                           contest_top=Markup(contest_top),
                            ranking_list=ranking_data,
                            submission_data=submission_data,
                            is_admin=is_admin(session["user_id"]),

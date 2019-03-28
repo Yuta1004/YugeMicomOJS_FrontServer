@@ -53,3 +53,20 @@ def get_problem_body(problem_id):
     with open("./server/Problem/" + problem_id + ".md", "r", encoding="utf-8") as f:
         return f.read()
 
+
+def get_contest_top(contest_id):
+    """コンテストのトップページ
+
+    Args:
+        contest_id (str) : コンテストID
+
+    Returns:
+        str : コンテストトップページ、Markdown形式
+    """
+
+    if not os.path.exists("./server/ContestPage/" + contest_id + ".md"):
+        return ""
+
+    with open("./server/ContestPage/" + contest_id + ".md", "r", encoding="utf-8") as f:
+        return f.read()
+
