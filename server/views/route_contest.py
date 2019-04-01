@@ -7,6 +7,7 @@ from server.functions.rate import update_contest_rate
 from server.functions.file_read import get_contest_top
 from server import base_url
 import markdown2
+from datetime import datetime
 
 route_contest = Blueprint(__name__, "contest")
 
@@ -95,14 +96,21 @@ def contest_view(contest_id):
 
     ranking_data, submission_data = get_ranking_data(contest_id)
     contest_top = markdown2.markdown(get_contest_top(contest_id), extras=['fenced-code-blocks'])
+    contest_data = get_contest_data(contest_id)
+    problem_list = get_contest_problems(contest_id, session["user_id"])
+
+    # コンテストが始まっているか
+    start_time = datetime.strptime(contest_data.start_time, "%Y-%m-%d %H:%M:%S")
+    if datetime.now() < start_time:
+        problem_list = {}
 
     return render_template("contest.html",
                            session=session["user_id"],
-                           contest_data=get_contest_data(contest_id),
+                           contest_data=contest_data,
                            contest_top=Markup(contest_top),
                            ranking_list=ranking_data,
                            submission_data=submission_data,
                            is_admin=is_admin(session["user_id"]),
-                           problem_list=get_contest_problems(contest_id, session["user_id"]))
+                           problem_list=problem_list)
 
 
