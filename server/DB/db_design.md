@@ -16,6 +16,7 @@
 - start_time : DATETIME NOT NULL
 - end_time : DATETIME NOT NULL
 - problems : TEXT NOT NULL DEFAULT ""
+- rate_limit : REAL NOT NULL DEFAULT 9999.0
 
 # problem.db
 ## problem
