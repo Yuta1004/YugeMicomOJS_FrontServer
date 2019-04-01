@@ -7,6 +7,7 @@ from server.functions.rate import update_contest_rate
 from server.functions.file_read import get_contest_top
 from server import base_url
 import markdown2
+from datetime import datetime
 
 route_contest = Blueprint(__name__, "contest")
 
@@ -27,9 +28,10 @@ def add_contest_route():
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
+        rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
 
-        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
+        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
 
     return render_template("add_contest.html",
                            session=session["user_id"],
@@ -54,9 +56,11 @@ def edit_contest_route(contest_id):
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
+        rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
 
-        update_result = update_contest(contest_id, contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
+        update_result = update_contest(contest_id, contest_name, contest_top,
+                                       start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
 
     # 必要な情報を取得する
     contest_top = get_contest_top(contest_id)
@@ -95,14 +99,21 @@ def contest_view(contest_id):
 
     ranking_data, submission_data = get_ranking_data(contest_id)
     contest_top = markdown2.markdown(get_contest_top(contest_id), extras=['fenced-code-blocks'])
+    contest_data = get_contest_data(contest_id)
+    problem_list = get_contest_problems(contest_id, session["user_id"])
+
+    # コンテストが始まっているか
+    start_time = datetime.strptime(contest_data.start_time, "%Y-%m-%d %H:%M:%S")
+    if datetime.now() < start_time:
+        problem_list = {}
 
     return render_template("contest.html",
                            session=session["user_id"],
-                           contest_data=get_contest_data(contest_id),
+                           contest_data=contest_data,
                            contest_top=Markup(contest_top),
                            ranking_list=ranking_data,
                            submission_data=submission_data,
                            is_admin=is_admin(session["user_id"]),
-                           problem_list=get_contest_problems(contest_id, session["user_id"]))
+                           problem_list=problem_list)
 
 

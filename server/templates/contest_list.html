@@ -37,13 +37,7 @@
                         <tbody>
                             {% for contest in contest_list[i][(now_page_list[i]-1)*15: now_page_list[i]*15] %}
                                 <tr>
-                                    <!--開催予定のコンテストにはリンクを貼らない-->
-                                    {% if i == 0 %}
-                                        <td>{{ contest.name }}</td>
-                                    {% else %}
-                                        <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id + "#top" }}>{{ contest.name }}</a></td>
-                                    {% endif %}
-
+                                    <td><a href={{ "/yuge_micom_ojs/contest/" + contest.id + "#top" }}>{{ contest.name }}</a></td>
                                     <td>{{ contest.start_time }}</td>
                                     <td>{{ contest.end_time }}</td>
                                 </tr>

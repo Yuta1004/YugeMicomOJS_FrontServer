@@ -33,16 +33,19 @@ def cal_contest_rate(contest_id):
     """
 
     sql = """
-          SELECT user_id, MAX(score), COUNT(user_id), MAX(submission_time)
+          SELECT user_id, MAX(score), COUNT(user_id), MAX(submission_time), total_rate
           FROM (
                 SELECT submission.user_id AS user_id, MAX(submission.score) AS score,
-                       MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
-                FROM submission, problem, contest.contest AS contest
+                       MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time,
+                       MAX(rate.total_rate) AS total_rate
+                FROM submission, problem, contest.contest AS contest, rate.rate AS rate
                 LEFT OUTER JOIN status ON submission.status = status.id
                 WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND
-                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\") AND submission.score > 0
+                      submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\") AND
+                      submission.score > 0 AND rate.user_id = submission.user_id
                 GROUP BY submission.problem_id, submission.user_id
-                ) submission_data
+                ) submission_data, contest.contest
+          WHERE contest.id = ? AND contest.rate_limit > total_rate
           GROUP BY user_id
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
           """
@@ -51,7 +54,8 @@ def cal_contest_rate(contest_id):
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
     cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
-    fetch_result = cur.execute(sql, (contest_id, )).fetchall()
+    cur.execute("ATTACH \"./server/DB/rate.db\" AS rate")
+    fetch_result = cur.execute(sql, (contest_id, contest_id)).fetchall()
     cur.close()
     connect.close()
 

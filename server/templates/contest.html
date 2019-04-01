@@ -29,7 +29,8 @@
     <!--メインコンテンツ-->
     <div class="container">
         <font size="6">{{ contest_data.name }} </font>
-        {{ contest_data.start_time }} ~ {{ contest_data.end_time }}<br><br>
+        {{ contest_data.start_time }} ~ {{ contest_data.end_time }}<br>
+        レート変動 : ~ {{ contest_data.rate_limit }}<br><br>
 
         {% if is_admin %}
             <form action="#" method="post" style="display: inline">
