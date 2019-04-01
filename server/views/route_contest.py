@@ -28,9 +28,10 @@ def add_contest_route():
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
+        rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
 
-        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
+        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
 
     return render_template("add_contest.html",
                            session=session["user_id"],
@@ -55,9 +56,11 @@ def edit_contest_route(contest_id):
         start_time = request.form["start_time"]
         end_date = request.form["end_date"]
         end_time = request.form["end_time"]
+        rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
 
-        update_result = update_contest(contest_id, contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, problems)
+        update_result = update_contest(contest_id, contest_name, contest_top,
+                                       start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
 
     # 必要な情報を取得する
     contest_top = get_contest_top(contest_id)

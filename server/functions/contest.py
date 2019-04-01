@@ -4,7 +4,7 @@ from server.functions.problem import ProblemInfo
 import uuid
 
 
-def add_contest(contest_name, contest_top, start_time, end_time, problems):
+def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, problems):
     """ コンテストをDBに追加する
 
     Args:
@@ -12,6 +12,7 @@ def add_contest(contest_name, contest_top, start_time, end_time, problems):
         contest_top (str) : コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
 
     Returns:
@@ -19,15 +20,16 @@ def add_contest(contest_name, contest_top, start_time, end_time, problems):
     """
 
     # 入力チェック
-    if contest_name == "" or contest_top == "" or start_time == "" or end_time == "" or problems is None:
+    if contest_name == "" or contest_top == "" or start_time == "" or\
+        end_time == "" or rate_limit is None or problems is None:
         return False
 
     # コンテスト追加
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
     contest_id = str(uuid.uuid4())
-    cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?)",
-                (contest_id, contest_name, start_time, end_time, ";".join(problems)))
+    cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?, ?)",
+                (contest_id, contest_name, start_time, end_time, ";".join(problems), rate_limit))
     connect.commit()
     cur.close()
     connect.close()
@@ -39,7 +41,7 @@ def add_contest(contest_name, contest_top, start_time, end_time, problems):
     return True
 
 
-def update_contest(contest_id, contest_name, contest_top, start_time, end_time, problems):
+def update_contest(contest_id, contest_name, contest_top, start_time, end_time, rate_limit, problems):
     """ 指定IDのコンテスト情報を更新する
 
     Args:
@@ -48,6 +50,7 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
         contest_top (str) ; コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
 
     Returns:
@@ -56,19 +59,19 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
 
     # 入力チェック
     if contest_id == "" or contest_name == "" or contest_top == "" or start_time == "" or \
-            end_time == "" or problems is None:
+            end_time == "" or rate_limit is None or problems is None:
         return False
 
     sql = """
           UPDATE contest
-          SET name = ?, start_time = DATETIME(?), end_time = DATETIME(?), problems = ?
+          SET name = ?, start_time = DATETIME(?), end_time = DATETIME(?), problems = ?, rate_limit = ?
           WHERE id = ?
           """
 
     # 更新
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-    cur.execute(sql, (contest_name, start_time, end_time, ";".join(problems), contest_id))
+    cur.execute(sql, (contest_name, start_time, end_time, ";".join(problems), rate_limit, contest_id))
     connect.commit()
     cur.close()
     connect.close()
@@ -83,7 +86,7 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
 class ContestInfo:
     """コンテスト情報を扱うデータクラス"""
 
-    def __init__(self, _id, name, start, end, problems):
+    def __init__(self, _id, name, start, end, rate_limit, problems):
         """コンストラクタ
 
         Args:
@@ -91,6 +94,7 @@ class ContestInfo:
             name (str) : コンテスト名
             start (str) : 開始時刻[xxxx-xx-xx xx:xx]
             end (str) : 終了時刻[xxxx-xx-xx xx:xx]
+            rate_limit (int) : レート付与上限
             problems (list) : コンテスト対象の問題IDのリスト
 
         Returns:
@@ -101,6 +105,7 @@ class ContestInfo:
         self.name = name
         self.start_time = start
         self.end_time = end
+        self.rate_limit = rate_limit
         self.problems = problems
 
 
@@ -125,6 +130,7 @@ def get_all_contest():
                                        contest[1],
                                        datetime.strptime(contest[2], time_format),
                                        datetime.strptime(contest[3], time_format),
+                                       int(contest[5]),
                                        contest[4].split(";")))
     cur.close()
     connect.close()
@@ -175,7 +181,7 @@ def get_contest_data(contest_id):
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, )).fetchone()
-    contest_data = ContestInfo(*result[:4], result[4].split(";"))
+    contest_data = ContestInfo(*result[:4], int(result[5]), result[4].split(";"))
     cur.close()
     connect.close()
 
