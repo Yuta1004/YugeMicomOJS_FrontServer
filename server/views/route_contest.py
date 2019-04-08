@@ -104,7 +104,7 @@ def contest_view(contest_id):
 
     # コンテストが始まっているか
     start_time = datetime.strptime(contest_data.start_time, "%Y-%m-%d %H:%M:%S")
-    if datetime.now() < start_time:
+    if (datetime.now() < start_time) and (not is_admin(session["user_id"])):
         problem_list = {}
 
     return render_template("contest.html",
