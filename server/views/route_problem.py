@@ -5,7 +5,7 @@ from datetime import datetime
 import markdown2
 from server.functions.problem import get_all_problem_with_status, get_problem_data,\
     update_problem, add_problem, get_io_file_list, save_io_file, rm_io_file
-from server.functions.file_read import get_code, get_test_case_data, get_problem_body
+from server.functions.file_read import get_code, get_test_case_data, get_problem_body, get_test_case_input
 from server.functions.user import is_admin, is_special
 from server.functions.submission import save_submission
 from server import base_url, config_file
@@ -120,3 +120,6 @@ def problem_view(problem_id):
                             problem_body=Markup(problem_body))
 
 
+@route_problem.route(base_url + "/input_data/<path:problem_id>/<path:test_case_name>")
+def test_case_inp_view(problem_id, test_case_name):
+    return get_test_case_input(problem_id, test_case_name)

@@ -88,7 +88,8 @@
                     <thead>
                         <tr>
                             <th class="col-xs-2">テストケース</th>
-                            <th class="col-xs-7"><div class="text-center">ステータス</div></th>
+                            <th class="col-xs-1">入力</th>
+                            <th class="col-xs-6"><div class="text-center">ステータス</div></th>
                             <th class="col-xs-3">実行詳細</th>
                         </tr>
                     <thead>
@@ -98,6 +99,7 @@
                                 <!--テストケース名-->
                                 {% set test_case_name = submission_data.detail[(i-1)|string].test_case_name %}
                                 <td>{{ test_case_name }}</td>
+                                <td><a href={{ "/yuge_micom_ojs/input_data/" + submission_data.problem_id + "/" + test_case_name }}>入力データ</a></td>
 
                                 <!--ステータスによってラベルを変える-->
                                 {% set status = submission_data.detail[(i-1)|string].status %}
