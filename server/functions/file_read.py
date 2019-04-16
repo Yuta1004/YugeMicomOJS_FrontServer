@@ -36,6 +36,23 @@ def get_test_case_data(problem_id):
     with open("./server/IOData/" + problem_id + "/test_case.json", "r", encoding="utf-8") as f:
         return f.read()
 
+def get_test_case_input(problem_id, test_case_name):
+    """テストケース(入力)データを返す
+
+    Args:
+        problem_id (str) : 問題ID
+        test_case_name : テストケース名
+
+    Returns:
+        str : テストケース(入力)データ
+    """
+
+    if not os.path.exists("./server/IOData/" + problem_id + "/input/" + test_case_name + ".txt"):
+        return ""
+
+    with open("./server/IOData/" + problem_id + "/input/" + test_case_name + ".txt", "r", encoding="utf-8") as f:
+        return f.read()
+
 
 def get_problem_body(problem_id):
     """問題文を返す
