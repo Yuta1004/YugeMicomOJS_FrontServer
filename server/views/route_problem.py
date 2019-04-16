@@ -122,4 +122,4 @@ def problem_view(problem_id):
 
 @route_problem.route(base_url + "/input_data/<path:problem_id>/<path:test_case_name>")
 def test_case_inp_view(problem_id, test_case_name):
-    return get_test_case_input(problem_id, test_case_name)
+    return get_test_case_input(problem_id, test_case_name).replace("\n", "<br>")
