@@ -43,6 +43,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#top" data-toggle="tab">トップ</a></li>
             <li><a href="#problems" data-toggle="tab">問題</a></li>
+            <li><a href="#hint" data-toggle="tab">ヒント</a></li>
             <li><a href="#ranking" data-toggle="tab">ランキング</a></li>
         </ul>
 
@@ -105,6 +106,33 @@
                 </div>
             </div>
 
+            <!--ヒント一覧-->
+            <div class="tab-pane active" id="hint">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% for i in range(5) %}
+                            <!--ヒント-->
+                            <div class="panel panel-info">
+                                <div class="panel-heading clearfix">        <!--ヘッダー-->
+                                    <div class="panel-title pull-left" style="padding-top: 7.5px;">
+                                        ヒントA : (xx 点)
+                                    </div>
+                                    <div class="pull-right">
+                                        <button class="btn btn-info" href="#" data-toggle="modal" data-target={{ "#hint_" + i|string }}>
+                                            開封
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">                    <!--ボディ-->
+                                    テスト
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
             <!--ランキング-->
             <div class="tab-pane" id="ranking">
                 <div class="panel panel-default">
@@ -162,6 +190,35 @@
             </div>
         </div>
     </div>
+
+    <!--ヒント開封確認モーダル-->
+    {% for i in range(5) %}
+        <div class="modal fade" id={{ "hint_" + i|string }} tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-label">ヒント開封確認</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        本当にヒントを開封して良いですか？<br>
+                        <b>※ヒントに応じた減点があります※</b>
+                    </div>
+
+                    <div class="modal-footer">
+                        <form action="#" method="post" style="display: inline">
+                            <button class="btn btn-info" name="hint_open" value={{ "hint_" + i|string }}>開封</button>
+                        </form>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
 </body>
 
 {% endblock %}
