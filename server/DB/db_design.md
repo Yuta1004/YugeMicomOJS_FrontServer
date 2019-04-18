@@ -18,6 +18,13 @@
 - problems : TEXT NOT NULL DEFAULT ""
 - rate_limit : REAL NOT NULL DEFAULT 9999.0
 
+## hint_open
+- contest_id : TEXT PRIMARY KEY
+- hint_id : TEXT PRIMARY KEY
+- user_id : TEXT NOT NULL
+- score : NUMBER NOT NULL
+- use_time : DATETIME NOT NULL
+
 # problem.db
 ## problem
 - id : TEXT PRIMARY KEY
