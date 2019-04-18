@@ -313,8 +313,27 @@ def get_ranking_data(contest_id):
     cur.execute("ATTACH \"./server/DB/user.db\" AS user")
     result = cur.execute(sql, (contest_id, )).fetchall()
 
+    # ヒント開封データ取得
+    sql = """
+          SELECT user_id, SUM(score)
+          FROM contest.hint_open, contest.contest AS contest
+          WHERE contest_id = ? AND contest.id = ? AND open_time < contest.end_time
+          GROUP BY user_id
+          """
+    hint_open_info = dict(cur.execute(sql, (contest_id, contest_id)).fetchall())
+
+    # 減点処理
+    ranking_member = []
+    for elem in result:
+        score = elem[2]
+        if elem[0] in hint_open_info.keys():
+            score -= hint_open_info[elem[0]]
+        ranking_member.append([elem[0], elem[1], max(10, score), elem[3]])
+
+    # 降順ソート -> 集計
+    ranking_member = sorted(ranking_member, key=lambda x: x[2], reverse=True)
     ranking_list = []
-    for rank, elem in enumerate(result):
+    for rank, elem in enumerate(ranking_member):
         ranking_list.append(RankingInfo(rank, *elem))
 
     # 全員の提出状況を取得
