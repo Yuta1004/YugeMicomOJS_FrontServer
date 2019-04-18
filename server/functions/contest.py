@@ -6,7 +6,7 @@ import uuid
 import json
 
 
-def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, problems, hint_info):
+def add_contest(contest_name, contest_top, start_time, end_time, frozen_time, rate_limit, problems, hint_info):
     """ コンテストをDBに追加する
 
     Args:
@@ -14,6 +14,7 @@ def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, pro
         contest_top (str) : コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        frozen_time (str) : 順位表凍結時刻[xxxx-xx-xx xx:xx]
         rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
         hint_info (str:json) : ヒント情報
@@ -29,15 +30,16 @@ def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, pro
         return False
 
     if contest_name == "" or contest_top == "" or start_time == "" or\
-        end_time == "" or rate_limit is None or problems is None or hint_info == "":
+            end_time == "" or frozen_time == "" or rate_limit is None or \
+            problems is None or hint_info == "":
         return False
 
     # コンテスト追加
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
     contest_id = str(uuid.uuid4())
-    cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?, ?)",
-                (contest_id, contest_name, start_time, end_time, ";".join(problems), rate_limit))
+    cur.execute("INSERT INTO contest VALUES(?, ?, DATETIME(?), DATETIME(?), ?, ?, DATETIME(?))",
+                (contest_id, contest_name, start_time, end_time, ";".join(problems), rate_limit, frozen_time))
     connect.commit()
     cur.close()
     connect.close()
@@ -53,7 +55,7 @@ def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, pro
     return True
 
 
-def update_contest(contest_id, contest_name, contest_top, start_time, end_time, rate_limit, problems, hint_info):
+def update_contest(contest_id, contest_name, contest_top, start_time, end_time, frozen_time, rate_limit, problems, hint_info):
     """ 指定IDのコンテスト情報を更新する
 
     Args:
@@ -62,6 +64,7 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
         contest_top (str) ; コンテスト情報(Markdown形式)
         start_time (str) : 開始時刻[xxxx-xx-xx xx:xx]
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
+        frozen_time (st) : 順位表凍結時刻[xxxx-xx-xx xx:xx]
         rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
         hint_info (str:json) : ヒント情報
@@ -77,19 +80,21 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
         return False
 
     if contest_id == "" or contest_name == "" or contest_top == "" or start_time == "" or \
-            end_time == "" or rate_limit is None or problems is None or hint_info == "":
+            end_time == "" or rate_limit is None or frozen_time == "" or\
+            problems is None or hint_info == "":
         return False
 
     sql = """
           UPDATE contest
-          SET name = ?, start_time = DATETIME(?), end_time = DATETIME(?), problems = ?, rate_limit = ?
+          SET name = ?, start_time = DATETIME(?), end_time = DATETIME(?),
+                problems = ?, rate_limit = ?, frozen_time = DATETIME(?)
           WHERE id = ?
           """
 
     # 更新
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
-    cur.execute(sql, (contest_name, start_time, end_time, ";".join(problems), rate_limit, contest_id))
+    cur.execute(sql, (contest_name, start_time, end_time, ";".join(problems), rate_limit, frozen_time, contest_id))
     connect.commit()
     cur.close()
     connect.close()
@@ -108,7 +113,7 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
 class ContestInfo:
     """コンテスト情報を扱うデータクラス"""
 
-    def __init__(self, _id, name, start, end, rate_limit, problems):
+    def __init__(self, _id, name, start, end, frozen, rate_limit, problems):
         """コンストラクタ
 
         Args:
@@ -116,6 +121,7 @@ class ContestInfo:
             name (str) : コンテスト名
             start (str) : 開始時刻[xxxx-xx-xx xx:xx]
             end (str) : 終了時刻[xxxx-xx-xx xx:xx]
+            frozen(str) : 順位表凍結時刻[xxxx-xx-xx xx:xx]
             rate_limit (int) : レート付与上限
             problems (list) : コンテスト対象の問題IDのリスト
 
@@ -127,6 +133,7 @@ class ContestInfo:
         self.name = name
         self.start_time = start
         self.end_time = end
+        self.frozen_time = frozen
         self.rate_limit = rate_limit
         self.problems = problems
 
@@ -152,6 +159,7 @@ def get_all_contest():
                                        contest[1],
                                        datetime.strptime(contest[2], time_format),
                                        datetime.strptime(contest[3], time_format),
+                                       datetime.strptime(contest[6], time_format),
                                        int(contest[5]),
                                        contest[4].split(";")))
     cur.close()
@@ -203,7 +211,7 @@ def get_contest_data(contest_id):
     connect = sqlite3.connect("./server/DB/contest.db")
     cur = connect.cursor()
     result = cur.execute("SELECT * FROM contest WHERE id=?", (contest_id, )).fetchone()
-    contest_data = ContestInfo(*result[:4], int(result[5]), result[4].split(";"))
+    contest_data = ContestInfo(*result[:4], result[6], int(result[5]), result[4].split(";"))
     cur.close()
     connect.close()
 
@@ -299,7 +307,9 @@ def get_ranking_data(contest_id):
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time
                 FROM submission, problem, contest.contest AS contest
                 LEFT OUTER JOIN status ON submission.status = status.id
-                WHERE contest.id = ? AND contest.start_time <= submission.date AND submission.date <= contest.end_time AND submission.score > 0 AND
+                WHERE contest.id = ? AND contest.start_time <= submission.date AND
+                      submission.date <= (CASE WHEN contest.end_time < contest.frozen_time THEN contest.end_time ELSE contest.frozen_time END) AND
+                      submission.score > 0 AND
                       submission.problem_id = problem.id AND contest.problems LIKE (\"%\" || problem.id || \"%\")
                 GROUP BY problem.id, submission.user_id
                 ) submission_data, user.auth_info
@@ -317,7 +327,8 @@ def get_ranking_data(contest_id):
     sql = """
           SELECT user_id, SUM(score)
           FROM contest.hint_open, contest.contest AS contest
-          WHERE contest_id = ? AND contest.id = ? AND open_time < contest.end_time
+          WHERE contest_id = ? AND contest.id = ? AND
+                open_time <= (CASE WHEN contest.end_time < contest.frozen_time THEN contest.end_time ELSE contest.frozen_time END)
           GROUP BY user_id
           """
     hint_open_info = dict(cur.execute(sql, (contest_id, contest_id)).fetchall())
@@ -340,12 +351,16 @@ def get_ranking_data(contest_id):
     sql = """
           SELECT submission.user_id, submission.problem_id, MAX(submission.status), status.name
           FROM submission, status, (
-                SELECT contest.contest.problems AS problems, contest.contest.start_time AS start_time, contest.contest.end_time AS end_time
+                SELECT contest.contest.problems AS problems,
+                       contest.contest.start_time AS start_time,
+                       contest.contest.end_time AS end_time,
+                       contest.contest.frozen_time AS frozen_time
                 FROM contest.contest
                 WHERE contest.contest.id = ?
             ) AS contest
           WHERE submission.status = status.id AND contest.problems LIKE (\"%\" || submission.problem_id || \"%\") AND
-                    contest.start_time <= submission.date AND submission.date <= contest.end_time
+                    contest.start_time <= submission.date AND
+                    submission.date <= (CASE WHEN contest.end_time < contest.frozen_time THEN contest.end_time ELSE contest.frozen_time END)
           GROUP BY submission.problem_id, submission.user_id
           """
     result = cur.execute(sql, (contest_id, )).fetchall()
