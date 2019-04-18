@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, Blueprint, Markup
 from server.functions.contest import get_3type_divided_contest, get_contest_problems, get_contest_data, get_ranking_data
-from server.functions.contest import add_contest, update_contest
+from server.functions.contest import add_contest, update_contest, get_hint_data, open_hint, get_contest_hint
 from server.functions.user import is_admin
 from server.functions.problem import get_all_problem_with_status
 from server.functions.rate import update_contest_rate
@@ -8,6 +8,7 @@ from server.functions.file_read import get_contest_top
 from server import base_url
 import markdown2
 from datetime import datetime
+import json
 
 route_contest = Blueprint(__name__, "contest")
 
@@ -30,8 +31,11 @@ def add_contest_route():
         end_time = request.form["end_time"]
         rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
+        hint_info = request.form["hint_info"]
 
-        add_result = add_contest(contest_name, contest_top, start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
+        add_result = add_contest(contest_name, contest_top,
+                                 start_date+" "+start_time, end_date+" "+end_time,
+                                 rate_limit, problems, hint_info)
 
     return render_template("add_contest.html",
                            session=session["user_id"],
@@ -58,21 +62,27 @@ def edit_contest_route(contest_id):
         end_time = request.form["end_time"]
         rate_limit = request.form["rate_limit"]
         problems = request.form.getlist("problems")
+        hint_info = request.form["hint_info"]
 
         update_result = update_contest(contest_id, contest_name, contest_top,
-                                       start_date+" "+start_time, end_date+" "+end_time, rate_limit, problems)
+                                       start_date+" "+start_time, end_date+" "+end_time,
+                                       rate_limit, problems, hint_info)
 
     # 必要な情報を取得する
     contest_top = get_contest_top(contest_id)
     all_problems = get_all_problem_with_status(session["user_id"], False)
     contest_data = get_contest_data(contest_id)
+    hint_json_str = get_contest_hint(contest_id)
+    hint_json = json.loads(hint_json_str)
+    hint_json_format = json.dumps(hint_json, indent=4).encode("ascii").decode("unicode-escape")
 
     return render_template("edit_contest.html",
                            session=session["user_id"],
                            update_result=update_result,
                            all_problems=all_problems,
                            contest_top=contest_top,
-                           contest=contest_data)
+                           contest=contest_data,
+                           hint_json_str=hint_json_format)
 
 
 # コンテスト一覧表示ページ
@@ -97,10 +107,16 @@ def contest_view(contest_id):
         update_contest_rate(contest_id)
         return redirect(base_url + "/contest_list")
 
+    # ヒント開封
+    if "hint_open" in request.form.keys():
+        open_hint(contest_id, request.form["hint_open"], session["user_id"])
+        return redirect(base_url + "/contest/" + contest_id)
+
     ranking_data, submission_data = get_ranking_data(contest_id)
     contest_top = markdown2.markdown(get_contest_top(contest_id), extras=['fenced-code-blocks'])
     contest_data = get_contest_data(contest_id)
     problem_list = get_contest_problems(contest_id, session["user_id"])
+    hint_info_list = get_hint_data(contest_id, session["user_id"])
 
     # コンテストが始まっているか
     start_time = datetime.strptime(contest_data.start_time, "%Y-%m-%d %H:%M:%S")
@@ -114,6 +130,7 @@ def contest_view(contest_id):
                            ranking_list=ranking_data,
                            submission_data=submission_data,
                            is_admin=is_admin(session["user_id"]),
-                           problem_list=problem_list)
+                           problem_list=problem_list,
+                           hint_info_list=hint_info_list)
 
 

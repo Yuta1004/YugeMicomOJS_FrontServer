@@ -1,10 +1,12 @@
 import sqlite3
 from datetime import datetime
 from server.functions.problem import ProblemInfo
+from server.functions.file_read import get_contest_hint
 import uuid
+import json
 
 
-def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, problems):
+def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, problems, hint_info):
     """ コンテストをDBに追加する
 
     Args:
@@ -14,14 +16,20 @@ def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, pro
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
         rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
+        hint_info (str:json) : ヒント情報
 
     Returns:
         bool : 正常に追加されればTrue
     """
 
     # 入力チェック
+    try:
+        json.loads(hint_info)
+    except json.JSONDecodeError:
+        return False
+
     if contest_name == "" or contest_top == "" or start_time == "" or\
-        end_time == "" or rate_limit is None or problems is None:
+        end_time == "" or rate_limit is None or problems is None or hint_info == "":
         return False
 
     # コンテスト追加
@@ -38,10 +46,14 @@ def add_contest(contest_name, contest_top, start_time, end_time, rate_limit, pro
     with open("./server/ContestPage/" + contest_id + ".md", "w", encoding="utf-8") as f:
         f.write(contest_top)
 
+    # ヒント情報
+    with open("./server/Hint/" + contest_id + ".json", "w", encoding="utf-8") as f:
+        f.write(json.dumps(json.loads(hint_info)))
+
     return True
 
 
-def update_contest(contest_id, contest_name, contest_top, start_time, end_time, rate_limit, problems):
+def update_contest(contest_id, contest_name, contest_top, start_time, end_time, rate_limit, problems, hint_info):
     """ 指定IDのコンテスト情報を更新する
 
     Args:
@@ -52,14 +64,20 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
         end_time (str) : 終了時刻[xxxx-xx-xx xx:xx]
         rate_limit (int) : レート付与上限
         problems (list) : 問題IDのリスト
+        hint_info (str:json) : ヒント情報
 
     Returns:
         bool : 正常に追加されればTrue
     """
 
     # 入力チェック
+    try:
+        json.loads(hint_info)
+    except json.JSONDecodeError:
+        return False
+
     if contest_id == "" or contest_name == "" or contest_top == "" or start_time == "" or \
-            end_time == "" or rate_limit is None or problems is None:
+            end_time == "" or rate_limit is None or problems is None or hint_info == "":
         return False
 
     sql = """
@@ -79,6 +97,10 @@ def update_contest(contest_id, contest_name, contest_top, start_time, end_time, 
     # コンテスト情報保存
     with open("./server/ContestPage/" + contest_id + ".md", "w", encoding="utf-8") as f:
         f.write(contest_top)
+
+    # ヒント情報
+    with open("./server/Hint/" + contest_id + ".json", "w", encoding="utf-8") as f:
+        f.write(json.dumps(json.loads(hint_info)))
 
     return True
 
@@ -319,4 +341,113 @@ def get_ranking_data(contest_id):
     connect.close()
 
     return ranking_list, submission_data
+
+
+class HintInfo:
+    """ヒント情報を扱うデータクラス"""
+
+    def __init__(self, contest_id, hint_id, user_id, title, score, open_flag, body):
+        """コンストラクタ
+
+        Args:
+            contest_id (str) : コンテストID
+            hint_id (str) : ヒントID
+            user_id (str) : ユーザID
+            title (str) : タイトル
+            score (int) : 減点
+            open_flag (bool) : 開封されているかどうか
+            body (str) : ヒント情報
+
+        Returns:
+            None
+        """
+
+        self.contest_id = contest_id
+        self.hint_id = hint_id
+        self.user_id = user_id
+        self.title = title
+        self.score = score
+        self.open_flag = open_flag
+        self.body = body
+
+
+def get_hint_data(contest_id, user_id):
+    """あるユーザのコンテストでのヒント情報一覧を返す
+
+    Args:
+        contest_id (str) : コンテストID
+        user_id (str) : ユーザID
+
+    Returns:
+        list (HintInfo) : ヒント情報のリスト
+    """
+
+    sql = """
+          SELECT DISTINCT contest_id, hint_id, user_id
+          FROM hint_open, contest
+          WHERE contest_id = ? AND contest.id = ? AND user_id = ? AND
+                (open_time < contest.end_time OR open_time IS NULL)
+          """
+
+    # DB接続 -> ヒント開封情報取得
+    connect = sqlite3.connect("./server/DB/contest.db")
+    cur = connect.cursor()
+    sql_result = cur.execute(sql, (contest_id, contest_id, user_id)).fetchall()
+    cur.close()
+    connect.close()
+
+    # ヒント情報取得
+    hint_dict = get_contest_hint(contest_id)
+    hint_dict = json.loads(hint_dict)["Hint"]
+
+    # ヒント情報 + 開封情報
+    for elem in sql_result:
+        hint_dict[elem[1]]["user_id"] = elem[2]
+        hint_dict[elem[1]]["open_flag"] = True
+
+    # to HintInfo
+    hint_info_list = []
+    for hint_id in hint_dict.keys():
+        if "user_id" not in hint_dict[hint_id].keys():
+            hint_dict[hint_id]["user_id"] = ""
+            hint_dict[hint_id]["open_flag"] = False
+
+        hint_info = HintInfo(contest_id,
+                             hint_id,
+                             hint_dict[hint_id]["user_id"],
+                             hint_dict[hint_id]["title"],
+                             hint_dict[hint_id]["score"],
+                             hint_dict[hint_id]["open_flag"],
+                             hint_dict[hint_id]["body"])
+        hint_info_list.append(hint_info)
+
+
+    return hint_info_list
+
+
+def open_hint(contest_id, hint_id, user_id):
+    """ヒント開封情報を記録する
+
+    Args:
+        contest_id (str) : コンテストID
+        hint_id (str) : ヒントID
+        user_id (str) : ユーザID
+
+    Returns:
+        None
+    """
+
+    # ヒントスコア取得
+    hint_dict = get_contest_hint(contest_id)
+    hint_score = json.loads(hint_dict)["Hint"][hint_id]["score"]
+
+    sql = "INSERT INTO hint_open VALUES(?, ?, ?, ?, datetime(CURRENT_TIMESTAMP, \"+9 hours\"))"
+
+    # DB接続 -> 記録
+    connect = sqlite3.connect("./server/DB/contest.db")
+    cur = connect.cursor()
+    cur.execute(sql, (contest_id, hint_id, user_id, hint_score))
+    connect.commit()
+    cur.close()
+    connect.close()
 
