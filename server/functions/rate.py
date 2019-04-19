@@ -33,7 +33,7 @@ def cal_contest_rate(contest_id):
     """
 
     sql = """
-          SELECT user_id, MAX(score), COUNT(user_id), MAX(submission_time), total_rate
+          SELECT user_id, MAX(score), SUM(score), COUNT(user_id), MAX(submission_time), total_rate
           FROM (
                 SELECT submission.user_id AS user_id, MAX(submission.score) AS score,
                        MIN(strftime(\"%s\", submission.date) - strftime(\"%s\", contest.start_time)) AS submission_time,
@@ -50,18 +50,37 @@ def cal_contest_rate(contest_id):
           ORDER BY SUM(score) DESC, MAX(submission_time) ASC
           """
 
-    # 必要な情報をDBから取得
+    # ランキングデータをDBから取得
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
     cur.execute("ATTACH \"./server/DB/contest.db\" AS contest")
     cur.execute("ATTACH \"./server/DB/rate.db\" AS rate")
     fetch_result = cur.execute(sql, (contest_id, contest_id)).fetchall()
+
+    # ヒント開封情報を取得
+    sql = """
+          SELECT user_id, SUM(score)
+          FROM contest.hint_open, contest.contest AS contest
+          WHERE contest_id = ? AND contest.id = ? AND
+                open_time <= (CASE WHEN contest.end_time < contest.frozen_time THEN contest.end_time ELSE contest.frozen_time END)
+          GROUP BY user_id
+          """
+    hint_open_info = dict(cur.execute(sql, (contest_id, contest_id)).fetchall())
     cur.close()
     connect.close()
 
+    # 減点処理
+    ranking_member = []
+    for elem in fetch_result:
+        score = elem[2]
+        if elem[0] in hint_open_info.keys():
+            score -= hint_open_info[elem[0]]
+        ranking_member.append([elem[0], elem[1], max(10, score), *elem[3:]])
+
     # 得点帯ごとにまとめる
+    ranking_member = sorted(ranking_member, key=lambda x: x[2], reverse=True)
     group_by_score = {}
-    for data in fetch_result:
+    for data in ranking_member:
         if data[1] not in group_by_score:
             group_by_score[data[1]] = []
         group_by_score[data[1]].append(data)
@@ -71,7 +90,7 @@ def cal_contest_rate(contest_id):
     rank = 1
     for score in group_by_score.keys():
         for user_info in group_by_score[score]:
-            rate_values[user_info[0]] = cal_rate(*user_info[1:3], rank)
+            rate_values[user_info[0]] = cal_rate(user_info[1], user_info[3], rank)
             rank += 1
         rank += len(group_by_score[score]) * 1.5
 

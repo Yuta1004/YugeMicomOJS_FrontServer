@@ -42,8 +42,11 @@
         <!--タブ-->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#top" data-toggle="tab">トップ</a></li>
-            <li><a href="#problems" data-toggle="tab">問題</a></li>
-            <li><a href="#ranking" data-toggle="tab">ランキング</a></li>
+            {% if problem_list|length != 0 or is_admin %}
+                <li><a href="#problems" data-toggle="tab">問題</a></li>
+                <li><a href="#hint" data-toggle="tab">ヒント</a></li>
+                <li><a href="#ranking" data-toggle="tab">ランキング</a></li>
+            {% endif %}
         </ul>
 
         <!--タブの要素-->
@@ -105,6 +108,34 @@
                 </div>
             </div>
 
+            <!--ヒント一覧-->
+            <div class="tab-pane" id="hint">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% for hint in hint_info_list %}
+                            <!--ヒント-->
+                            <div class="panel panel-info">
+                                <div class="panel-heading clearfix">        <!--ヘッダー-->
+                                    <div class="panel-title pull-left" style="padding-top: 7.5px;">
+                                        {{ hint.title + " (" + hint.score|string + "点)" }}
+                                    </div>
+                                    <div class="pull-right">
+                                        <button class="btn btn-info" href="#" data-toggle="modal" data-target={{ "#hint_" + hint.hint_id }}>
+                                            {{ "開封済み" if hint.open_flag else "開封" }}
+                                        </button>
+                                    </div>
+                                </div>
+                                {% if hint.open_flag %}
+                                    <div class="panel-body">                <!--ボディ-->
+                                        {{ hint.body }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
             <!--ランキング-->
             <div class="tab-pane" id="ranking">
                 <div class="panel panel-default">
@@ -162,6 +193,37 @@
             </div>
         </div>
     </div>
+
+    <!--ヒント開封確認モーダル-->
+    {% for hint in hint_info_list %}
+        {% if not hint.open_flag %}
+            <div class="modal fade" id={{ "hint_" + hint.hint_id }} tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="modal-label">開封確認 ({{ hint.title }})</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            本当に開封して良いですか？<br>
+                            <b>※ヒントに応じた減点があります※</b>
+                        </div>
+
+                        <div class="modal-footer">
+                            <form action="#" method="post" style="display: inline">
+                                <button class="btn btn-info" name="hint_open" value={{ hint.hint_id|string }}>開封</button>
+                            </form>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
 </body>
 
 {% endblock %}

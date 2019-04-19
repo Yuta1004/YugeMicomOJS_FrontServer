@@ -74,38 +74,35 @@
                     <tbody>
                         {% for data in submission_data[(now_page-1)*15: now_page*15] %}
                             <tr>
-                                <td>{{ data.date }}</td>
-
-                                <!--問題公開時間を過ぎているか-->
+                                <!--問題公開時間を過ぎていれば提出非公開-->
                                 {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
-                                    <td>＊＊＊＊＊</td>
-                                    <td><div class="text-center">＊＊＊＊＊</div></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td><div class="text-center">---</div></td>
+                                    <td><div class="text-center">---</div></td>
+                                    <td><div class="text-center">---</div></td>
+                                    <td>---</td>
+                                    <td>---</td>
                                 {% else %}
+                                    <td>{{ data.date }}</td>
                                     <td><a href={{ "/yuge_micom_ojs/problem/" + data.problem_id }}>{{ data.problem_name }}</a></td>
                                     <td><div class="text-center">{{ data.user_name }}</div></td>
-                                {% endif %}
 
-                                <!--ステータスによってラベルを変える-->
-                                <td><div class="text-center" id={{ "label_" + data.id }} name={{ "label_" + data.id }}>
-                                    {% if data.status == "AC" %}
-                                        <span class="label label-success">{{ data.status }}</span>
-                                    {% elif data.status == "WJ" %}
-                                        <span class="label label-default">{{ data.status }}</span>
-                                    {% elif data.status == "IE" %}
-                                        <span class="label label-danger">{{ data.status }}</span>
-                                    {% elif data.status == "SJ" %}
-                                        <img src="/yuge_micom_ojs/static/wj.svg">
-                                    {% else %}
-                                        <span class="label label-warning">{{ data.status }}</span>
-                                    {% endif %}
-                                </div></td>
+                                    <!--ステータスによってラベルを変える-->
+                                    <td><div class="text-center" id={{ "label_" + data.id }} name={{ "label_" + data.id }}>
+                                        {% if data.status == "AC" %}
+                                            <span class="label label-success">{{ data.status }}</span>
+                                        {% elif data.status == "WJ" %}
+                                            <span class="label label-default">{{ data.status }}</span>
+                                        {% elif data.status == "IE" %}
+                                            <span class="label label-danger">{{ data.status }}</span>
+                                        {% elif data.status == "SJ" %}
+                                            <img src="/yuge_micom_ojs/static/wj.svg">
+                                        {% else %}
+                                            <span class="label label-warning">{{ data.status }}</span>
+                                        {% endif %}
+                                    </div></td>
 
-                                <!--問題公開時間を過ぎているか-->
-                                {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
-                                    <td><div class="text-center">＊</div></td>
-                                    <td>＊＊＊</td>
-                                    <td>詳細</td>
-                                {% else %}
                                     <td><div class="text-center">{{ data.score }}</div></td>
                                     <td>{{ data.lang }}</td>
                                     <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
