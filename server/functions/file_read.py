@@ -87,3 +87,19 @@ def get_contest_top(contest_id):
     with open("./server/ContestPage/" + contest_id + ".md", "r", encoding="utf-8") as f:
         return f.read()
 
+
+def get_contest_hint(contest_id):
+    """ヒント情報を読んで返す
+
+    Args:
+        contest_id (str) : コンテストID
+
+    Returns:
+        str : ヒント情報, JSON形式
+    """
+
+    if not os.path.exists("./server/Hint/" + contest_id + ".json"):
+        return ""
+
+    with open("./server/Hint/" + contest_id + ".json", "r", encoding="utf-8") as f:
+        return f.read()
