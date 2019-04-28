@@ -23,6 +23,14 @@ def control_panel_route():
 
 @route_admin.route(base_url + "/edit_config", methods=["GET", "POST"])
 def edit_config_route():
+    # 更新
+    if request.method == "POST":
+        config_file["system"]["server_url"] = request.form["server_url"]
+        config_file["system"]["max_worker"] = request.form["max_worker"]
+        config_file["docker"]["image_name"] = request.form["image_name"]
+        config_file["user"]["register_ok"] = request.form["register_ok"]
+
+    # 画面表示
     server_url = config_file["system"]["server_url"]
     max_worker = config_file["system"]["max_worker"]
     image_name = config_file["docker"]["image_name"]
@@ -33,5 +41,4 @@ def edit_config_route():
                            server_url=server_url,
                            max_worker=max_worker,
                            image_name=image_name,
-                           register_ok=register_ok,
-                           update_result=None)
+                           register_ok=register_ok)
