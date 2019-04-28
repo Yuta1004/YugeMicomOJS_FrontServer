@@ -24,29 +24,34 @@
             </div>
         {% endif %}
 
-        <form action="#" method="post">
-            <div class="form-group">
-                <label class="control-label">ユーザID(半角英数)</label>
-                <input class="form-control" type="text" name="user_id" id="user_id">
-            </div>
+        {% if register_ok %}
+            <form action="#" method="post">
+                <div class="form-group">
+                    <label class="control-label">ユーザID(半角英数)</label>
+                    <input class="form-control" type="text" name="user_id" id="user_id">
+                </div>
 
-            <div class="form-group">
-                <label class="control-label">ニックネーム</label>
-                <input class="form-control" type="text" name="user_name" id="user_name">
-            </div>
+                <div class="form-group">
+                    <label class="control-label">ニックネーム</label>
+                    <input class="form-control" type="text" name="user_name" id="user_name">
+                </div>
 
-            <div class="form-group">
-                <label class="control-label">パスワード(半角英数8文字以上)</label>
-                <input class="form-control" type="password" name="password" id="password">
-            </div>
+                <div class="form-group">
+                    <label class="control-label">パスワード(半角英数8文字以上)</label>
+                    <input class="form-control" type="password" name="password" id="password">
+                </div>
 
-            <div class="form-group">
-                <label class="control-label">パスワード(確認用)</b></label>
-                <input class="form-control" type="password" name="password_conf" id="password_conf">
-            </div>
+                <div class="form-group">
+                    <label class="control-label">パスワード(確認用)</b></label>
+                    <input class="form-control" type="password" name="password_conf" id="password_conf">
+                </div>
 
-            <button class="btn btn-primary">登録</button>
-        </form>
+                <button class="btn btn-primary">登録</button>
+            </form>
+        {% else %}
+            <!--新規登録を受け付けていない場合-->
+            <p>現在ユーザの新規登録を受け付けていません<p>
+        {% endif %}
     </div>
 </body>
 
