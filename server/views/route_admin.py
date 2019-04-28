@@ -26,7 +26,6 @@ def edit_config_route():
     # 更新
     if request.method == "POST":
         # 入力受け取り
-        config_file["system"]["server_url"] = request.form["server_url"]
         config_file["system"]["max_worker"] = request.form["max_worker"]
         config_file["docker"]["image_name"] = request.form["image_name"]
         config_file["user"]["register_ok"] = request.form["register_ok"]
@@ -40,14 +39,12 @@ def edit_config_route():
         redirect(base_url + "/edit_config")
 
     # 画面表示
-    server_url = config_file["system"]["server_url"]
     max_worker = config_file["system"]["max_worker"]
     image_name = config_file["docker"]["image_name"]
     register_ok = config_file["user"].getboolean("register_ok")
 
     return render_template("edit_config.html",
                            session=session["user_id"],
-                           server_url=server_url,
                            max_worker=max_worker,
                            image_name=image_name,
                            register_ok=register_ok)
