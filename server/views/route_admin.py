@@ -28,6 +28,7 @@ def edit_config_route():
         # 入力受け取り
         config_file["docker"]["image_name"] = request.form["image_name"]
         config_file["user"]["register_rest"] = request.form["register_rest"]
+        config_file["user"]["login_rest_users"] = request.form["login_rest_users"]
 
         # ファイル更新
         with open("config.ini", "w", encoding="utf-8") as f:
@@ -40,9 +41,11 @@ def edit_config_route():
     # 画面表示
     image_name = config_file["docker"]["image_name"]
     register_rest = config_file["user"].getboolean("register_rest")
+    login_rest_users = config_file["user"]["login_rest_users"]
 
     return render_template("edit_config.html",
                            session=session["user_id"],
                            image_name=image_name,
+                           login_rest_users=login_rest_users,
                            register_rest=register_rest)
 

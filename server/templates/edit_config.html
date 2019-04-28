@@ -38,6 +38,12 @@
                             <input type="radio" name="register_rest" value="false" checked>しない
                         {% endif %}
                     </div>
+
+                    <div class="form-group">
+                        <label class="control-label">ログイン制限ユーザ(.で区切る / all指定で管理者以外全員制限)</label>
+                        <input class="form-control" type="text" name="login_rest_users" value={{ login_rest_users }}>
+                    </div>
+
                 </div>
             </div>
 
