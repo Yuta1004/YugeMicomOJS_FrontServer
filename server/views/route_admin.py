@@ -25,10 +25,19 @@ def control_panel_route():
 def edit_config_route():
     # 更新
     if request.method == "POST":
+        # 入力受け取り
         config_file["system"]["server_url"] = request.form["server_url"]
         config_file["system"]["max_worker"] = request.form["max_worker"]
         config_file["docker"]["image_name"] = request.form["image_name"]
         config_file["user"]["register_ok"] = request.form["register_ok"]
+
+        # ファイル更新
+        with open("config.ini", "w", encoding="utf-8") as f:
+            config_file.write(f)
+        config_file.read("config.ini")
+
+        # リダイレクト
+        redirect(base_url + "/edit_config")
 
     # 画面表示
     server_url = config_file["system"]["server_url"]
