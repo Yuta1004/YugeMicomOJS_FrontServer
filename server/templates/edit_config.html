@@ -1,0 +1,81 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YMOJS システム設定{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>システム設定</h1><br>
+
+        <!--入力内容に不備があった場合-->
+        {% if (update_result is not none) and update_result %}
+            <div class="alert alert-success">
+                <p><b>正常に更新されました</b></p>
+            </div>
+        {% elif update_result is not none %}
+            <div class="alert alert-danger">
+                <p><b>更新に失敗しました</b></p>
+                <ul>
+                    <li>全て入力してください</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <!--フォーム-->
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h5>サーバ設定</h5></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label">トップURL</label>
+                        <input class="form-control" type="text" name="server_url" id="server_url" value={{ server_url }}>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><h5>ジャッジ設定</h5></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label">同時起動コンテナ数制限</label>
+                        <input class="form-control" type="number" name="max_worker" id="max_worker" value={{ max_worker }}>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">ジャッジイメージ</label>
+                        <input class="form-control" type="text" name="image_name" id="image_name" value={{ image_name }}>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><h5>ユーザ認証設定</h5></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label">新規登録制限</label><br>
+                        {% if register_ok %}
+                            <input type="radio" name="register_ok" value="yes" checked>する
+                            <input type="radio" name="register_ok" value="no">しない
+                        {% else %}
+                            <input type="radio" name="register_ok" value="yes">する
+                            <input type="radio" name="register_ok" value="no" checked>しない
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary">反映</button>
+        </form>
+
+        <br><br>
+    </div>
+</body>
+
+{% endblock %}

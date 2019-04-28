@@ -2,7 +2,7 @@ from flask import render_template, request, session, redirect, Blueprint
 from server.functions.problem import get_all_problem_with_status
 from server.functions.contest import get_all_contest
 from server.functions.user import is_admin
-from server import base_url
+from server import base_url, config_file
 
 route_admin = Blueprint(__name__, "admin")
 
@@ -21,3 +21,17 @@ def control_panel_route():
                            contest_list=contest_list,
                            session=session["user_id"])
 
+@route_admin.route(base_url + "/edit_config", methods=["GET", "POST"])
+def edit_config_route():
+    server_url = config_file["system"]["server_url"]
+    max_worker = config_file["system"]["max_worker"]
+    image_name = config_file["docker"]["image_name"]
+    register_ok = config_file["user"].getboolean("register_ok")
+
+    return render_template("edit_config.html",
+                           session=session["user_id"],
+                           server_url=server_url,
+                           max_worker=max_worker,
+                           image_name=image_name,
+                           register_ok=register_ok,
+                           update_result=None)
