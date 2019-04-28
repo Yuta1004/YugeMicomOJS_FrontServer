@@ -9,7 +9,7 @@ route_auth = Blueprint(__name__, "auth")
 def register_user():
     if request.method == "GET":
         return render_template("register.html",
-                               register_ok=config_file["user"].getboolean("register_ok"),
+                               register_rest=config_file["user"].getboolean("register_rest"),
                                session=session["user_id"])
 
     user_id = request.form["user_id"]
@@ -24,7 +24,7 @@ def register_user():
     else:
         return render_template("register.html",
                                inp_failed="Failed",
-                               register_ok=config_file["user"].getboolean("register_ok"),
+                               register_rest=config_file["user"].getboolean("register_rest"),
                                session=session["user_id"])
 
 

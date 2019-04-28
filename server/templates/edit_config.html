@@ -30,12 +30,12 @@
                 <div class="panel-body">
                     <div class="form-group">
                         <label class="control-label">新規登録制限</label><br>
-                        {% if register_ok %}
-                            <input type="radio" name="register_ok" value="true" checked>する
-                            <input type="radio" name="register_ok" value="false">しない
+                        {% if register_rest %}
+                            <input type="radio" name="register_rest" value="true" checked>する
+                            <input type="radio" name="register_rest" value="false">しない
                         {% else %}
-                            <input type="radio" name="register_ok" value="true">する
-                            <input type="radio" name="register_ok" value="false" checked>しない
+                            <input type="radio" name="register_rest" value="true">する
+                            <input type="radio" name="register_rest" value="false" checked>しない
                         {% endif %}
                     </div>
                 </div>
