@@ -1,0 +1,24 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YugeMicomOJS{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <font size="5" color="#F33">アクセス制限中</font><br><br>
+                <p><b>{{ session }}</b> のアクセスは制限されています</p><br>
+                <p>この制限に覚えがない場合、管理者が全てのユーザのアクセスを一時的に制限している可能性があります</p>
+                <p>詳細は管理者に問い合わせてください</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

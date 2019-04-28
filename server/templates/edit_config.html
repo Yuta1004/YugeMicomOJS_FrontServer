@@ -1,0 +1,57 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}YMOJS システム設定{% endblock %}
+
+{% block content %}
+
+<body>
+    <!--ナビゲーションバー-->
+    {% include "navigation.html" %}
+
+    <!--メインコンテンツ-->
+    <div class="container">
+        <h1>システム設定</h1><br>
+
+        <!--フォーム-->
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h5>ジャッジ設定</h5></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label">ジャッジイメージ</label>
+                        <input class="form-control" type="text" name="image_name" id="image_name" value={{ image_name }}>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><h5>ユーザ認証設定</h5></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label">新規登録制限</label><br>
+                        {% if register_rest %}
+                            <input type="radio" name="register_rest" value="true" checked>する
+                            <input type="radio" name="register_rest" value="false">しない
+                        {% else %}
+                            <input type="radio" name="register_rest" value="true">する
+                            <input type="radio" name="register_rest" value="false" checked>しない
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">ログイン制限ユーザ(.で区切る / all指定で管理者以外全員制限)</label>
+                        <input class="form-control" type="text" name="login_rest_users" value={{ login_rest_users }}>
+                    </div>
+
+                </div>
+            </div>
+
+            <button class="btn btn-primary">反映</button>
+        </form>
+
+        <br><br>
+    </div>
+</body>
+
+{% endblock %}
