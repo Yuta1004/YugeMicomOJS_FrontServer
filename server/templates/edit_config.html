@@ -12,20 +12,6 @@
     <div class="container">
         <h1>システム設定</h1><br>
 
-        <!--入力内容に不備があった場合-->
-        {% if (update_result is not none) and update_result %}
-            <div class="alert alert-success">
-                <p><b>正常に更新されました</b></p>
-            </div>
-        {% elif update_result is not none %}
-            <div class="alert alert-danger">
-                <p><b>更新に失敗しました</b></p>
-                <ul>
-                    <li>全て入力してください</li>
-                </ul>
-            </div>
-        {% endif %}
-
         <!--フォーム-->
         <form action="#" method="post" enctype="multipart/form-data">
             <div class="panel panel-default">
@@ -60,11 +46,11 @@
                     <div class="form-group">
                         <label class="control-label">新規登録制限</label><br>
                         {% if register_ok %}
-                            <input type="radio" name="register_ok" value="yes" checked>する
-                            <input type="radio" name="register_ok" value="no">しない
+                            <input type="radio" name="register_ok" value="true" checked>する
+                            <input type="radio" name="register_ok" value="false">しない
                         {% else %}
-                            <input type="radio" name="register_ok" value="yes">する
-                            <input type="radio" name="register_ok" value="no" checked>しない
+                            <input type="radio" name="register_ok" value="true">する
+                            <input type="radio" name="register_ok" value="false" checked>しない
                         {% endif %}
 
                     </div>
