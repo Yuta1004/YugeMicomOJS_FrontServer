@@ -65,7 +65,8 @@
                             <th>問題</th>
                             <th><div class="text-center">提出ユーザ</div></th>
                             <th><div class="text-center">ステータス</div></th>
-                            <th><div class="text-center">スコア</th>
+                            <th><div class="text-center">スコア</div></th>
+                            <th><div class="text-center">実行時間</div></th>
                             <th>言語</th>
                             <th>詳細</th>
                         </tr>
@@ -78,6 +79,7 @@
                                 {% if (now_time < data.open_time) and (not is_special) and (data.user_id != session) %}
                                     <td>---</td>
                                     <td>---</td>
+                                    <td><div class="text-center">---</div></td>
                                     <td><div class="text-center">---</div></td>
                                     <td><div class="text-center">---</div></td>
                                     <td><div class="text-center">---</div></td>
@@ -104,6 +106,14 @@
                                     </div></td>
 
                                     <td><div class="text-center">{{ data.score }}</div></td>
+
+                                    <!--実行時間-->
+                                    {% if data.exec_time >= 0 %}
+                                        <td><div class="text-center">{{ data.exec_time }} ms</div></td>
+                                    {% else %}
+                                        <td><div class="text-center">---</div></td>
+                                    {% endif %}
+
                                     <td>{{ data.lang }}</td>
                                     <td><a href={{ "/yuge_micom_ojs/submission/" + data.id }}>詳細</a></td>
                                 {% endif %}

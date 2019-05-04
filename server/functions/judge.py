@@ -43,7 +43,7 @@ def judge_code(submission_id):
     # Dockerについていろいろ
     image_name = config_file["docker"]["image_name"]
     env = {"LD_LIBRARY_PATH": "/usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64"}
-    commands = ["judge-program", lang]
+    commands = ["judge-program", lang, "3"]
 
     # 必要ディレクトリ/ファイルをマウントさせる為の準備
     io_dir = os.path.abspath(".") + "/server/IOData/" + problem_id + "/"
@@ -91,15 +91,29 @@ def judge_code(submission_id):
     if judge_status == "AC" and len(judge_list) != judge_counter["AC"]:
         judge_status = judge_counter.most_common()[1][0]
 
+    # 実行時間の最大値を求める
+    max_exec_time = -1.0
+    for line in judge_result.split("\n")[:-1]:
+        exec_time = -1.0
+        if line.split("`n`")[2] != "timeout":
+            exec_time= float(line.split("`n`")[2])
+        max_exec_time = max(exec_time, max_exec_time)
+
+    # TLEの時の実行時間
+    if judge_status == "TLE":
+        max_exec_time = -1.0
+
     # 提出データ更新
     connect = sqlite3.connect("./server/DB/problem.db")
     cur = connect.cursor()
     sql = """
           UPDATE submission
-          SET status = (SELECT id FROM status WHERE name = ?), detail = ?, score = ?
+          SET status = (SELECT id FROM status WHERE name = ?), detail = ?,
+              score = ?, exec_time = ?
           WHERE id = ?
           """
-    cur.execute(sql, (judge_status, judge_result.replace("\n", "`;`"), score, submission_id))
+    cur.execute(sql, (judge_status, judge_result.replace("\n", "`;`"), score,
+                      max_exec_time, submission_id))
     connect.commit()
 
     cur.close()

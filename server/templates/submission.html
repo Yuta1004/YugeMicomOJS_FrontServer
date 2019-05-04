@@ -29,11 +29,19 @@
 
                         <label>提出日時</label>
                         <p>{{ submission_data.date }}</p>
+
+                        <label>スコア</label>
+                        <p>{{ submission_data.score }}</p><br>
+
                     </div>
 
                     <div class="col-md-6">
-                        <label>スコア</label>
-                        <p>{{ submission_data.score }}</p><br>
+                        <label>実行時間</label>
+                        {% if submission_data.exec_time >= 0 %}
+                            <p>{{ submission_data.exec_time }} ms</p><br>
+                        {% else %}
+                            <p>---</p>
+                        {% endif %}
 
                         <label>提出言語</label>
                         <p>{{ submission_data.lang }}</p><br>
@@ -89,8 +97,9 @@
                         <tr>
                             <th class="col-xs-2">テストケース</th>
                             <th class="col-xs-1">入力</th>
-                            <th class="col-xs-6"><div class="text-center">ステータス</div></th>
-                            <th class="col-xs-3">実行詳細</th>
+                            <th class="col-xs-5"><div class="text-center">ステータス</div></th>
+                            <th class="col-xs-2"><div class="text-center">実行時間</div></th>
+                            <th class="col-xs-2"><div class="text-center">実行詳細</div></th>
                         </tr>
                     <thead>
                     <tbody>
@@ -113,7 +122,15 @@
                                     <td><div class="text-center"><span class="label label-warning">{{ status }}</span></div></td>
                                 {% endif %}
 
-                                <td><a href="#" data-toggle="modal" data-target={{ "#code_detail_" + i|string }}>詳細</a></td>
+                                <!--実行時間-->
+                                {% set exec_time = submission_data.detail[(i-1)|string].exec_time %}
+                                {% if exec_time >= 0 %}
+                                    <td><div class="text-center">{{ submission_data.detail[(i-1)|string].exec_time }} ms</div></td>
+                                {% else %}
+                                    <td><div class="text-center">---</div></td>
+                                {% endif %}
+
+                                <td><div class="text-center"><a href="#" data-toggle="modal" data-target={{ "#code_detail_" + i|string }}>詳細</a></div></td>
                             </tr>
                         {% endfor %}
                     </tbody>

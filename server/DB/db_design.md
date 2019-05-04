@@ -32,7 +32,7 @@
 - name : TEXT NOT NULL
 - scoring : NUMBER NOT NULL
 - open_time : DATETIME NOT NULL
-- lang_rest : TEXT NOT NULL
+- lang_rest : REAL NOT NULL
 
 ## submission
 - id : TEXT PRIMARY KEY
@@ -43,6 +43,7 @@
 - status : NUMBER NOT NULL
 - detail : TEXT NOT NULL DEFAULT ""
 - score : NUMBER NOT NULL
+- exec_time : NUMBER NOT NULL
 
 ## status
 - id : NUMBER PRIMARY KEY
