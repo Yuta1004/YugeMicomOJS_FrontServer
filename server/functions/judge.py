@@ -43,7 +43,7 @@ def judge_code(submission_id):
     # Dockerについていろいろ
     image_name = config_file["docker"]["image_name"]
     env = {"LD_LIBRARY_PATH": "/usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64"}
-    commands = ["judge-program", lang]
+    commands = ["judge-program", lang, "3"]
 
     # 必要ディレクトリ/ファイルをマウントさせる為の準備
     io_dir = os.path.abspath(".") + "/server/IOData/" + problem_id + "/"
