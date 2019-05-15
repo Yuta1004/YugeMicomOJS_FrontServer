@@ -81,20 +81,21 @@ def update_user_data(user_id, user_name, open_code):
     return True
 
 
-def change_password(user_id, old_pass, new_pass, new_pass_conf):
-    """指定ユーザのパスワードを変更する
+def change_password(user_id, old_pass, new_pass, new_pass_conf, conf_flag):
+    """指定ユーザのパスワードを変更する(確認付き)
 
     Args:
         user_id (str) : ユーザID
         old_pass (str) : 旧パスワード
         new_pass (str) : 新パスワード
         new_pass_conf (str) : 新パスワード、入力確認用
+        conf_flag (bool) : Trueで旧パス確認なし
 
     Returns:
         bool : 正常に変更されたらTrue
     """
 
-    if new_pass != new_pass_conf or not login(user_id, old_pass):
+    if new_pass != new_pass_conf and (not login(user_id, old_pass) or conf_flag):
         return False
 
     # 半角英数8文字以上

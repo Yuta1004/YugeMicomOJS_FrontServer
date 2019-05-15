@@ -52,10 +52,33 @@ def change_password_route():
         change_succeeded = change_password(session["user_id"],
                                            old_password,
                                            new_password,
-                                           new_password_conf)
+                                           new_password_conf,
+                                           False)
 
     return render_template("change_password.html",
                            session=session["user_id"],
                            change_succeeded=change_succeeded)
 
 
+# パスワードリセットページ
+@route_user.route(base_url + "/reset_password", methods=["POST", "GET"])
+def reset_password_route():
+    if session["user_id"] is None:
+        return redirect(base_url)
+
+    change_succeeded = None
+
+    # パスワード更新
+    if request.method == "POST":
+        user_id = request.form["user_id"]
+        new_password = request.form["new_password"]
+        new_password_conf = request.form["new_password_conf"]
+        change_succeeded = change_password(user_id,
+                                          "old_pass",
+                                          new_password,
+                                          new_password_conf,
+                                          True)
+
+    return render_template("reset_password.html",
+                           session=session["user_id"],
+                           change_succeeded=change_succeeded)
