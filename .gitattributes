@@ -1,1 +1,2 @@
-server/templates linguist-documentation
+server/templates linguist-vendored
+server/templates/* linguist-vendored
